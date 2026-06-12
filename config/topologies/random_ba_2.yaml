@@ -1,0 +1,82 @@
+# Random topology: Barabási-Albert scale-free graph (n=7, m=2, seed=43)
+# Roles assigned by degree rank.
+
+name: random_ba_2
+description: "Barab\xE1si-Albert scale-free graph (n=7, m=2, seed=43)"
+n_agents: 7
+agents:
+- id: agent_0
+  role: supervisor
+  description: Top-level coordinator that delegates and resolves conflicts
+- id: agent_1
+  role: customer_facing
+  description: Interprets customer requests and communicates with the customer
+- id: agent_2
+  role: database
+  description: Accesses order history and customer records
+- id: agent_3
+  role: policy
+  description: Knows return policies and warranty rules
+- id: agent_4
+  role: transaction
+  description: Executes refunds, exchanges, and record updates
+- id: agent_5
+  role: database
+  description: Accesses order history and customer records
+- id: agent_6
+  role: policy
+  description: Knows return policies and warranty rules
+edges:
+- source: agent_1
+  target: agent_0
+  bidirectional: true
+  label: agent_1-agent_0
+  edge_type: random
+- source: agent_1
+  target: agent_5
+  bidirectional: true
+  label: agent_1-agent_5
+  edge_type: random
+- source: agent_1
+  target: agent_2
+  bidirectional: true
+  label: agent_1-agent_2
+  edge_type: random
+- source: agent_0
+  target: agent_2
+  bidirectional: true
+  label: agent_0-agent_2
+  edge_type: random
+- source: agent_0
+  target: agent_3
+  bidirectional: true
+  label: agent_0-agent_3
+  edge_type: random
+- source: agent_0
+  target: agent_4
+  bidirectional: true
+  label: agent_0-agent_4
+  edge_type: random
+- source: agent_5
+  target: agent_6
+  bidirectional: true
+  label: agent_5-agent_6
+  edge_type: random
+- source: agent_2
+  target: agent_3
+  bidirectional: true
+  label: agent_2-agent_3
+  edge_type: random
+- source: agent_3
+  target: agent_4
+  bidirectional: true
+  label: agent_3-agent_4
+  edge_type: random
+- source: agent_4
+  target: agent_6
+  bidirectional: true
+  label: agent_4-agent_6
+  edge_type: random
+properties:
+  generation_method: ba
+  seed: 43

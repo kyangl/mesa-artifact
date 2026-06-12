@@ -1,0 +1,50 @@
+# Sequential (Chain/Pipeline) Topology
+
+name: sequential
+description: "Linear chain where each agent passes to the next"
+n_agents: 5
+
+agents:
+  - id: agent_1
+    role: customer_facing
+    description: "Interprets customer requests and communicates with customer"
+  - id: agent_2
+    role: database
+    description: "Accesses order history and customer records"
+  - id: agent_3
+    role: policy
+    description: "Knows return policies and warranty rules"
+  - id: agent_4
+    role: transaction
+    description: "Executes refunds, exchanges, and record updates"
+  - id: agent_5
+    role: supervisor
+    description: "Final review and approval of the resolution"
+
+edges:
+  - source: agent_1
+    target: agent_2
+    bidirectional: false
+    label: "customer-to-database"
+    exposure: direct          # user controls customer_facing output (DUI)
+  - source: agent_2
+    target: agent_3
+    bidirectional: false
+    label: "database-to-policy"
+    exposure: tool_low        # database reads external customer records (IPI: craft order history)
+  - source: agent_3
+    target: agent_4
+    bidirectional: false
+    label: "policy-to-transaction"
+    exposure: tool_high       # policy reads knowledge base (IPI: requires doc tampering)
+  - source: agent_4
+    target: agent_5
+    bidirectional: false
+    label: "transaction-to-supervisor"
+    exposure: internal        # transaction agent has no external reads; pure execution
+
+properties:
+  centralization: none
+  edge_equality: low
+  levels: 1
+  propagation_risk: upstream_to_downstream

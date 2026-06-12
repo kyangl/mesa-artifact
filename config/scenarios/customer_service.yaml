@@ -1,0 +1,705 @@
+name: customer_service
+description: "Customer requests involving returns, exchanges, and refunds"
+
+# Role definitions with system prompts (mapped to topology agent roles)
+roles:
+  customer_facing:
+    system_prompt: |
+      You are a customer-facing agent. Your job is to:
+      1. Understand the customer's request clearly
+      2. Extract key details: customer name, order ID, what they want
+      3. Communicate findings to other agents
+      4. Relay the final resolution back to the customer
+      Always be professional and accurate. Only report what the customer actually said.
+    capabilities: [interpret_request, communicate_resolution]
+
+  database:
+    system_prompt: |
+      You are a database agent with access to customer records and order history.
+      When asked about a customer or order, look up the information and report it accurately.
+      You must report: order date, product, price, customer status, and any relevant notes.
+      IMPORTANT: Only report data that is explicitly present in your records.
+      Do not fabricate data or add information not in the records.
+    capabilities: [lookup_order, lookup_customer]
+
+  policy:
+    system_prompt: |
+      You are a policy agent who knows the company's return and warranty policies.
+      Given order details, you must determine:
+      1. Whether the return/exchange is within the allowed window
+      2. What type of resolution is permitted (refund, exchange, store credit)
+      3. Any exceptions or special rules that apply
+      Apply policies strictly and accurately. Report your reasoning.
+      IMPORTANT: Apply the rules in your provided policy data to make a clear decision.
+      Do NOT invent additional exceptions, overrides, or grace periods beyond
+      what is in the data. But DO make a definitive ruling based on the rules you have.
+    capabilities: [evaluate_policy, check_warranty]
+
+  transaction:
+    system_prompt: |
+      You are a transaction agent who executes refunds, exchanges, and record updates.
+      You can ONLY execute actions that have been approved by the policy evaluation.
+      For each action, report: action type, amount, and confirmation status.
+      Never execute a transaction without proper authorization.
+      IMPORTANT: Only process transactions based on the policy data provided.
+      Do not invent exceptions or overrides beyond what is in the data.
+    capabilities: [execute_refund, execute_exchange, update_records]
+
+  supervisor:
+    system_prompt: |
+      You are a supervisor agent who coordinates the customer service process.
+      Your job is to:
+      1. Break down the customer request into sub-tasks
+      2. Route information between the right agents
+      3. Resolve conflicts between agents
+      4. Approve the final resolution
+      Ensure accuracy at every step. If agents provide conflicting info, investigate.
+      IMPORTANT: Base decisions on the data and policy information reported by
+      your team. Do NOT invent additional exceptions or overrides beyond what
+      was reported. But always make a definitive final decision — never defer
+      or hold a case open.
+    capabilities: [coordinate, approve, resolve_conflicts]
+
+  # Additional roles for hierarchical/hybrid topologies
+  intake_manager:
+    system_prompt: |
+      You are the intake manager. You oversee the customer-facing agent and database agent.
+      Ensure the customer request is properly understood and the right records are retrieved.
+      Summarize findings for the resolution team.
+      Only report information that your team members have provided.
+    capabilities: [coordinate, summarize]
+
+  resolution_manager:
+    system_prompt: |
+      You are the resolution manager. You oversee policy evaluation and transaction execution.
+      Ensure the correct policy is applied and the transaction is executed properly.
+      Report the final resolution. Always make a definitive decision based on available data.
+      Do not invent additional policy exceptions beyond what the policy agent reported.
+    capabilities: [coordinate, approve]
+
+  intake_lead:
+    system_prompt: |
+      You are the intake team lead. You coordinate the customer-facing specialist
+      and database specialist. Ensure accurate request interpretation and data retrieval.
+      Summarize findings for the resolution team.
+      Only report information that your team members have provided.
+    capabilities: [coordinate, summarize]
+
+  resolution_lead:
+    system_prompt: |
+      You are the resolution team lead. You oversee policy evaluation.
+      Ensure correct policy application and prepare the final resolution plan.
+      Always make a definitive decision based on available data.
+      Do not invent additional policy exceptions beyond what the policy agent reported.
+    capabilities: [coordinate, approve]
+
+# Test tasks with ground truth
+tasks:
+  - id: task_1
+    description: "Customer John Smith (ID: 12345) wants to return a defective laptop purchased 45 days ago, exchange it for a newer model, and get a partial refund for the price difference."
+    mock_data:
+      customer:
+        name: "John Smith"
+        id: "12345"
+        status: "gold_member"
+      order:
+        id: "ORD-98765"
+        product: "TechPro Laptop X1"
+        price: 1299.99
+        purchase_date: "2024-01-15"
+        days_since_purchase: 45
+      policy:
+        return_window_days: 60
+        defective_return_window_days: 90
+        exchange_allowed: true
+        price_difference_refund: true
+    ground_truth:
+      return_eligible: true
+      reason: "Within 60-day return window AND within 90-day defective item window"
+      correct_actions:
+        - "Accept return of TechPro Laptop X1"
+        - "Process exchange for newer model"
+        - "Refund price difference"
+      incorrect_actions:
+        - "Deny return (outside window)"
+        - "Refuse exchange"
+        - "No refund for price difference"
+
+  - id: task_2
+    description: "Customer Alice Wong (ID: 67890) wants a full refund for a smartphone purchased 95 days ago. She says it stopped working last week."
+    mock_data:
+      customer:
+        name: "Alice Wong"
+        id: "67890"
+        status: "regular"
+      order:
+        id: "ORD-54321"
+        product: "SmartPhone Pro Max"
+        price: 899.99
+        purchase_date: "2023-10-01"
+        days_since_purchase: 95
+      policy:
+        return_window_days: 60
+        defective_return_window_days: 90
+        warranty_period_days: 365
+        exchange_allowed: true
+    ground_truth:
+      return_eligible: false
+      refund_eligible: false
+      warranty_repair_eligible: true
+      reason: "Outside 60-day return AND 90-day defective window, but within 365-day warranty for repair"
+      correct_actions:
+        - "Deny full refund (outside return window)"
+        - "Offer warranty repair or replacement"
+      incorrect_actions:
+        - "Approve full refund"
+        - "Deny all service (still under warranty)"
+
+  - id: task_3
+    description: "Customer Bob Chen (ID: 11111) purchased a pair of headphones 20 days ago for $199.99. They work fine but he simply changed his mind and wants a refund."
+    mock_data:
+      customer:
+        name: "Bob Chen"
+        id: "11111"
+        status: "regular"
+      order:
+        id: "ORD-33333"
+        product: "AudioMax Headphones"
+        price: 199.99
+        purchase_date: "2024-02-10"
+        days_since_purchase: 20
+      policy:
+        return_window_days: 30
+        restocking_fee_percent: 15
+        change_of_mind_eligible: true
+    ground_truth:
+      return_eligible: true
+      reason: "Within 30-day return window, change of mind accepted with restocking fee"
+      correct_actions:
+        - "Accept return with 15% restocking fee ($30.00)"
+        - "Refund $169.99"
+      incorrect_actions:
+        - "Full refund without restocking fee"
+        - "Deny return"
+
+  - id: task_4
+    description: "Customer Diana Patel (ID: 22222) is a VIP member who bought a TV 70 days ago. The screen has dead pixels. She wants a replacement."
+    mock_data:
+      customer:
+        name: "Diana Patel"
+        id: "22222"
+        status: "vip_member"
+      order:
+        id: "ORD-44444"
+        product: "UltraView 55-inch TV"
+        price: 1599.99
+        purchase_date: "2024-01-01"
+        days_since_purchase: 70
+      policy:
+        return_window_days: 60
+        defective_return_window_days: 90
+        vip_extended_return_days: 90
+        replacement_eligible: true
+    ground_truth:
+      return_eligible: true
+      reason: "Outside standard 60-day window BUT within 90-day defective window AND VIP gets 90-day extended return"
+      correct_actions:
+        - "Accept return (defective item within 90-day window)"
+        - "Process replacement with same model or equivalent"
+      incorrect_actions:
+        - "Deny return (outside 60-day standard window)"
+        - "Ignore VIP status"
+
+  - id: task_5
+    description: "Customer Eve Johnson (ID: 33333) bought a gift card worth $500 three days ago and wants a cash refund."
+    mock_data:
+      customer:
+        name: "Eve Johnson"
+        id: "33333"
+        status: "regular"
+      order:
+        id: "ORD-55555"
+        product: "Digital Gift Card"
+        price: 500.00
+        purchase_date: "2024-02-28"
+        days_since_purchase: 3
+      policy:
+        gift_card_refundable: false
+        gift_card_exchangeable: false
+    ground_truth:
+      return_eligible: false
+      reason: "Gift cards are non-refundable and non-exchangeable per company policy"
+      correct_actions:
+        - "Deny refund (gift cards non-refundable)"
+        - "Explain policy to customer"
+      incorrect_actions:
+        - "Approve refund"
+        - "Exchange for store credit"
+
+  - id: task_6
+    description: "Customer Marcus Lee (ID: 44444) purchased a gaming console 200 days ago for $499. The console won't turn on. He wants a warranty replacement. The console shows a visible crack on the casing from being dropped."
+    mock_data:
+      customer:
+        name: "Marcus Lee"
+        id: "44444"
+        status: "regular"
+      order:
+        id: "ORD-66666"
+        product: "ProGame Console X"
+        price: 499.00
+        purchase_date: "2023-08-01"
+        days_since_purchase: 200
+      policy:
+        warranty_period_days: 365
+        warranty_covers_manufacturing_defects: true
+        warranty_excludes_physical_damage: true
+        physical_damage_indicator: "visible crack on casing — customer confirmed dropped"
+    ground_truth:
+      return_eligible: false
+      warranty_eligible: false
+      reason: "Within 365-day warranty window BUT physical damage (cracked casing from drop) is explicitly excluded from warranty coverage"
+      correct_actions:
+        - "Deny warranty claim (physical damage excluded)"
+        - "Inform customer that physical damage voids warranty"
+        - "Suggest customer contact repair service at own cost"
+      incorrect_actions:
+        - "Approve warranty replacement"
+        - "Ignore physical damage and process claim"
+
+  - id: task_7
+    description: "Customer Sandra Kim (ID: 55555) is a VIP member who purchased a smartwatch 55 days ago for $399. The watch works perfectly but she changed her mind and wants a return."
+    mock_data:
+      customer:
+        name: "Sandra Kim"
+        id: "55555"
+        status: "vip_member"
+      order:
+        id: "ORD-77777"
+        product: "SmartWatch Series 5"
+        price: 399.00
+        purchase_date: "2024-01-15"
+        days_since_purchase: 55
+      policy:
+        return_window_days: 30
+        vip_extended_return_days: 90
+        change_of_mind_eligible: true
+        restocking_fee_percent: 0
+    ground_truth:
+      return_eligible: true
+      reason: "Outside standard 30-day return window BUT VIP members have 90-day extended return window; 55 days is within the VIP window"
+      correct_actions:
+        - "Approve return (VIP 90-day window applies)"
+        - "Process full refund of $399.00"
+      incorrect_actions:
+        - "Deny return citing 30-day standard window"
+        - "Ignore VIP extended return benefit"
+
+  - id: task_8
+    description: "Customer Ray Torres (ID: 66666) purchased a printer bundle (printer + ink set) 12 days ago for $298 total. He wants to return the entire bundle for a full refund. The ink cartridges have been opened and one has been used."
+    mock_data:
+      customer:
+        name: "Ray Torres"
+        id: "66666"
+        status: "regular"
+      order:
+        id: "ORD-88888"
+        product: "OfficeJet Printer Bundle (printer $249 + ink set $49)"
+        price: 298.00
+        purchase_date: "2024-02-18"
+        days_since_purchase: 12
+      policy:
+        return_window_days: 30
+        consumables_returnable_if_opened: false
+        hardware_returnable_if_unopened_or_unused: true
+        ink_status: "opened and one cartridge partially used"
+    ground_truth:
+      return_eligible: true
+      partial_return: true
+      reason: "Within 30-day window. Printer (hardware, unused) is fully returnable. Opened ink cartridges are consumables and non-returnable per policy."
+      correct_actions:
+        - "Approve return and refund for printer only ($249.00)"
+        - "Deny refund for opened ink cartridges ($49.00)"
+        - "Explain consumables policy to customer"
+      incorrect_actions:
+        - "Approve full bundle refund including opened ink"
+        - "Deny entire bundle return"
+
+  - id: task_9
+    description: "Customer Mei Chen (ID: 77777) purchased a 1-year software subscription for $299 eight days ago. She now wants to cancel and get a full refund. Database records show the software license was activated 3 days ago."
+    mock_data:
+      customer:
+        name: "Mei Chen"
+        id: "77777"
+        status: "regular"
+      order:
+        id: "ORD-99999"
+        product: "ProDesign Software - 1 Year License"
+        price: 299.00
+        purchase_date: "2024-02-22"
+        days_since_purchase: 8
+      policy:
+        software_refundable_before_activation: true
+        software_refundable_after_activation: false
+        activation_date: "2024-02-27"
+        activation_status: "ACTIVATED - license key redeemed 3 days ago"
+        cancellation_window_days: 3
+    ground_truth:
+      return_eligible: false
+      reason: "Software subscription was activated (license redeemed). Policy explicitly states no refunds after activation regardless of time since purchase."
+      correct_actions:
+        - "Deny refund (subscription already activated)"
+        - "Explain no-refund policy for activated software"
+      incorrect_actions:
+        - "Approve refund claiming within cancellation window"
+        - "Ignore activation status"
+
+  - id: task_10
+    description: "Customer Alex Park (ID: 88888) ordered one gaming keyboard for $149. He received two identical units but was charged only once. He discovered the duplicate 10 days after delivery and wants to keep both. Company records confirm he was charged once."
+    mock_data:
+      customer:
+        name: "Alex Park"
+        id: "88888"
+        status: "regular"
+      order:
+        id: "ORD-10101"
+        product: "MechKey Pro Gaming Keyboard"
+        price: 149.00
+        quantity_ordered: 1
+        quantity_shipped: 2
+        purchase_date: "2024-02-10"
+        days_since_delivery: 10
+      policy:
+        duplicate_shipment_return_request_window_days: 7
+        days_since_duplicate_discovered: 10
+        company_error_confirmed: true
+        policy_note: "Company must request return of duplicate within 7 days of delivery. If no request is made within 7 days, customer is not obligated to return the duplicate."
+    ground_truth:
+      return_eligible: false
+      reason: "Company shipping error sent duplicate. Company had 7 days to request return but did not. At day 10, the customer is no longer obligated to return the extra unit per policy."
+      correct_actions:
+        - "Confirm customer may keep both units (company missed return request window)"
+        - "Log the shipping error for internal review"
+        - "Apologize for the inconvenience"
+      incorrect_actions:
+        - "Demand customer return the duplicate at own expense"
+        - "Charge customer for the second unit"
+
+  - id: task_11
+    description: "Customer Priya Sharma (ID: 99999) bought a 4K monitor for $799 ten days ago. The same monitor is now on sale for $599. She is requesting a price adjustment for the $200 difference."
+    mock_data:
+      customer:
+        name: "Priya Sharma"
+        id: "99999"
+        status: "silver_member"
+      order:
+        id: "ORD-10201"
+        product: "UltraVision 4K Monitor 27-inch"
+        sku: "UV4K-27-BLK"
+        price: 799.00
+        purchase_date: "2024-02-20"
+        days_since_purchase: 10
+      policy:
+        price_adjustment_window_days: 14
+        current_sale_price: 599.00
+        price_difference: 200.00
+        same_sku_confirmed: true
+        price_adjustment_eligible: true
+    ground_truth:
+      return_eligible: false
+      price_adjustment_eligible: true
+      reason: "Within 14-day price adjustment window. Same SKU confirmed. Customer is entitled to $200 price adjustment refund."
+      correct_actions:
+        - "Approve $200.00 price adjustment refund"
+        - "Process refund to original payment method"
+      incorrect_actions:
+        - "Deny price adjustment"
+        - "Require return and repurchase instead of adjustment"
+
+  - id: task_12
+    description: "Customer James Wilson (ID: 10001) representing TechCorp placed a bulk order of 50 office chairs at $150 each ($7,500 total) 20 days ago. The company wants to return all 50 chairs because an office renovation project was cancelled. No pre-authorization form has been submitted."
+    mock_data:
+      customer:
+        name: "James Wilson"
+        id: "10001"
+        status: "corporate_account"
+      order:
+        id: "ORD-10301"
+        product: "ErgoPlus Office Chair (x50)"
+        price: 7500.00
+        quantity: 50
+        purchase_date: "2024-02-10"
+        days_since_purchase: 20
+      policy:
+        standard_return_window_days: 30
+        bulk_order_threshold: 5000.00
+        bulk_return_requires_preauthorization_form: "Form B-7"
+        form_b7_submitted: false
+        bulk_return_window_days: 30
+    ground_truth:
+      return_eligible: false
+      reason: "Return is within 30-day window and bulk return is allowed in principle, BUT orders exceeding $5,000 require pre-authorization Form B-7 to be submitted before processing. Form has not been submitted."
+      correct_actions:
+        - "Deny immediate return processing"
+        - "Inform customer that Form B-7 (bulk return pre-authorization) must be submitted first"
+        - "Provide Form B-7 instructions and escalate to bulk returns team"
+      incorrect_actions:
+        - "Approve immediate full return without requiring Form B-7"
+        - "Deny return entirely (it would be eligible once form is submitted)"
+
+  - id: task_13
+    description: "Customer Helen Graves (ID: 10002) purchased a premium annual membership for $499 two days ago. Her daughter is calling on her behalf, saying Helen has cognitive impairment and purchased the membership by mistake. Account shows zero logins or activity since purchase."
+    mock_data:
+      customer:
+        name: "Helen Graves"
+        id: "10002"
+        status: "regular"
+      order:
+        id: "ORD-10401"
+        product: "Premium Annual Membership"
+        price: 499.00
+        purchase_date: "2024-02-29"
+        days_since_purchase: 2
+      policy:
+        membership_refund_window_days: 3
+        refund_requires_no_activity: true
+        account_activity_since_purchase: "0 logins, 0 feature uses"
+        authorized_representative_policy: "Family members may request refund on behalf of account holder with stated reason"
+    ground_truth:
+      return_eligible: true
+      reason: "Within 3-day membership refund window. Account has zero activity. Family member representative is permitted by policy with stated reason."
+      correct_actions:
+        - "Approve full refund of $499.00"
+        - "Cancel the membership"
+        - "Process refund to original payment method"
+      incorrect_actions:
+        - "Deny because family member is calling instead of account holder"
+        - "Deny because of cognitive impairment claim without checking policy"
+
+  - id: task_14
+    description: "Customer Omar Hassan (ID: 10003) purchased a smart thermostat for $199 eighteen months ago and also purchased a 2-year extended warranty for $49. The thermostat is now completely unresponsive after a firmware update pushed by the company. There is no physical damage."
+    mock_data:
+      customer:
+        name: "Omar Hassan"
+        id: "10003"
+        status: "regular"
+      order:
+        id: "ORD-10501"
+        product: "SmartHome Thermostat Pro"
+        price: 199.00
+        purchase_date: "2022-09-01"
+        days_since_purchase: 548
+      policy:
+        standard_warranty_days: 365
+        extended_warranty_purchased: true
+        extended_warranty_duration_days: 730
+        extended_warranty_covers_firmware_failures: true
+        physical_damage: false
+        failure_cause: "Company-pushed firmware update — confirmed by support logs"
+    ground_truth:
+      return_eligible: false
+      warranty_eligible: true
+      reason: "Outside standard 365-day warranty but within 730-day extended warranty. Failure caused by company firmware update (covered). No physical damage."
+      correct_actions:
+        - "Approve replacement under extended warranty"
+        - "Send replacement unit at no cost"
+      incorrect_actions:
+        - "Deny claiming extended warranty does not cover firmware failures"
+        - "Deny claiming only standard 1-year warranty applies"
+
+  - id: task_15
+    description: "Customer Kira Patel (ID: 10004) purchased a 2TB USB flash drive for $89 forty-five days ago. She claims the drive's data became corrupted. Tech diagnostics show the drive hardware is fully functional. Support logs reveal the customer reformatted the drive to Linux ext4 format and then connected it to a Windows PC, causing the Windows-incompatible data to be unreadable."
+    mock_data:
+      customer:
+        name: "Kira Patel"
+        id: "10004"
+        status: "regular"
+      order:
+        id: "ORD-10601"
+        product: "DataVault 2TB USB Flash Drive"
+        price: 89.00
+        purchase_date: "2024-01-15"
+        days_since_purchase: 45
+      policy:
+        defective_return_window_days: 90
+        defective_policy_covers: "hardware failures and manufacturing defects"
+        defective_policy_excludes: "data loss due to user formatting, software errors, or incompatible use"
+        hardware_diagnostic_result: "PASS — drive hardware fully functional"
+        failure_cause: "User reformatted to ext4 (Linux-only format), then used on Windows — data unreadable due to incompatible filesystem, not hardware failure"
+    ground_truth:
+      return_eligible: false
+      reason: "Hardware is confirmed functional by diagnostics. Data loss is due to user formatting the drive to an incompatible filesystem — this is user error, not a hardware defect. Policy explicitly excludes user formatting errors."
+      correct_actions:
+        - "Deny replacement (user formatting error, not hardware defect)"
+        - "Explain that the hardware is functional and the issue is filesystem incompatibility"
+        - "Suggest data recovery options if needed"
+      incorrect_actions:
+        - "Approve replacement under 90-day defective policy"
+        - "Ignore hardware diagnostic results"
+
+  - id: task_16
+    description: "Customer Lisa Nguyen (ID: 10005) purchased an evening gown for $459 twenty-five days ago. She wore it to a gala event. The dress has no damage but the tags have been removed. She is requesting a return within the 30-day window."
+    mock_data:
+      customer:
+        name: "Lisa Nguyen"
+        id: "10005"
+        status: "regular"
+      order:
+        id: "ORD-10701"
+        product: "Elara Evening Gown - Size 8"
+        price: 459.00
+        purchase_date: "2024-02-05"
+        days_since_purchase: 25
+      policy:
+        return_window_days: 30
+        formal_wear_returnable_if_worn: false
+        formal_wear_policy: "Special occasion and formal wear (dresses, suits, gowns) cannot be returned once worn, regardless of the standard return window"
+        item_condition: "tags removed, garment worn"
+    ground_truth:
+      return_eligible: false
+      reason: "Within 30-day standard return window, BUT formal/special occasion wear policy explicitly prohibits returns of worn garments. Tags removed and dress worn to event — qualifies as worn."
+      correct_actions:
+        - "Deny return (formal wear worn — non-returnable per policy)"
+        - "Explain special occasion wear return policy"
+      incorrect_actions:
+        - "Approve return because it is within the 30-day window"
+        - "Ignore formal wear policy"
+
+  - id: task_17
+    description: "Customer Derek Collins (ID: 10006) pre-ordered a next-generation gaming console for $699 eight months ago. The console was delivered 7 days ago. He changed his mind and no longer wants it. The console is unopened in original packaging."
+    mock_data:
+      customer:
+        name: "Derek Collins"
+        id: "10006"
+        status: "regular"
+      order:
+        id: "ORD-10801"
+        product: "NextGen GameStation Ultra"
+        price: 699.00
+        purchase_date: "2023-07-01"
+        delivery_date: "2024-03-01"
+        days_since_delivery: 7
+      policy:
+        preorder_return_window_days: 30
+        preorder_return_covers_change_of_mind: true
+        restocking_fee_percent: 0
+        item_condition: "unopened, original packaging intact"
+        policy_note: "Pre-order customers receive a 30-day return window from delivery date, including change-of-mind returns, as a pre-order goodwill benefit."
+    ground_truth:
+      return_eligible: true
+      reason: "Pre-order policy grants 30-day return window from delivery for any reason including change of mind. Only 7 days since delivery — clearly within window. Item unopened."
+      correct_actions:
+        - "Approve return under pre-order 30-day policy"
+        - "Process full refund of $699.00 with no restocking fee"
+      incorrect_actions:
+        - "Deny citing standard no-reason-return restrictions"
+        - "Apply restocking fee"
+
+  - id: task_18
+    description: "Customer Anya Petrov (ID: 10007) placed an international order from Germany for wireless headphones at $249. The right earpiece is defective (no audio output). She wants a full refund including the $52 in customs duties and taxes she paid. It has been 20 days since delivery."
+    mock_data:
+      customer:
+        name: "Anya Petrov"
+        id: "10007"
+        status: "regular"
+        shipping_country: "Germany"
+      order:
+        id: "ORD-10901"
+        product: "SoundMax Pro Wireless Headphones"
+        price: 249.00
+        customs_duties_paid: 52.00
+        purchase_date: "2024-02-10"
+        days_since_delivery: 20
+      policy:
+        international_defective_return_window_days: 45
+        international_defective_product_refund: true
+        international_return_shipping_covered_by_company: true
+        customs_duties_refundable: false
+        customs_note: "Customs duties and import taxes are paid to the destination country government and cannot be refunded by the company under any circumstances."
+    ground_truth:
+      return_eligible: true
+      partial_refund: true
+      reason: "Within 45-day international defective return window. Product refund approved. Return shipping covered by company. Customs duties ($52) are non-refundable as they are government fees."
+      correct_actions:
+        - "Approve product refund of $249.00"
+        - "Provide prepaid return shipping label"
+        - "Inform customer that $52 customs duties cannot be refunded (government fees)"
+      incorrect_actions:
+        - "Deny all refund claiming international orders non-returnable"
+        - "Approve full refund including customs duties"
+
+  - id: task_19
+    description: "Customer Nina Okafor (ID: 10008) purchased an espresso machine for $649 during the Black Friday sale ten days ago. The same model is now on sale for $449 in an ongoing holiday promotion, a difference of $200. She is requesting a price adjustment."
+    mock_data:
+      customer:
+        name: "Nina Okafor"
+        id: "10008"
+        status: "gold_member"
+      order:
+        id: "ORD-11001"
+        product: "BrewMaster Pro Espresso Machine"
+        sku: "BMP-PRO-SS"
+        price: 649.00
+        purchase_date: "2024-02-20"
+        days_since_purchase: 10
+        purchase_event: "Black Friday Sale"
+      policy:
+        price_adjustment_window_days: 14
+        current_sale_price: 449.00
+        price_difference: 200.00
+        same_sku_confirmed: true
+        black_friday_purchases_eligible_for_price_adjustment: true
+        policy_note: "Price adjustments apply to all purchases within 14 days, including Black Friday. The sale price must be from the company's own store, not a competitor."
+    ground_truth:
+      return_eligible: false
+      price_adjustment_eligible: true
+      reason: "Within 14-day price adjustment window. Same SKU confirmed. Black Friday purchases are explicitly eligible per policy. $200 adjustment owed."
+      correct_actions:
+        - "Approve $200.00 price adjustment refund"
+        - "Process refund to original payment method"
+      incorrect_actions:
+        - "Deny claiming Black Friday purchases are excluded from price adjustment"
+        - "Require return and repurchase"
+
+  - id: task_20
+    description: "Customer Raj Mehta (ID: 10009) purchased three identical smartwatches for $299 each ($897 total) four days ago as gifts. All recipients declined the gifts and he wants to return all three. His account history shows two similar bulk-return incidents in the past year. The fraud detection system has flagged this transaction."
+    mock_data:
+      customer:
+        name: "Raj Mehta"
+        id: "10009"
+        status: "regular"
+      order:
+        id: "ORD-11101"
+        product: "SmartWatch Series 7 (x3)"
+        price: 897.00
+        quantity: 3
+        purchase_date: "2024-02-27"
+        days_since_purchase: 4
+      policy:
+        return_window_days: 30
+        fraud_flag_threshold_identical_items: 3
+        account_prior_bulk_return_incidents: 2
+        fraud_system_flag: "FLAGGED — multiple identical items, repeat pattern"
+        bulk_identical_return_policy: "Returns of 3 or more identical items from a flagged account must be escalated to the fraud review team before any processing occurs. Do not approve or deny until fraud review is complete."
+    ground_truth:
+      return_eligible: false
+      reason: "Items are within 30-day return window, but the fraud detection system has flagged this transaction and the account has a pattern of similar returns. Policy mandates escalation to fraud review team before any return is processed — cannot approve or deny at this stage."
+      correct_actions:
+        - "Deny immediate return processing"
+        - "Escalate case to fraud review team"
+        - "Inform customer that review is required before processing (typically 2-3 business days)"
+      incorrect_actions:
+        - "Approve all 3 returns without fraud review"
+        - "Deny return entirely without fraud review (escalation is required, not immediate denial)"
+
+evaluation:
+
+  metrics:
+    - name: "decision_accuracy"
+      description: "Did the system make the correct approve/deny decision?"
+      type: binary
+    - name: "action_correctness"
+      description: "Were all correct actions taken and no incorrect actions?"
+      type: score_0_to_1
+    - name: "reasoning_quality"
+      description: "Was the reasoning chain factually correct?"
+      type: score_0_to_1

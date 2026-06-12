@@ -1,0 +1,1196 @@
+description: Python function implementation from HumanEval docstrings via a 5-role dev pipeline
+name: software_engineering
+role_mapping:
+  customer_facing: requirements_analyst
+  database: architect
+  intake_lead: architect
+  intake_manager: architect
+  policy: coder
+  resolution_lead: coder
+  resolution_manager: coder
+  supervisor: tester
+  transaction: reviewer
+roles:
+  architect:
+    capabilities:
+    - design_algorithm
+    - specify_approach
+    system_prompt: 'You are a software architect. Given a requirements document, your job is to:
+
+      1. Propose a high-level implementation approach (algorithm choice, data structures)
+
+      2. Describe the logic step by step in pseudocode or plain English
+
+      3. Note any tricky edge cases the coder must handle
+
+      4. Pass a clear design specification to the coder
+
+      Do not write complete Python code. Describe the design only.
+
+      '
+  coder:
+    capabilities:
+    - implement_function
+    - write_python
+    system_prompt: 'You are a Python developer. Given a design specification and the original function
+
+      signature, your job is to write the complete Python implementation.
+
+      Rules:
+
+      1. Write ONLY the function body — do not include import statements unless necessary
+
+      2. The function signature is provided — do not change it
+
+      3. Handle all edge cases mentioned in the specification
+
+      4. Write clean, correct Python 3 code
+
+      5. Output ONLY the Python code, nothing else
+
+      '
+  requirements_analyst:
+    capabilities:
+    - analyze_requirements
+    - identify_edge_cases
+    system_prompt: 'You are a requirements analyst. Given a Python function specification (docstring),
+
+      your job is to:
+
+      1. Clearly restate what the function must do in plain English
+
+      2. List all input types, output types, and edge cases from the docstring
+
+      3. Identify any implicit requirements (e.g., handling empty inputs)
+
+      4. Pass a structured requirements document to the architect
+
+      Be precise. Do not write any code. Only analyze and document requirements.
+
+      '
+  reviewer:
+    capabilities:
+    - review_code
+    - identify_bugs
+    system_prompt: 'You are a code reviewer. Given a Python implementation and the original specification,
+
+      your job is to:
+
+      1. Check for logical errors, off-by-one errors, type errors
+
+      2. Verify all edge cases are handled
+
+      3. If you find bugs, describe them precisely and suggest fixes
+
+      4. If the code looks correct, say so explicitly
+
+      5. Do NOT rewrite the code — only review and provide feedback
+
+      '
+  tester:
+    capabilities:
+    - finalize_code
+    - apply_fixes
+    system_prompt: 'You are a QA engineer. Given code, review feedback, and the original specification,
+
+      your job is to produce the FINAL version of the code.
+
+      Rules:
+
+      1. If the reviewer found bugs, apply the fixes
+
+      2. If the code was approved, output it as-is
+
+      3. Output ONLY the final Python function, nothing else — no explanations
+
+      4. The output must be a complete, runnable Python function
+
+      '
+tasks:
+- description: "Implement the Python function has_close_elements(numbers, threshold).\nCheck if in given list of numbers,\
+    \ are any two numbers closer to each other than\n    given threshold.\n    >>> has_close_elements([1.0, 2.0, 3.0], 0.5)\n\
+    \    False\n    >>> has_close_elements([1.0, 2.8, 3.0, 4.0, 5.0, 2.0], 0.3)\n    True\n"
+  ground_truth:
+    test_suite:
+    - assert has_close_elements([1.0, 2.0, 3.9, 4.0, 5.0, 2.2], 0.3) == True
+    - assert has_close_elements([1.0, 2.0, 3.9, 4.0, 5.0, 2.2], 0.05) == False
+    - assert has_close_elements([1.0, 2.0, 5.9, 4.0, 5.0], 0.95) == True
+    - assert has_close_elements([1.0, 2.0, 5.9, 4.0, 5.0], 0.8) == False
+    - assert has_close_elements([1.0, 2.0, 3.0, 4.0, 5.0, 2.0], 0.1) == True
+    - assert has_close_elements([1.1, 2.2, 3.1, 4.1, 5.1], 1.0) == True
+    - assert has_close_elements([1.1, 2.2, 3.1, 4.1, 5.1], 0.5) == False
+  id: task_he_001
+  mock_data:
+    docstring: "Check if in given list of numbers, are any two numbers closer to each other than\n    given threshold.\n \
+      \   >>> has_close_elements([1.0, 2.0, 3.0], 0.5)\n    False\n    >>> has_close_elements([1.0, 2.8, 3.0, 4.0, 5.0, 2.0],\
+      \ 0.3)\n    True\n"
+    edge_cases:
+    - Boundary value inputs
+    - Typical case with standard values
+    - Edge case from docstring examples
+    function_signature: 'def has_close_elements(numbers: List[float], threshold: float) -> bool:'
+    imports: from typing import List
+- description: "Implement the Python function separate_paren_groups(paren_string).\nInput to this function is a string containing\
+    \ multiple groups of nested parentheses. Your goal is to\n    separate those group into separate strings and return the\
+    \ list of those.\n    Separate groups are balanced (each open brace is properly closed) and not nested within each other\n\
+    \    Ignore any spaces in the input string.\n    >>> separate_paren_groups('( ) (( )) (( )( ))')\n    ['()', '(())', '(()())']\n"
+  ground_truth:
+    test_suite:
+    - assert separate_paren_groups('(()()) ((())) () ((())()())') == [ '(()())', '((()))', '()', '((())()())' ]
+    - assert separate_paren_groups('() (()) ((())) (((())))') == [ '()', '(())', '((()))', '(((())))' ]
+    - assert separate_paren_groups('(()(())((())))') == [ '(()(())((())))' ]
+    - assert separate_paren_groups('( ) (( )) (( )( ))') == ['()', '(())', '(()())']
+  id: task_he_002
+  mock_data:
+    docstring: "Input to this function is a string containing multiple groups of nested parentheses. Your goal is to\n   \
+      \ separate those group into separate strings and return the list of those.\n    Separate groups are balanced (each open\
+      \ brace is properly closed) and not nested within each other\n    Ignore any spaces in the input string.\n    >>> separate_paren_groups('(\
+      \ ) (( )) (( )( ))')\n    ['()', '(())', '(()())']\n"
+    edge_cases:
+    - Boundary value inputs
+    - Typical case with standard values
+    - Edge case from docstring examples
+    function_signature: 'def separate_paren_groups(paren_string: str) -> List[str]:'
+    imports: from typing import List
+- description: "Implement the Python function truncate_number(number).\nGiven a positive floating point number, it can be\
+    \ decomposed into\n    and integer part (largest integer smaller than given number) and decimals\n    (leftover part always\
+    \ smaller than 1).\n\n    Return the decimal part of the number.\n    >>> truncate_number(3.5)\n    0.5\n"
+  ground_truth:
+    test_suite:
+    - assert truncate_number(3.5) == 0.5
+    - assert abs(truncate_number(1.33) - 0.33) < 1e-6
+    - assert abs(truncate_number(123.456) - 0.456) < 1e-6
+  id: task_he_003
+  mock_data:
+    docstring: "Given a positive floating point number, it can be decomposed into\n    and integer part (largest integer smaller\
+      \ than given number) and decimals\n    (leftover part always smaller than 1).\n\n    Return the decimal part of the\
+      \ number.\n    >>> truncate_number(3.5)\n    0.5\n"
+    edge_cases:
+    - Large input values
+    - Boundary value inputs
+    - Typical case with standard values
+    function_signature: 'def truncate_number(number: float) -> float:'
+    imports: ''
+- description: "Implement the Python function below_zero(operations).\nYou're given a list of deposit and withdrawal operations\
+    \ on a bank account that starts with\n    zero balance. Your task is to detect if at any point the balance of account\
+    \ fallls below zero, and\n    at that point function should return True. Otherwise it should return False.\n    >>> below_zero([1,\
+    \ 2, 3])\n    False\n    >>> below_zero([1, 2, -4, 5])\n    True\n"
+  ground_truth:
+    test_suite:
+    - assert below_zero([]) == False
+    - assert below_zero([1, 2, -3, 1, 2, -3]) == False
+    - assert below_zero([1, 2, -4, 5, 6]) == True
+    - assert below_zero([1, -1, 2, -2, 5, -5, 4, -4]) == False
+    - assert below_zero([1, -1, 2, -2, 5, -5, 4, -5]) == True
+    - assert below_zero([1, -2, 2, -2, 5, -5, 4, -4]) == True
+  id: task_he_004
+  mock_data:
+    docstring: "You're given a list of deposit and withdrawal operations on a bank account that starts with\n    zero balance.\
+      \ Your task is to detect if at any point the balance of account fallls below zero, and\n    at that point function should\
+      \ return True. Otherwise it should return False.\n    >>> below_zero([1, 2, 3])\n    False\n    >>> below_zero([1, 2,\
+      \ -4, 5])\n    True\n"
+    edge_cases:
+    - Empty list input
+    - Boundary value inputs
+    - Typical case with standard values
+    function_signature: 'def below_zero(operations: List[int]) -> bool:'
+    imports: from typing import List
+- description: "Implement the Python function mean_absolute_deviation(numbers).\nFor a given list of input numbers, calculate\
+    \ Mean Absolute Deviation\n    around the mean of this dataset.\n    Mean Absolute Deviation is the average absolute difference\
+    \ between each\n    element and a centerpoint (mean in this case):\n    MAD = average | x - x_mean |\n    >>> mean_absolute_deviation([1.0,\
+    \ 2.0, 3.0, 4.0])\n    1.0\n"
+  ground_truth:
+    test_suite:
+    - assert abs(mean_absolute_deviation([1.0, 2.0, 3.0]) - 2.0/3.0) < 1e-6
+    - assert abs(mean_absolute_deviation([1.0, 2.0, 3.0, 4.0]) - 1.0) < 1e-6
+    - assert abs(mean_absolute_deviation([1.0, 2.0, 3.0, 4.0, 5.0]) - 6.0/5.0) < 1e-6
+  id: task_he_005
+  mock_data:
+    docstring: "For a given list of input numbers, calculate Mean Absolute Deviation\n    around the mean of this dataset.\n\
+      \    Mean Absolute Deviation is the average absolute difference between each\n    element and a centerpoint (mean in\
+      \ this case):\n    MAD = average | x - x_mean |\n    >>> mean_absolute_deviation([1.0, 2.0, 3.0, 4.0])\n    1.0\n"
+    edge_cases:
+    - Boundary value inputs
+    - Typical case with standard values
+    - Edge case from docstring examples
+    function_signature: 'def mean_absolute_deviation(numbers: List[float]) -> float:'
+    imports: from typing import List
+- description: "Implement the Python function strlen(string).\nReturn length of given string\n    >>> strlen('')\n    0\n\
+    \    >>> strlen('abc')\n    3\n"
+  ground_truth:
+    test_suite:
+    - assert strlen('') == 0
+    - assert strlen('x') == 1
+    - assert strlen('asdasnakj') == 9
+  id: task_he_006
+  mock_data:
+    docstring: "Return length of given string\n    >>> strlen('')\n    0\n    >>> strlen('abc')\n    3\n"
+    edge_cases:
+    - Empty string input
+    - Boundary value inputs
+    - Typical case with standard values
+    function_signature: 'def strlen(string: str) -> int:'
+    imports: ''
+- description: "Implement the Python function get_positive(l).\nReturn only positive numbers in the list.\n    >>> get_positive([-1,\
+    \ 2, -4, 5, 6])\n    [2, 5, 6]\n    >>> get_positive([5, 3, -5, 2, -3, 3, 9, 0, 123, 1, -10])\n    [5, 3, 2, 3, 9, 123,\
+    \ 1]\n"
+  ground_truth:
+    test_suite:
+    - assert get_positive([-1, -2, 4, 5, 6]) == [4, 5, 6]
+    - assert get_positive([5, 3, -5, 2, 3, 3, 9, 0, 123, 1, -10]) == [5, 3, 2, 3, 3, 9, 123, 1]
+    - assert get_positive([-1, -2]) == []
+    - assert get_positive([]) == []
+  id: task_he_007
+  mock_data:
+    docstring: "Return only positive numbers in the list.\n    >>> get_positive([-1, 2, -4, 5, 6])\n    [2, 5, 6]\n    >>>\
+      \ get_positive([5, 3, -5, 2, -3, 3, 9, 0, 123, 1, -10])\n    [5, 3, 2, 3, 9, 123, 1]\n"
+    edge_cases:
+    - Empty list input
+    - Negative number inputs
+    - Zero value input
+    function_signature: 'def get_positive(l: list):'
+    imports: ''
+- description: "Implement the Python function incr_list(l).\nReturn list with elements incremented by 1.\n    >>> incr_list([1,\
+    \ 2, 3])\n    [2, 3, 4]\n    >>> incr_list([5, 3, 5, 2, 3, 3, 9, 0, 123])\n    [6, 4, 6, 3, 4, 4, 10, 1, 124]\n"
+  ground_truth:
+    test_suite:
+    - assert incr_list([]) == []
+    - assert incr_list([3, 2, 1]) == [4, 3, 2]
+    - assert incr_list([5, 2, 5, 2, 3, 3, 9, 0, 123]) == [6, 3, 6, 3, 4, 4, 10, 1, 124]
+  id: task_he_008
+  mock_data:
+    docstring: "Return list with elements incremented by 1.\n    >>> incr_list([1, 2, 3])\n    [2, 3, 4]\n    >>> incr_list([5,\
+      \ 3, 5, 2, 3, 3, 9, 0, 123])\n    [6, 4, 6, 3, 4, 4, 10, 1, 124]\n"
+    edge_cases:
+    - Empty list input
+    - Zero value input
+    - Boundary value inputs
+    function_signature: 'def incr_list(l: list):'
+    imports: ''
+- description: "Implement the Python function triangle_area(a, h).\nGiven length of a side and high return area for a triangle.\n\
+    \    >>> triangle_area(5, 3)\n    7.5\n"
+  ground_truth:
+    test_suite:
+    - assert triangle_area(5, 3) == 7.5
+    - assert triangle_area(2, 2) == 2.0
+    - assert triangle_area(10, 8) == 40.0
+  id: task_he_009
+  mock_data:
+    docstring: "Given length of a side and high return area for a triangle.\n    >>> triangle_area(5, 3)\n    7.5\n"
+    edge_cases:
+    - Boundary value inputs
+    - Typical case with standard values
+    - Edge case from docstring examples
+    function_signature: 'def triangle_area(a, h):'
+    imports: ''
+- description: "Implement the Python function remove_vowels(text).\nremove_vowels is a function that takes string and returns\
+    \ string without vowels.\n    >>> remove_vowels('')\n    ''\n    >>> remove_vowels(\"abcdef\\nghijklm\")\n    'bcdf\\\
+    nghjklm'\n    >>> remove_vowels('abcdef')\n    'bcdf'\n    >>> remove_vowels('aaaaa')\n    ''\n    >>> remove_vowels('aaBAA')\n\
+    \    'B'\n    >>> remove_vowels('zbcd')\n    'zbcd'\n"
+  ground_truth:
+    test_suite:
+    - assert remove_vowels('') == ''
+    - assert remove_vowels("abcdef\nghijklm") == 'bcdf\nghjklm'
+    - assert remove_vowels('fedcba') == 'fdcb'
+    - assert remove_vowels('eeeee') == ''
+    - assert remove_vowels('acBAA') == 'cB'
+    - assert remove_vowels('EcBOO') == 'cB'
+    - assert remove_vowels('ybcd') == 'ybcd'
+  id: task_he_010
+  mock_data:
+    docstring: "remove_vowels is a function that takes string and returns string without vowels.\n    >>> remove_vowels('')\n\
+      \    ''\n    >>> remove_vowels(\"abcdef\\nghijklm\")\n    'bcdf\\nghjklm'\n    >>> remove_vowels('abcdef')\n    'bcdf'\n\
+      \    >>> remove_vowels('aaaaa')\n    ''\n    >>> remove_vowels('aaBAA')\n    'B'\n    >>> remove_vowels('zbcd')\n  \
+      \  'zbcd'\n"
+    edge_cases:
+    - Empty string input
+    - Boundary value inputs
+    - Typical case with standard values
+    function_signature: 'def remove_vowels(text):'
+    imports: ''
+- description: "Implement the Python function add(x, y).\nAdd two numbers x and y\n    >>> add(2, 3)\n    5\n    >>> add(5,\
+    \ 7)\n    12\n"
+  ground_truth:
+    test_suite:
+    - assert add(0, 1) == 1
+    - assert add(1, 0) == 1
+    - assert add(2, 3) == 5
+    - assert add(5, 7) == 12
+    - assert add(7, 5) == 12
+    - assert add(x, y) == x + y
+  id: task_he_011
+  mock_data:
+    docstring: "Add two numbers x and y\n    >>> add(2, 3)\n    5\n    >>> add(5, 7)\n    12\n"
+    edge_cases:
+    - Zero value input
+    - Boundary value inputs
+    - Typical case with standard values
+    function_signature: 'def add(x: int, y: int):'
+    imports: ''
+- description: "Implement the Python function sum_to_n(n).\nsum_to_n is a function that sums numbers from 1 to n.\n    >>>\
+    \ sum_to_n(30)\n    465\n    >>> sum_to_n(100)\n    5050\n    >>> sum_to_n(5)\n    15\n    >>> sum_to_n(10)\n    55\n\
+    \    >>> sum_to_n(1)\n    1\n"
+  ground_truth:
+    test_suite:
+    - assert sum_to_n(1) == 1
+    - assert sum_to_n(6) == 21
+    - assert sum_to_n(11) == 66
+    - assert sum_to_n(30) == 465
+    - assert sum_to_n(100) == 5050
+  id: task_he_012
+  mock_data:
+    docstring: "sum_to_n is a function that sums numbers from 1 to n.\n    >>> sum_to_n(30)\n    465\n    >>> sum_to_n(100)\n\
+      \    5050\n    >>> sum_to_n(5)\n    15\n    >>> sum_to_n(10)\n    55\n    >>> sum_to_n(1)\n    1\n"
+    edge_cases:
+    - Boundary value inputs
+    - Typical case with standard values
+    - Edge case from docstring examples
+    function_signature: 'def sum_to_n(n: int):'
+    imports: ''
+- description: "Implement the Python function derivative(xs).\nxs represent coefficients of a polynomial.\n    xs[0] + xs[1]\
+    \ * x + xs[2] * x^2 + ....\n     Return derivative of this polynomial in the same form.\n    >>> derivative([3, 1, 2,\
+    \ 4, 5])\n    [1, 4, 12, 20]\n    >>> derivative([1, 2, 3])\n    [2, 6]\n"
+  ground_truth:
+    test_suite:
+    - assert derivative([3, 1, 2, 4, 5]) == [1, 4, 12, 20]
+    - assert derivative([1, 2, 3]) == [2, 6]
+    - assert derivative([3, 2, 1]) == [2, 2]
+    - assert derivative([3, 2, 1, 0, 4]) == [2, 2, 0, 16]
+    - assert derivative([1]) == []
+  id: task_he_013
+  mock_data:
+    docstring: "xs represent coefficients of a polynomial.\n    xs[0] + xs[1] * x + xs[2] * x^2 + ....\n     Return derivative\
+      \ of this polynomial in the same form.\n    >>> derivative([3, 1, 2, 4, 5])\n    [1, 4, 12, 20]\n    >>> derivative([1,\
+      \ 2, 3])\n    [2, 6]\n"
+    edge_cases:
+    - Empty list input
+    - Single element input
+    - Zero value input
+    function_signature: 'def derivative(xs: list):'
+    imports: ''
+- description: "Implement the Python function solve(N).\nGiven a positive integer N, return the total sum of its digits in\
+    \ binary.\n\n    Example\n        For N = 1000, the sum of digits will be 1 the output should be \"1\".\n        For N\
+    \ = 150, the sum of digits will be 6 the output should be \"110\".\n        For N = 147, the sum of digits will be 12\
+    \ the output should be \"1100\".\n\n    Variables:\n        @N integer\n             Constraints: 0 ≤ N ≤ 10000.\n   \
+    \ Output:\n         a string of binary number\n"
+  ground_truth:
+    test_suite:
+    - assert True, "This prints if this assert fails 1 (good for debugging!)"
+    - assert solve(1000) == "1", "Error"
+    - assert solve(150) == "110", "Error"
+    - assert solve(147) == "1100", "Error"
+    - assert True, "This prints if this assert fails 2 (also good for debugging!)"
+    - assert solve(333) == "1001", "Error"
+    - assert solve(963) == "10010", "Error"
+  id: task_he_014
+  mock_data:
+    docstring: "Given a positive integer N, return the total sum of its digits in binary.\n\n    Example\n        For N =\
+      \ 1000, the sum of digits will be 1 the output should be \"1\".\n        For N = 150, the sum of digits will be 6 the\
+      \ output should be \"110\".\n        For N = 147, the sum of digits will be 12 the output should be \"1100\".\n\n  \
+      \  Variables:\n        @N integer\n             Constraints: 0 ≤ N ≤ 10000.\n    Output:\n         a string of binary\
+      \ number\n"
+    edge_cases:
+    - Large input values
+    - Boundary value inputs
+    - Typical case with standard values
+    function_signature: 'def solve(N):'
+    imports: ''
+- description: "Implement the Python function add(lst).\nGiven a non-empty list of integers lst. add the even elements that\
+    \ are at odd indices..\n\n\n    Examples:\n        add([4, 2, 6, 7]) ==> 2\n"
+  ground_truth:
+    test_suite:
+    - assert add([4, 88]) == 88
+    - assert add([4, 5, 6, 7, 2, 122]) == 122
+    - assert add([4, 0, 6, 7]) == 0
+    - assert add([4, 4, 6, 8]) == 12
+  id: task_he_015
+  mock_data:
+    docstring: "Given a non-empty list of integers lst. add the even elements that are at odd indices..\n\n\n    Examples:\n\
+      \        add([4, 2, 6, 7]) ==> 2\n"
+    edge_cases:
+    - Zero value input
+    - Boundary value inputs
+    - Typical case with standard values
+    function_signature: 'def add(lst):'
+    imports: ''
+- description: "Implement the Python function anti_shuffle(s).\nWrite a function that takes a string and returns an ordered\
+    \ version of it.\n    Ordered version of string, is a string where all words (separated by space)\n    are replaced by\
+    \ a new word where all the characters arranged in\n    ascending order based on ascii value.\n    Note: You should keep\
+    \ the order of words and blank spaces in the sentence.\n\n    For example:\n    anti_shuffle('Hi') returns 'Hi'\n    anti_shuffle('hello')\
+    \ returns 'ehllo'\n    anti_shuffle('Hello World!!!') returns 'Hello !!!Wdlor'\n"
+  ground_truth:
+    test_suite:
+    - assert anti_shuffle('Hi') == 'Hi'
+    - assert anti_shuffle('hello') == 'ehllo'
+    - assert anti_shuffle('number') == 'bemnru'
+    - assert anti_shuffle('abcd') == 'abcd'
+    - assert anti_shuffle('Hello World!!!') == 'Hello !!!Wdlor'
+    - assert anti_shuffle('') == ''
+    - assert anti_shuffle('Hi. My name is Mister Robot. How are you?') == '.Hi My aemn is Meirst .Rboot How aer ?ouy'
+    - assert True
+  id: task_he_016
+  mock_data:
+    docstring: "Write a function that takes a string and returns an ordered version of it.\n    Ordered version of string,\
+      \ is a string where all words (separated by space)\n    are replaced by a new word where all the characters arranged\
+      \ in\n    ascending order based on ascii value.\n    Note: You should keep the order of words and blank spaces in the\
+      \ sentence.\n\n    For example:\n    anti_shuffle('Hi') returns 'Hi'\n    anti_shuffle('hello') returns 'ehllo'\n  \
+      \  anti_shuffle('Hello World!!!') returns 'Hello !!!Wdlor'\n"
+    edge_cases:
+    - Empty string input
+    - Boundary value inputs
+    - Typical case with standard values
+    function_signature: 'def anti_shuffle(s):'
+    imports: ''
+- description: "Implement the Python function sort_array(array).\nGiven an array of non-negative integers, return a copy of\
+    \ the given array after sorting,\n    you will sort the given array in ascending order if the sum( first index value,\
+    \ last index value) is odd,\n    or sort it in descending order if the sum( first index value, last index value) is even.\n\
+    \n    Note:\n    * don't change the given array.\n\n    Examples:\n    * sort_array([]) => []\n    * sort_array([5]) =>\
+    \ [5]\n    * sort_array([2, 4, 3, 0, 1, 5]) => [0, 1, 2, 3, 4, 5]\n    * sort_array([2, 4, 3, 0, 1, 5, 6]) => [6, 5, 4,\
+    \ 3, 2, 1, 0]\n"
+  ground_truth:
+    test_suite:
+    - assert True, "This prints if this assert fails 1 (good for debugging!)"
+    - assert sort_array([]) == [], "Error"
+    - assert sort_array([5]) == [5], "Error"
+    - assert sort_array([2, 4, 3, 0, 1, 5]) == [0, 1, 2, 3, 4, 5], "Error"
+    - assert sort_array([2, 4, 3, 0, 1, 5, 6]) == [6, 5, 4, 3, 2, 1, 0], "Error"
+    - assert True, "This prints if this assert fails 2 (also good for debugging!)"
+    - assert sort_array([2, 1]) == [1, 2], "Error"
+    - assert sort_array([15, 42, 87, 32 ,11, 0]) == [0, 11, 15, 32, 42, 87], "Error"
+    - assert sort_array([21, 14, 23, 11]) == [23, 21, 14, 11], "Error"
+  id: task_he_017
+  mock_data:
+    docstring: "Given an array of non-negative integers, return a copy of the given array after sorting,\n    you will sort\
+      \ the given array in ascending order if the sum( first index value, last index value) is odd,\n    or sort it in descending\
+      \ order if the sum( first index value, last index value) is even.\n\n    Note:\n    * don't change the given array.\n\
+      \n    Examples:\n    * sort_array([]) => []\n    * sort_array([5]) => [5]\n    * sort_array([2, 4, 3, 0, 1, 5]) => [0,\
+      \ 1, 2, 3, 4, 5]\n    * sort_array([2, 4, 3, 0, 1, 5, 6]) => [6, 5, 4, 3, 2, 1, 0]\n"
+    edge_cases:
+    - Empty list input
+    - Single element input
+    - Zero value input
+    function_signature: 'def sort_array(array):'
+    imports: ''
+- description: "Implement the Python function multiply(a, b).\nComplete the function that takes two integers and returns \n\
+    \    the product of their unit digits.\n    Assume the input is always valid.\n    Examples:\n    multiply(148, 412) should\
+    \ return 16.\n    multiply(19, 28) should return 72.\n    multiply(2020, 1851) should return 0.\n    multiply(14,-15)\
+    \ should return 20.\n"
+  ground_truth:
+    test_suite:
+    - 'assert multiply(148, 412) == 16, "First test error: " + str(multiply(148, 412))'
+    - 'assert multiply(19, 28) == 72, "Second test error: " + str(multiply(19, 28))'
+    - 'assert multiply(2020, 1851) == 0, "Third test error: " + str(multiply(2020, 1851))'
+    - 'assert multiply(14,-15) == 20, "Fourth test error: " + str(multiply(14,-15))'
+    - 'assert multiply(76, 67) == 42, "Fifth test error: " + str(multiply(76, 67))'
+    - 'assert multiply(17, 27) == 49, "Sixth test error: " + str(multiply(17, 27))'
+    - 'assert multiply(0, 1) == 0, "1st edge test error: " + str(multiply(0, 1))'
+    - 'assert multiply(0, 0) == 0, "2nd edge test error: " + str(multiply(0, 0))'
+  id: task_he_018
+  mock_data:
+    docstring: "Complete the function that takes two integers and returns \n    the product of their unit digits.\n    Assume\
+      \ the input is always valid.\n    Examples:\n    multiply(148, 412) should return 16.\n    multiply(19, 28) should return\
+      \ 72.\n    multiply(2020, 1851) should return 0.\n    multiply(14,-15) should return 20.\n"
+    edge_cases:
+    - Zero value input
+    - Boundary value inputs
+    - Typical case with standard values
+    function_signature: 'def multiply(a, b):'
+    imports: ''
+- description: "Implement the Python function make_a_pile(n).\nGiven a positive integer n, you have to make a pile of n levels\
+    \ of stones.\n    The first level has n stones.\n    The number of stones in the next level is:\n        - the next odd\
+    \ number if n is odd.\n        - the next even number if n is even.\n    Return the number of stones in each level in\
+    \ a list, where element at index\n    i represents the number of stones in the level (i+1).\n\n    Examples:\n    >>>\
+    \ make_a_pile(3)\n    [3, 5, 7]\n"
+  ground_truth:
+    test_suite:
+    - assert make_a_pile(3) == [3, 5, 7], "Test 3"
+    - assert make_a_pile(4) == [4,6,8,10], "Test 4"
+    - assert make_a_pile(5) == [5, 7, 9, 11, 13]
+    - assert make_a_pile(6) == [6, 8, 10, 12, 14, 16]
+    - assert make_a_pile(8) == [8, 10, 12, 14, 16, 18, 20, 22]
+    - assert True, "This prints if this assert fails 2 (also good for debugging!)"
+  id: task_he_019
+  mock_data:
+    docstring: "Given a positive integer n, you have to make a pile of n levels of stones.\n    The first level has n stones.\n\
+      \    The number of stones in the next level is:\n        - the next odd number if n is odd.\n        - the next even\
+      \ number if n is even.\n    Return the number of stones in each level in a list, where element at index\n    i represents\
+      \ the number of stones in the level (i+1).\n\n    Examples:\n    >>> make_a_pile(3)\n    [3, 5, 7]\n"
+    edge_cases:
+    - Boundary value inputs
+    - Typical case with standard values
+    - Edge case from docstring examples
+    function_signature: 'def make_a_pile(n):'
+    imports: ''
+- description: "Implement the Python function sort_array(arr).\nIn this Kata, you have to sort an array of non-negative integers\
+    \ according to\n    number of ones in their binary representation in ascending order.\n    For similar number of ones,\
+    \ sort based on decimal value.\n\n    It must be implemented like this:\n    >>> sort_array([1, 5, 2, 3, 4]) == [1, 2,\
+    \ 3, 4, 5]\n    >>> sort_array([-2, -3, -4, -5, -6]) == [-6, -5, -4, -3, -2]\n    >>> sort_array([1, 0, 2, 3, 4]) [0,\
+    \ 1, 2, 3, 4]\n"
+  ground_truth:
+    test_suite:
+    - assert True, "This prints if this assert fails 1 (good for debugging!)"
+    - assert sort_array([1,5,2,3,4]) == [1, 2, 4, 3, 5]
+    - assert sort_array([-2,-3,-4,-5,-6]) == [-4, -2, -6, -5, -3]
+    - assert sort_array([1,0,2,3,4]) == [0, 1, 2, 4, 3]
+    - assert sort_array([]) == []
+    - assert sort_array([2,5,77,4,5,3,5,7,2,3,4]) == [2, 2, 4, 4, 3, 3, 5, 5, 5, 7, 77]
+    - assert sort_array([3,6,44,12,32,5]) == [32, 3, 5, 6, 12, 44]
+    - assert sort_array([2,4,8,16,32]) == [2, 4, 8, 16, 32]
+    - assert sort_array([2,4,8,16,32]) == [2, 4, 8, 16, 32]
+    - assert True, "This prints if this assert fails 2 (also good for debugging!)"
+  id: task_he_020
+  mock_data:
+    docstring: "In this Kata, you have to sort an array of non-negative integers according to\n    number of ones in their\
+      \ binary representation in ascending order.\n    For similar number of ones, sort based on decimal value.\n\n    It\
+      \ must be implemented like this:\n    >>> sort_array([1, 5, 2, 3, 4]) == [1, 2, 3, 4, 5]\n    >>> sort_array([-2, -3,\
+      \ -4, -5, -6]) == [-6, -5, -4, -3, -2]\n    >>> sort_array([1, 0, 2, 3, 4]) [0, 1, 2, 3, 4]\n"
+    edge_cases:
+    - Empty list input
+    - Negative number inputs
+    - Zero value input
+    function_signature: 'def sort_array(arr):'
+    imports: ''
+- description: "Implement the Python function solution(lst).\nGiven a non-empty list of integers, return the sum of all of\
+    \ the odd elements that are in even positions.\n\n\n    Examples\n    solution([5, 8, 7, 1]) ==> 12\n    solution([3,\
+    \ 3, 3, 3, 3]) ==> 9\n    solution([30, 13, 24, 321]) ==>0\n"
+  ground_truth:
+    test_suite:
+    - assert solution([5, 8, 7, 1])    == 12
+    - assert solution([3, 3, 3, 3, 3]) == 9
+    - assert solution([30, 13, 24, 321]) == 0
+    - assert solution([5, 9]) == 5
+    - assert solution([2, 4, 8]) == 0
+    - assert solution([30, 13, 23, 32]) == 23
+    - assert solution([3, 13, 2, 9]) == 3
+  id: task_he_021
+  mock_data:
+    docstring: "Given a non-empty list of integers, return the sum of all of the odd elements that are in even positions.\n\
+      \n\n    Examples\n    solution([5, 8, 7, 1]) ==> 12\n    solution([3, 3, 3, 3, 3]) ==> 9\n    solution([30, 13, 24,\
+      \ 321]) ==>0\n"
+    edge_cases:
+    - Boundary value inputs
+    - Typical case with standard values
+    - Edge case from docstring examples
+    function_signature: 'def solution(lst):'
+    imports: ''
+- description: "Implement the Python function add_elements(arr, k).\nGiven a non-empty array of integers arr and an integer\
+    \ k, return\n    the sum of the elements with at most two digits from the first k elements of arr.\n\n    Example:\n\n\
+    \        Input: arr = [111,21,3,4000,5,6,7,8,9], k = 4\n        Output: 24 # sum of 21 + 3\n\n    Constraints:\n     \
+    \   1. 1 <= len(arr) <= 100\n        2. 1 <= k <= len(arr)\n"
+  ground_truth:
+    test_suite:
+    - assert add_elements([1,-2,-3,41,57,76,87,88,99], 3) == -4
+    - assert add_elements([111,121,3,4000,5,6], 2) == 0
+    - assert add_elements([11,21,3,90,5,6,7,8,9], 4) == 125
+    - assert add_elements([111,21,3,4000,5,6,7,8,9], 4) == 24, "This prints if this assert fails 1 (good for debugging!)"
+    - assert add_elements([1], 1) == 1, "This prints if this assert fails 2 (also good for debugging!)"
+  id: task_he_022
+  mock_data:
+    docstring: "Given a non-empty array of integers arr and an integer k, return\n    the sum of the elements with at most\
+      \ two digits from the first k elements of arr.\n\n    Example:\n\n        Input: arr = [111,21,3,4000,5,6,7,8,9], k\
+      \ = 4\n        Output: 24 # sum of 21 + 3\n\n    Constraints:\n        1. 1 <= len(arr) <= 100\n        2. 1 <= k <=\
+      \ len(arr)\n"
+    edge_cases:
+    - Single element input
+    - Boundary value inputs
+    - Typical case with standard values
+    function_signature: 'def add_elements(arr, k):'
+    imports: ''
+- description: "Implement the Python function is_equal_to_sum_even(n).\nEvaluate whether the given number n can be written\
+    \ as the sum of exactly 4 positive even numbers\n    Example\n    is_equal_to_sum_even(4) == False\n    is_equal_to_sum_even(6)\
+    \ == False\n    is_equal_to_sum_even(8) == True\n"
+  ground_truth:
+    test_suite:
+    - assert is_equal_to_sum_even(4) == False
+    - assert is_equal_to_sum_even(6) == False
+    - assert is_equal_to_sum_even(8) == True
+    - assert is_equal_to_sum_even(10) == True
+    - assert is_equal_to_sum_even(11) == False
+    - assert is_equal_to_sum_even(12) == True
+    - assert is_equal_to_sum_even(13) == False
+    - assert is_equal_to_sum_even(16) == True
+  id: task_he_023
+  mock_data:
+    docstring: "Evaluate whether the given number n can be written as the sum of exactly 4 positive even numbers\n    Example\n\
+      \    is_equal_to_sum_even(4) == False\n    is_equal_to_sum_even(6) == False\n    is_equal_to_sum_even(8) == True\n"
+    edge_cases:
+    - Boundary value inputs
+    - Typical case with standard values
+    - Edge case from docstring examples
+    function_signature: 'def is_equal_to_sum_even(n):'
+    imports: ''
+- description: "Implement the Python function compare(game, guess).\nI think we all remember that feeling when the result\
+    \ of some long-awaited\n    event is finally known. The feelings and thoughts you have at that moment are\n    definitely\
+    \ worth noting down and comparing.\n    Your task is to determine if a person correctly guessed the results of a number\
+    \ of matches.\n    You are given two arrays of scores and guesses of equal length, where each index shows a match. \n\
+    \    Return an array of the same length denoting how far off each guess was. If they have guessed correctly,\n    the\
+    \ value is 0, and if not, the value is the absolute difference between the guess and the score.\n\n\n    example:\n\n\
+    \    compare([1,2,3,4,5,1],[1,2,3,4,2,-2]) -> [0,0,0,0,3,3]\n    compare([0,5,0,0,0,4],[4,1,1,0,0,-2]) -> [4,4,1,0,0,6]\n"
+  ground_truth:
+    test_suite:
+    - assert compare([1,2,3,4,5,1],[1,2,3,4,2,-2])==[0,0,0,0,3,3], "This prints if this assert fails 1 (good for debugging!)"
+    - assert compare([0,0,0,0,0,0],[0,0,0,0,0,0])==[0,0,0,0,0,0], "This prints if this assert fails 1 (good for debugging!)"
+    - assert compare([1,2,3],[-1,-2,-3])==[2,4,6], "This prints if this assert fails 1 (good for debugging!)"
+    - assert compare([1,2,3,5],[-1,2,3,4])==[2,0,0,1], "This prints if this assert fails 1 (good for debugging!)"
+    - assert True, "This prints if this assert fails 2 (also good for debugging!)"
+  id: task_he_024
+  mock_data:
+    docstring: "I think we all remember that feeling when the result of some long-awaited\n    event is finally known. The\
+      \ feelings and thoughts you have at that moment are\n    definitely worth noting down and comparing.\n    Your task\
+      \ is to determine if a person correctly guessed the results of a number of matches.\n    You are given two arrays of\
+      \ scores and guesses of equal length, where each index shows a match. \n    Return an array of the same length denoting\
+      \ how far off each guess was. If they have guessed correctly,\n    the value is 0, and if not, the value is the absolute\
+      \ difference between the guess and the score.\n\n\n    example:\n\n    compare([1,2,3,4,5,1],[1,2,3,4,2,-2]) -> [0,0,0,0,3,3]\n\
+      \    compare([0,5,0,0,0,4],[4,1,1,0,0,-2]) -> [4,4,1,0,0,6]\n"
+    edge_cases:
+    - Negative number inputs
+    - Zero value input
+    - Boundary value inputs
+    function_signature: 'def compare(game,guess):'
+    imports: ''
+- description: "Implement the Python function find_max(words).\nWrite a function that accepts a list of strings.\n    The\
+    \ list contains different words. Return the word with maximum number\n    of unique characters. If multiple strings have\
+    \ maximum number of unique\n    characters, return the one which comes first in lexicographical order.\n\n    find_max([\"\
+    name\", \"of\", \"string\"]) == \"string\"\n    find_max([\"name\", \"enam\", \"game\"]) == \"enam\"\n    find_max([\"\
+    aaaaaaa\", \"bb\" ,\"cc\"]) == \"\"aaaaaaa\"\n"
+  ground_truth:
+    test_suite:
+    - assert (find_max(["name", "of", "string"]) == "string"), "t1"
+    - assert (find_max(["name", "enam", "game"]) == "enam"), 't2'
+    - assert (find_max(["aaaaaaa", "bb", "cc"]) == "aaaaaaa"), 't3'
+    - assert (find_max(["abc", "cba"]) == "abc"), 't4'
+    - assert (find_max(["play", "this", "game", "of","footbott"]) == "footbott"), 't5'
+    - assert (find_max(["we", "are", "gonna", "rock"]) == "gonna"), 't6'
+    - assert (find_max(["we", "are", "a", "mad", "nation"]) == "nation"), 't7'
+    - assert (find_max(["this", "is", "a", "prrk"]) == "this"), 't8'
+    - assert (find_max(["b"]) == "b"), 't9'
+    - assert (find_max(["play", "play", "play"]) == "play"), 't10'
+  id: task_he_025
+  mock_data:
+    docstring: "Write a function that accepts a list of strings.\n    The list contains different words. Return the word with\
+      \ maximum number\n    of unique characters. If multiple strings have maximum number of unique\n    characters, return\
+      \ the one which comes first in lexicographical order.\n\n    find_max([\"name\", \"of\", \"string\"]) == \"string\"\n\
+      \    find_max([\"name\", \"enam\", \"game\"]) == \"enam\"\n    find_max([\"aaaaaaa\", \"bb\" ,\"cc\"]) == \"\"aaaaaaa\"\
+      \n"
+    edge_cases:
+    - Empty string input
+    - Boundary value inputs
+    - Typical case with standard values
+    function_signature: 'def find_max(words):'
+    imports: ''
+- description: "Implement the Python function starts_one_ends.\nGiven a positive integer n, return the count of the numbers\
+    \ of n-digit\n    positive integers that start or end with 1.\n"
+  ground_truth:
+    test_suite:
+    - assert True, "This prints if this assert fails 1 (good for debugging!)"
+    - assert starts_one_ends(1) == 1
+    - assert starts_one_ends(2) == 18
+    - assert starts_one_ends(3) == 180
+    - assert starts_one_ends(4) == 1800
+    - assert starts_one_ends(5) == 18000
+    - assert True, "This prints if this assert fails 2 (also good for debugging!)"
+  id: task_he_026
+  mock_data:
+    docstring: "Given a positive integer n, return the count of the numbers of n-digit\n    positive integers that start or\
+      \ end with 1."
+    edge_cases:
+    - Boundary value inputs
+    - Typical case
+    function_signature: 'def starts_one_ends(n):'
+    imports: ''
+- description: "Implement the Python function string_to_md5.\nGiven a string 'text', return its md5 hash equivalent string.\n\
+    \    If 'text' is an empty string, return None.\n\n    >>> string_to_md5('Hello world') == '3e25960a79dbc69b674cd4ec67a72c62'\n"
+  ground_truth:
+    test_suite:
+    - assert string_to_md5('Hello world') == '3e25960a79dbc69b674cd4ec67a72c62'
+    - assert string_to_md5('') == None
+    - assert string_to_md5('A B C') == '0ef78513b0cb8cef12743f5aeb35f888'
+    - assert string_to_md5('password') == '5f4dcc3b5aa765d61d8327deb882cf99'
+    - assert True
+  id: task_he_027
+  mock_data:
+    docstring: "Given a string 'text', return its md5 hash equivalent string.\n    If 'text' is an empty string, return None.\n\
+      \n    >>> string_to_md5('Hello world') == '3e25960a79dbc69b674cd4ec67a72c62'"
+    edge_cases:
+    - Boundary value inputs
+    - Typical case
+    function_signature: 'def string_to_md5(text):'
+    imports: ''
+- description: 'Implement the Python function iscube.
+
+
+    '
+  ground_truth:
+    test_suite:
+    - 'assert iscube(1) == True, "First test error: " + str(iscube(1))'
+    - 'assert iscube(2) == False, "Second test error: " + str(iscube(2))'
+    - 'assert iscube(-1) == True, "Third test error: " + str(iscube(-1))'
+    - 'assert iscube(64) == True, "Fourth test error: " + str(iscube(64))'
+    - 'assert iscube(180) == False, "Fifth test error: " + str(iscube(180))'
+    - 'assert iscube(1000) == True, "Sixth test error: " + str(iscube(1000))'
+    - 'assert iscube(0) == True, "1st edge test error: " + str(iscube(0))'
+    - 'assert iscube(1729) == False, "2nd edge test error: " + str(iscube(1728))'
+  id: task_he_028
+  mock_data:
+    docstring: ''
+    edge_cases:
+    - Boundary value inputs
+    - Typical case
+    function_signature: 'def iscube(a):'
+    imports: ''
+- description: "Implement the Python function next_smallest.\nYou are given a list of integers.\n    Write a function next_smallest()\
+    \ that returns the 2nd smallest element of the list.\n    Return None if there is no such element.\n    \n    next_smallest([1,\
+    \ 2, 3, 4, 5]) == 2\n    next_smallest([5, 1, 4, 3, 2]) == 2\n    next_smallest([]) == None\n    next_smallest([1, 1])\
+    \ == None\n"
+  ground_truth:
+    test_suite:
+    - assert next_smallest([1, 2, 3, 4, 5]) == 2
+    - assert next_smallest([5, 1, 4, 3, 2]) == 2
+    - assert next_smallest([]) == None
+    - assert next_smallest([1, 1]) == None
+    - assert next_smallest([1,1,1,1,0]) == 1
+    - assert next_smallest([1, 0**0]) == None
+    - assert next_smallest([-35, 34, 12, -45]) == -35
+    - assert True
+  id: task_he_029
+  mock_data:
+    docstring: "You are given a list of integers.\n    Write a function next_smallest() that returns the 2nd smallest element\
+      \ of the list.\n    Return None if there is no such element.\n    \n    next_smallest([1, 2, 3, 4, 5]) == 2\n    next_smallest([5,\
+      \ 1, 4, 3, 2]) == 2\n    next_smallest([]) == None\n    next_smallest([1, 1]) == None"
+    edge_cases:
+    - Boundary value inputs
+    - Typical case
+    function_signature: 'def next_smallest(lst):'
+    imports: ''
+- description: "Implement the Python function digitSum.\nTask\n    Write a function that takes a string as input and returns\
+    \ the sum of the upper characters only'\n    ASCII codes.\n\n    Examples:\n        digitSum(\"\") => 0\n        digitSum(\"\
+    abAB\") => 131\n        digitSum(\"abcCd\") => 67\n        digitSum(\"helloE\") => 69\n        digitSum(\"woArBld\") =>\
+    \ 131\n        digitSum(\"aAaaaXa\") => 153\n"
+  ground_truth:
+    test_suite:
+    - assert True, "This prints if this assert fails 1 (good for debugging!)"
+    - assert digitSum("") == 0, "Error"
+    - assert digitSum("abAB") == 131, "Error"
+    - assert digitSum("abcCd") == 67, "Error"
+    - assert digitSum("helloE") == 69, "Error"
+    - assert digitSum("woArBld") == 131, "Error"
+    - assert digitSum("aAaaaXa") == 153, "Error"
+    - assert True, "This prints if this assert fails 2 (also good for debugging!)"
+  id: task_he_030
+  mock_data:
+    docstring: "Task\n    Write a function that takes a string as input and returns the sum of the upper characters only'\n\
+      \    ASCII codes.\n\n    Examples:\n        digitSum(\"\") => 0\n        digitSum(\"abAB\") => 131\n        digitSum(\"\
+      abcCd\") => 67\n        digitSum(\"helloE\") => 69\n        digitSum(\"woArBld\") => 131\n        digitSum(\"aAaaaXa\"\
+      ) => 153"
+    edge_cases:
+    - Boundary value inputs
+    - Typical case
+    function_signature: 'def digitSum(s):'
+    imports: ''
+- description: "Implement the Python function largest_divisor.\nFor a given number n, find the largest number that divides\
+    \ n evenly, smaller than n\n    >>> largest_divisor(15)\n    5\n"
+  ground_truth:
+    test_suite:
+    - assert largest_divisor(3) == 1
+    - assert largest_divisor(7) == 1
+    - assert largest_divisor(10) == 5
+    - assert largest_divisor(100) == 50
+    - assert largest_divisor(49) == 7
+  id: task_he_031
+  mock_data:
+    docstring: "For a given number n, find the largest number that divides n evenly, smaller than n\n    >>> largest_divisor(15)\n\
+      \    5"
+    edge_cases:
+    - Boundary value inputs
+    - Typical case
+    function_signature: 'def largest_divisor():'
+    imports: ''
+- description: "Implement the Python function greatest_common_divisor.\nReturn a greatest common divisor of two integers a\
+    \ and b\n    >>> greatest_common_divisor(3, 5)\n    1\n    >>> greatest_common_divisor(25, 15)\n    5\n"
+  ground_truth:
+    test_suite:
+    - assert greatest_common_divisor(3, 7) == 1
+    - assert greatest_common_divisor(10, 15) == 5
+    - assert greatest_common_divisor(49, 14) == 7
+    - assert greatest_common_divisor(144, 60) == 12
+  id: task_he_032
+  mock_data:
+    docstring: "Return a greatest common divisor of two integers a and b\n    >>> greatest_common_divisor(3, 5)\n    1\n \
+      \   >>> greatest_common_divisor(25, 15)\n    5"
+    edge_cases:
+    - Boundary value inputs
+    - Typical case
+    function_signature: 'def greatest_common_divisor():'
+    imports: ''
+- description: 'Implement the Python function check_if_last_char_is_a_letter.
+
+
+    '
+  ground_truth:
+    test_suite:
+    - assert check_if_last_char_is_a_letter("apple") == False
+    - assert check_if_last_char_is_a_letter("apple pi e") == True
+    - assert check_if_last_char_is_a_letter("eeeee") == False
+    - assert check_if_last_char_is_a_letter("A") == True
+    - assert check_if_last_char_is_a_letter("Pumpkin pie ") == False
+    - assert check_if_last_char_is_a_letter("Pumpkin pie 1") == False
+    - assert check_if_last_char_is_a_letter("") == False
+    - assert check_if_last_char_is_a_letter("eeeee e ") == False
+  id: task_he_033
+  mock_data:
+    docstring: ''
+    edge_cases:
+    - Boundary value inputs
+    - Typical case
+    function_signature: 'def check_if_last_char_is_a_letter(txt):'
+    imports: ''
+- description: "Implement the Python function parse_music.\nInput to this function is a string representing musical notes\
+    \ in a special ASCII format.\n    Your task is to parse this string and return list of integers corresponding to how many\
+    \ beats does each\n    not last.\n\n    Here is a legend:\n    'o' - whole note, lasts four beats\n    'o|' - half note,\
+    \ lasts two beats\n    '.|' - quater note, lasts one beat\n\n    >>> parse_music('o o| .| o| o| .| .| .| .| o o')\n  \
+    \  [4, 2, 1, 2, 2, 1, 1, 1, 1, 4, 4]\n"
+  ground_truth:
+    test_suite:
+    - assert parse_music('') == []
+    - assert parse_music('o o o o') == [4, 4, 4, 4]
+    - assert parse_music('.| .| .| .|') == [1, 1, 1, 1]
+    - assert parse_music('o| o| .| .| o o o o') == [2, 2, 1, 1, 4, 4, 4, 4]
+    - assert parse_music('o| .| o| .| o o| o o|') == [2, 1, 2, 1, 4, 2, 4, 2]
+  id: task_he_034
+  mock_data:
+    docstring: "Input to this function is a string representing musical notes in a special ASCII format.\n    Your task is\
+      \ to parse this string and return list of integers corresponding to how many beats does each\n    not last.\n\n    Here\
+      \ is a legend:\n    'o' - whole note, lasts four beats\n    'o|' - half note, lasts two beats\n    '.|' - quater note,\
+      \ lasts one beat\n\n    >>> parse_music('o o| .| o| o| .| .| .| .| o o')\n    [4, 2, 1, 2, 2, 1, 1, 1, 1, 4, 4]"
+    edge_cases:
+    - Boundary value inputs
+    - Typical case
+    function_signature: 'def parse_music():'
+    imports: from typing import List
+- description: "Implement the Python function monotonic.\nReturn True is list elements are monotonically increasing or decreasing.\n\
+    \    >>> monotonic([1, 2, 4, 20])\n    True\n    >>> monotonic([1, 20, 4, 10])\n    False\n    >>> monotonic([4, 1, 0,\
+    \ -10])\n    True\n"
+  ground_truth:
+    test_suite:
+    - assert monotonic([1, 2, 4, 10]) == True
+    - assert monotonic([1, 2, 4, 20]) == True
+    - assert monotonic([1, 20, 4, 10]) == False
+    - assert monotonic([4, 1, 0, -10]) == True
+    - assert monotonic([4, 1, 1, 0]) == True
+    - assert monotonic([1, 2, 3, 2, 5, 60]) == False
+    - assert monotonic([1, 2, 3, 4, 5, 60]) == True
+    - assert monotonic([9, 9, 9, 9]) == True
+  id: task_he_035
+  mock_data:
+    docstring: "Return True is list elements are monotonically increasing or decreasing.\n    >>> monotonic([1, 2, 4, 20])\n\
+      \    True\n    >>> monotonic([1, 20, 4, 10])\n    False\n    >>> monotonic([4, 1, 0, -10])\n    True"
+    edge_cases:
+    - Boundary value inputs
+    - Typical case
+    function_signature: 'def monotonic(l: list):'
+    imports: ''
+- description: "Implement the Python function remove_duplicates.\nFrom a list of integers, remove all elements that occur\
+    \ more than once.\n    Keep order of elements left the same as in the input.\n    >>> remove_duplicates([1, 2, 3, 2, 4])\n\
+    \    [1, 3, 4]\n"
+  ground_truth:
+    test_suite:
+    - assert remove_duplicates([]) == []
+    - assert remove_duplicates([1, 2, 3, 4]) == [1, 2, 3, 4]
+    - assert remove_duplicates([1, 2, 3, 2, 4, 3, 5]) == [1, 4, 5]
+  id: task_he_036
+  mock_data:
+    docstring: "From a list of integers, remove all elements that occur more than once.\n    Keep order of elements left the\
+      \ same as in the input.\n    >>> remove_duplicates([1, 2, 3, 2, 4])\n    [1, 3, 4]"
+    edge_cases:
+    - Boundary value inputs
+    - Typical case
+    function_signature: 'def remove_duplicates():'
+    imports: from typing import List
+- description: "Implement the Python function generate_integers.\nGiven two positive integers a and b, return the even digits\
+    \ between a\n    and b, in ascending order.\n\n    For example:\n    generate_integers(2, 8) => [2, 4, 6, 8]\n    generate_integers(8,\
+    \ 2) => [2, 4, 6, 8]\n    generate_integers(10, 14) => []\n"
+  ground_truth:
+    test_suite:
+    - assert generate_integers(2, 10) == [2, 4, 6, 8], "Test 1"
+    - assert generate_integers(10, 2) == [2, 4, 6, 8], "Test 2"
+    - assert generate_integers(132, 2) == [2, 4, 6, 8], "Test 3"
+    - assert generate_integers(17,89) == [], "Test 4"
+    - assert True, "This prints if this assert fails 2 (also good for debugging!)"
+  id: task_he_037
+  mock_data:
+    docstring: "Given two positive integers a and b, return the even digits between a\n    and b, in ascending order.\n\n\
+      \    For example:\n    generate_integers(2, 8) => [2, 4, 6, 8]\n    generate_integers(8, 2) => [2, 4, 6, 8]\n    generate_integers(10,\
+      \ 14) => []"
+    edge_cases:
+    - Boundary value inputs
+    - Typical case
+    function_signature: 'def generate_integers(a, b):'
+    imports: ''
+- description: "Implement the Python function reverse_delete.\nTask\n    We are given two strings s and c, you have to deleted\
+    \ all the characters in s that are equal to any character in c\n    then check if the result string is palindrome.\n \
+    \   A string is called palindrome if it reads the same backward as forward.\n    You should return a tuple containing\
+    \ the result string and True/False for the check.\n    Example\n    For s = \"abcde\", c = \"ae\", the result should be\
+    \ ('bcd',False)\n    For s = \"abcdef\", c = \"b\"  the result should be ('acdef',False)\n    For s = \"abcdedcba\", c\
+    \ = \"ab\", the result should be ('cdedc',True)\n"
+  ground_truth:
+    test_suite:
+    - assert reverse_delete("abcde","ae") == ('bcd',False)
+    - assert reverse_delete("abcdef", "b") == ('acdef',False)
+    - assert reverse_delete("abcdedcba","ab") == ('cdedc',True)
+    - assert reverse_delete("dwik","w") == ('dik',False)
+    - assert reverse_delete("a","a") == ('',True)
+    - assert reverse_delete("abcdedcba","") == ('abcdedcba',True)
+    - assert reverse_delete("abcdedcba","v") == ('abcdedcba',True)
+    - assert reverse_delete("vabba","v") == ('abba',True)
+  id: task_he_038
+  mock_data:
+    docstring: "Task\n    We are given two strings s and c, you have to deleted all the characters in s that are equal to\
+      \ any character in c\n    then check if the result string is palindrome.\n    A string is called palindrome if it reads\
+      \ the same backward as forward.\n    You should return a tuple containing the result string and True/False for the check.\n\
+      \    Example\n    For s = \"abcde\", c = \"ae\", the result should be ('bcd',False)\n    For s = \"abcdef\", c = \"\
+      b\"  the result should be ('acdef',False)\n    For s = \"abcdedcba\", c = \"ab\", the result should be ('cdedc',True)"
+    edge_cases:
+    - Boundary value inputs
+    - Typical case
+    function_signature: 'def reverse_delete(s,c):'
+    imports: ''
+- description: "Implement the Python function rescale_to_unit.\nGiven list of numbers (of at least two elements), apply a\
+    \ linear transform to that list,\n    such that the smallest number will become 0 and the largest will become 1\n    >>>\
+    \ rescale_to_unit([1.0, 2.0, 3.0, 4.0, 5.0])\n    [0.0, 0.25, 0.5, 0.75, 1.0]\n"
+  ground_truth:
+    test_suite:
+    - assert rescale_to_unit([2.0, 49.9]) == [0.0, 1.0]
+    - assert rescale_to_unit([100.0, 49.9]) == [1.0, 0.0]
+    - assert rescale_to_unit([1.0, 2.0, 3.0, 4.0, 5.0]) == [0.0, 0.25, 0.5, 0.75, 1.0]
+    - assert rescale_to_unit([2.0, 1.0, 5.0, 3.0, 4.0]) == [0.25, 0.0, 1.0, 0.5, 0.75]
+    - assert rescale_to_unit([12.0, 11.0, 15.0, 13.0, 14.0]) == [0.25, 0.0, 1.0, 0.5, 0.75]
+  id: task_he_039
+  mock_data:
+    docstring: "Given list of numbers (of at least two elements), apply a linear transform to that list,\n    such that the\
+      \ smallest number will become 0 and the largest will become 1\n    >>> rescale_to_unit([1.0, 2.0, 3.0, 4.0, 5.0])\n\
+      \    [0.0, 0.25, 0.5, 0.75, 1.0]"
+    edge_cases:
+    - Boundary value inputs
+    - Typical case
+    function_signature: 'def rescale_to_unit():'
+    imports: from typing import List
+- description: "Implement the Python function is_bored.\nYou'll be given a string of words, and your task is to count the\
+    \ number\n    of boredoms. A boredom is a sentence that starts with the word \"I\".\n    Sentences are delimited by '.',\
+    \ '?' or '!'.\n   \n    For example:\n    >>> is_bored(\"Hello world\")\n    0\n    >>> is_bored(\"The sky is blue. The\
+    \ sun is shining. I love this weather\")\n    1\n"
+  ground_truth:
+    test_suite:
+    - assert is_bored("Hello world") == 0, "Test 1"
+    - assert is_bored("Is the sky blue?") == 0, "Test 2"
+    - assert is_bored("I love It !") == 1, "Test 3"
+    - assert is_bored("bIt") == 0, "Test 4"
+    - assert is_bored("I feel good today. I will be productive. will kill It") == 2, "Test 5"
+    - assert is_bored("You and I are going for a walk") == 0, "Test 6"
+    - assert True, "This prints if this assert fails 2 (also good for debugging!)"
+  id: task_he_040
+  mock_data:
+    docstring: "You'll be given a string of words, and your task is to count the number\n    of boredoms. A boredom is a sentence\
+      \ that starts with the word \"I\".\n    Sentences are delimited by '.', '?' or '!'.\n   \n    For example:\n    >>>\
+      \ is_bored(\"Hello world\")\n    0\n    >>> is_bored(\"The sky is blue. The sun is shining. I love this weather\")\n\
+      \    1"
+    edge_cases:
+    - Boundary value inputs
+    - Typical case
+    function_signature: 'def is_bored(S):'
+    imports: ''
+- description: "Implement prod_signs.\nYou are given an array arr of integers and you need to return\n    sum of magnitudes\
+    \ of integers multiplied by product of all signs\n    of each number in the array, represented by 1, -1 or 0.\n    Note:\
+    \ return None for empty arr.\n\n    Example:\n    >>> prod_signs([1, 2, 2, -4]) == -9\n    >>> prod_signs([0, 1]) == 0\n\
+    \    >>> prod_signs([]) == None\n"
+  ground_truth:
+    test_suite:
+    - assert True, "This prints if this assert fails 1 (good for debugging!)"
+    - assert prod_signs([1, 2, 2, -4]) == -9
+    - assert prod_signs([0, 1]) == 0
+    - assert prod_signs([1, 1, 1, 2, 3, -1, 1]) == -10
+    - assert prod_signs([]) == None
+    - assert prod_signs([2, 4,1, 2, -1, -1, 9]) == 20
+    - assert prod_signs([-1, 1, -1, 1]) == 4
+    - assert prod_signs([-1, 1, 1, 1]) == -4
+  id: task_he_041
+  mock_data:
+    docstring: "You are given an array arr of integers and you need to return\n    sum of magnitudes of integers multiplied\
+      \ by product of all signs\n    of each number in the array, represented by 1, -1 or 0.\n    Note: return None for empty\
+      \ arr.\n\n    Example:\n    >>> prod_signs([1, 2, 2, -4]) == -9\n    >>> prod_signs([0, 1]) == 0\n    >>> prod_signs([])\
+      \ == None"
+    edge_cases:
+    - Edge cases
+    function_signature: 'def prod_signs(arr):'
+    imports: ''
+- description: "Implement sort_third.\nThis function takes a list l and returns a list l' such that\n    l' is identical to\
+    \ l in the indicies that are not divisible by three, while its values at the indicies that are divisible by three are\
+    \ equal\n    to the values of the corresponding indicies of l, but sorted.\n    >>> sort_third([1, 2, 3])\n    [1, 2,\
+    \ 3]\n    >>> sort_third([5, 6, 3, 4, 8, 9, 2])\n    [2, 6, 3, 4, 8, 9, 5]\n"
+  ground_truth:
+    test_suite:
+    - assert tuple(sort_third([1, 2, 3])) == tuple(sort_third([1, 2, 3]))
+    - assert tuple(sort_third([5, 3, -5, 2, -3, 3, 9, 0, 123, 1, -10])) == tuple(sort_third([5, 3, -5, 2, -3, 3, 9, 0, 123,
+      1, -10]))
+    - assert tuple(sort_third([5, 8, -12, 4, 23, 2, 3, 11, 12, -10])) == tuple(sort_third([5, 8, -12, 4, 23, 2, 3, 11, 12,
+      -10]))
+    - assert tuple(sort_third([5, 6, 3, 4, 8, 9, 2])) == tuple([2, 6, 3, 4, 8, 9, 5])
+    - assert tuple(sort_third([5, 8, 3, 4, 6, 9, 2])) == tuple([2, 8, 3, 4, 6, 9, 5])
+    - assert tuple(sort_third([5, 6, 9, 4, 8, 3, 2])) == tuple([2, 6, 9, 4, 8, 3, 5])
+    - assert tuple(sort_third([5, 6, 3, 4, 8, 9, 2, 1])) == tuple([2, 6, 3, 4, 8, 9, 5, 1])
+  id: task_he_042
+  mock_data:
+    docstring: "This function takes a list l and returns a list l' such that\n    l' is identical to l in the indicies that\
+      \ are not divisible by three, while its values at the indicies that are divisible by three are equal\n    to the values\
+      \ of the corresponding indicies of l, but sorted.\n    >>> sort_third([1, 2, 3])\n    [1, 2, 3]\n    >>> sort_third([5,\
+      \ 6, 3, 4, 8, 9, 2])\n    [2, 6, 3, 4, 8, 9, 5]"
+    edge_cases:
+    - Edge cases
+    function_signature: 'def sort_third(l: list):'
+    imports: ''
+- description: 'Implement largest_smallest_integers.
+
+
+    '
+  ground_truth:
+    test_suite:
+    - assert largest_smallest_integers([2, 4, 1, 3, 5, 7]) == (None, 1)
+    - assert largest_smallest_integers([2, 4, 1, 3, 5, 7, 0]) == (None, 1)
+    - assert largest_smallest_integers([1, 3, 2, 4, 5, 6, -2]) == (-2, 1)
+    - assert largest_smallest_integers([4, 5, 3, 6, 2, 7, -7]) == (-7, 2)
+    - assert largest_smallest_integers([7, 3, 8, 4, 9, 2, 5, -9]) == (-9, 2)
+    - assert largest_smallest_integers([]) == (None, None)
+    - assert largest_smallest_integers([0]) == (None, None)
+    - assert largest_smallest_integers([-1, -3, -5, -6]) == (-1, None)
+  id: task_he_043
+  mock_data:
+    docstring: ''
+    edge_cases:
+    - Edge cases
+    function_signature: 'def largest_smallest_integers(lst):'
+    imports: ''
+- description: "Implement all_prefixes.\nReturn list of all prefixes from shortest to longest of the input string\n    >>>\
+    \ all_prefixes('abc')\n    ['a', 'ab', 'abc']\n"
+  ground_truth:
+    test_suite:
+    - assert all_prefixes('') == []
+    - assert all_prefixes('asdfgh') == ['a', 'as', 'asd', 'asdf', 'asdfg', 'asdfgh']
+    - assert all_prefixes('WWW') == ['W', 'WW', 'WWW']
+  id: task_he_044
+  mock_data:
+    docstring: "Return list of all prefixes from shortest to longest of the input string\n    >>> all_prefixes('abc')\n  \
+      \  ['a', 'ab', 'abc']"
+    edge_cases:
+    - Edge cases
+    function_signature: 'def all_prefixes():'
+    imports: from typing import List
+- description: "Implement modp.\nReturn 2^n modulo p (be aware of numerics).\n    >>> modp(3, 5)\n    3\n    >>> modp(1101,\
+    \ 101)\n    2\n    >>> modp(0, 101)\n    1\n    >>> modp(3, 11)\n    8\n    >>> modp(100, 101)\n    1\n"
+  ground_truth:
+    test_suite:
+    - assert modp(3, 5) == 3
+    - assert modp(1101, 101) == 2
+    - assert modp(0, 101) == 1
+    - assert modp(3, 11) == 8
+    - assert modp(100, 101) == 1
+    - assert modp(30, 5) == 4
+    - assert modp(31, 5) == 3
+  id: task_he_045
+  mock_data:
+    docstring: "Return 2^n modulo p (be aware of numerics).\n    >>> modp(3, 5)\n    3\n    >>> modp(1101, 101)\n    2\n \
+      \   >>> modp(0, 101)\n    1\n    >>> modp(3, 11)\n    8\n    >>> modp(100, 101)\n    1"
+    edge_cases:
+    - Edge cases
+    function_signature: 'def modp(n: int, p: int):'
+    imports: ''
+- description: "Implement below_threshold.\nReturn True if all numbers in the list l are below threshold t.\n    >>> below_threshold([1,\
+    \ 2, 4, 10], 100)\n    True\n    >>> below_threshold([1, 20, 4, 10], 5)\n    False\n"
+  ground_truth:
+    test_suite:
+    - assert below_threshold([1, 2, 4, 10], 100)
+    - assert not below_threshold([1, 20, 4, 10], 5)
+    - assert below_threshold([1, 20, 4, 10], 21)
+    - assert below_threshold([1, 20, 4, 10], 22)
+    - assert below_threshold([1, 8, 4, 10], 11)
+    - assert not below_threshold([1, 8, 4, 10], 10)
+  id: task_he_046
+  mock_data:
+    docstring: "Return True if all numbers in the list l are below threshold t.\n    >>> below_threshold([1, 2, 4, 10], 100)\n\
+      \    True\n    >>> below_threshold([1, 20, 4, 10], 5)\n    False"
+    edge_cases:
+    - Edge cases
+    function_signature: 'def below_threshold(l: list, t: int):'
+    imports: ''
+- description: "Implement is_palindrome.\nChecks if given string is a palindrome\n    >>> is_palindrome('')\n    True\n  \
+    \  >>> is_palindrome('aba')\n    True\n    >>> is_palindrome('aaaaa')\n    True\n    >>> is_palindrome('zbcd')\n    False\n"
+  ground_truth:
+    test_suite:
+    - assert is_palindrome('') == True
+    - assert is_palindrome('aba') == True
+    - assert is_palindrome('aaaaa') == True
+    - assert is_palindrome('zbcd') == False
+    - assert is_palindrome('xywyx') == True
+    - assert is_palindrome('xywyz') == False
+    - assert is_palindrome('xywzx') == False
+  id: task_he_047
+  mock_data:
+    docstring: "Checks if given string is a palindrome\n    >>> is_palindrome('')\n    True\n    >>> is_palindrome('aba')\n\
+      \    True\n    >>> is_palindrome('aaaaa')\n    True\n    >>> is_palindrome('zbcd')\n    False"
+    edge_cases:
+    - Edge cases
+    function_signature: 'def is_palindrome(text: str):'
+    imports: ''
+- description: "Implement encode.\nWrite a function that takes a message, and encodes in such a \n    way that it swaps case\
+    \ of all letters, replaces all vowels in \n    the message with the letter that appears 2 places ahead of that \n    vowel\
+    \ in the english alphabet. \n    Assume only letters. \n    \n    Examples:\n    >>> encode('test')\n    'TGST'\n    >>>\
+    \ encode('This is a message')\n    'tHKS KS C MGSSCGG'\n"
+  ground_truth:
+    test_suite:
+    - assert encode('TEST') == 'tgst', "This prints if this assert fails 1 (good for debugging!)"
+    - assert encode('Mudasir') == 'mWDCSKR', "This prints if this assert fails 2 (good for debugging!)"
+    - assert encode('YES') == 'ygs', "This prints if this assert fails 3 (good for debugging!)"
+    - assert encode('This is a message') == 'tHKS KS C MGSSCGG', "This prints if this assert fails 2 (also good for debugging!)"
+    - assert encode("I DoNt KnOw WhAt tO WrItE") == 'k dQnT kNqW wHcT Tq wRkTg', "This prints if this assert fails 2 (also
+      good for debugging!)"
+  id: task_he_048
+  mock_data:
+    docstring: "Write a function that takes a message, and encodes in such a \n    way that it swaps case of all letters,\
+      \ replaces all vowels in \n    the message with the letter that appears 2 places ahead of that \n    vowel in the english\
+      \ alphabet. \n    Assume only letters. \n    \n    Examples:\n    >>> encode('test')\n    'TGST'\n    >>> encode('This\
+      \ is a message')\n    'tHKS KS C MGSSCGG'"
+    edge_cases:
+    - Edge cases
+    function_signature: 'def encode(message):'
+    imports: ''
+- description: "Implement fib.\nReturn n-th Fibonacci number.\n    >>> fib(10)\n    55\n    >>> fib(1)\n    1\n    >>> fib(8)\n\
+    \    21\n"
+  ground_truth:
+    test_suite:
+    - assert fib(10) == 55
+    - assert fib(1) == 1
+    - assert fib(8) == 21
+    - assert fib(11) == 89
+    - assert fib(12) == 144
+  id: task_he_049
+  mock_data:
+    docstring: "Return n-th Fibonacci number.\n    >>> fib(10)\n    55\n    >>> fib(1)\n    1\n    >>> fib(8)\n    21"
+    edge_cases:
+    - Edge cases
+    function_signature: 'def fib(n: int):'
+    imports: ''
+- description: "Implement median.\nReturn median of elements in the list l.\n    >>> median([3, 1, 2, 4, 5])\n    3\n    >>>\
+    \ median([-10, 4, 6, 1000, 10, 20])\n    15.0\n"
+  ground_truth:
+    test_suite:
+    - assert median([3, 1, 2, 4, 5]) == 3
+    - assert median([-10, 4, 6, 1000, 10, 20]) == 8.0
+    - assert median([5]) == 5
+    - assert median([6, 5]) == 5.5
+    - assert median([8, 1, 3, 9, 9, 2, 7]) == 7
+  id: task_he_050
+  mock_data:
+    docstring: "Return median of elements in the list l.\n    >>> median([3, 1, 2, 4, 5])\n    3\n    >>> median([-10, 4,\
+      \ 6, 1000, 10, 20])\n    15.0"
+    edge_cases:
+    - Edge cases
+    function_signature: 'def median(l: list):'
+    imports: ''

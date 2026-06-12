@@ -1,0 +1,56 @@
+# Decentralized (Ring/Cycle) Topology
+# All edges structurally equivalent — key control condition
+
+name: decentralized
+description: "Ring topology where each agent passes to the next with wrap-around"
+n_agents: 5
+
+agents:
+  - id: agent_1
+    role: customer_facing
+    description: "Interprets customer requests and communicates with customer"
+  - id: agent_2
+    role: database
+    description: "Accesses order history and customer records"
+  - id: agent_3
+    role: policy
+    description: "Knows return policies and warranty rules"
+  - id: agent_4
+    role: transaction
+    description: "Executes refunds, exchanges, and record updates"
+  - id: agent_5
+    role: supervisor
+    description: "Reviews and approves the resolution"
+
+edges:
+  - source: agent_1
+    target: agent_2
+    bidirectional: false
+    label: "customer-to-database"
+    exposure: direct          # user controls customer_facing output (DUI)
+  - source: agent_2
+    target: agent_3
+    bidirectional: false
+    label: "database-to-policy"
+    exposure: tool_low        # database reads external customer records (IPI)
+  - source: agent_3
+    target: agent_4
+    bidirectional: false
+    label: "policy-to-transaction"
+    exposure: tool_high       # policy reads knowledge base (IPI, higher privilege)
+  - source: agent_4
+    target: agent_5
+    bidirectional: false
+    label: "transaction-to-supervisor"
+    exposure: internal        # transaction: pure execution, no external reads
+  - source: agent_5
+    target: agent_1
+    bidirectional: false
+    label: "supervisor-to-customer"
+    exposure: internal        # supervisor: internal orchestration, no external reads
+
+properties:
+  centralization: none
+  edge_equality: high
+  levels: 1
+  note: "All edges structurally identical — tests semantic vs structural features"

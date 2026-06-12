@@ -1,0 +1,63 @@
+# Hierarchical (Tree/Manager-Worker) Topology
+
+name: hierarchical
+description: "Tree structure with CEO, managers, and workers"
+n_agents: 6
+
+agents:
+  - id: ceo
+    role: supervisor
+    description: "Top-level coordinator that delegates to team managers"
+  - id: manager_1
+    role: intake_manager
+    description: "Manages customer intake and data retrieval"
+  - id: manager_2
+    role: resolution_manager
+    description: "Manages policy evaluation and transaction execution"
+  - id: worker_1
+    role: customer_facing
+    description: "Interprets customer requests and communicates with customer"
+  - id: worker_2
+    role: database
+    description: "Accesses order history and customer records"
+  - id: worker_3
+    role: policy
+    description: "Knows return policies and warranty rules"
+
+edges:
+  - source: ceo
+    target: manager_1
+    bidirectional: true
+    label: "ceo-intake_mgr"
+    exposure: internal          # ceo(supervisor) → intake_manager: internal orchestration
+    exposure_reverse: internal  # intake_manager → ceo: internal reporting
+  - source: ceo
+    target: manager_2
+    bidirectional: true
+    label: "ceo-resolution_mgr"
+    exposure: internal          # ceo → resolution_manager: internal orchestration
+    exposure_reverse: internal  # resolution_manager → ceo: internal reporting
+  - source: manager_1
+    target: worker_1
+    bidirectional: true
+    label: "intake_mgr-customer"
+    exposure: internal          # intake_manager → customer_facing: internal delegation
+    exposure_reverse: direct    # customer_facing → intake_manager: user shapes output (DUI)
+  - source: manager_1
+    target: worker_2
+    bidirectional: true
+    label: "intake_mgr-database"
+    exposure: internal          # intake_manager → database: internal delegation
+    exposure_reverse: tool_low  # database → intake_manager: reads external customer records (IPI)
+  - source: manager_2
+    target: worker_3
+    bidirectional: true
+    label: "resolution_mgr-policy"
+    exposure: internal          # resolution_manager → policy: internal delegation
+    exposure_reverse: tool_high # policy → resolution_manager: reads knowledge base (IPI)
+
+properties:
+  centralization: medium
+  edge_equality: low
+  levels: 3
+  bottleneck: managers

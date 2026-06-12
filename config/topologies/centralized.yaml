@@ -1,0 +1,54 @@
+# Centralized (Star/Orchestrator-Worker) Topology
+
+name: centralized
+description: "Star topology with central hub routing all communication"
+n_agents: 5
+
+agents:
+  - id: hub
+    role: supervisor
+    description: "Central coordinator that routes tasks and resolves conflicts"
+  - id: worker_1
+    role: customer_facing
+    description: "Interprets customer requests and communicates with customer"
+  - id: worker_2
+    role: database
+    description: "Accesses order history and customer records"
+  - id: worker_3
+    role: policy
+    description: "Knows return policies and warranty rules"
+  - id: worker_4
+    role: transaction
+    description: "Executes refunds, exchanges, and record updates"
+
+edges:
+  - source: hub
+    target: worker_1
+    bidirectional: true
+    label: "hub-customer"
+    exposure: internal          # hub(supervisor) → customer_facing: internal orchestration
+    exposure_reverse: direct    # customer_facing → hub: user shapes customer_facing output (DUI)
+  - source: hub
+    target: worker_2
+    bidirectional: true
+    label: "hub-database"
+    exposure: internal          # hub → database: internal delegation
+    exposure_reverse: tool_low  # database → hub: database reads external customer records (IPI)
+  - source: hub
+    target: worker_3
+    bidirectional: true
+    label: "hub-policy"
+    exposure: internal          # hub → policy: internal delegation
+    exposure_reverse: tool_high # policy → hub: policy reads knowledge base (IPI, higher privilege)
+  - source: hub
+    target: worker_4
+    bidirectional: true
+    label: "hub-transaction"
+    exposure: internal          # hub → transaction: internal delegation
+    exposure_reverse: internal  # transaction → hub: pure execution, no external reads
+
+properties:
+  centralization: maximum
+  edge_equality: low
+  levels: 2
+  single_point_of_failure: hub
