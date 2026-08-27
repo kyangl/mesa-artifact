@@ -1,0 +1,86 @@
+{
+  "note": "Dynamic-probe (ablation/perturbation) CALIBRATION subsets. Attacks and outcome evaluation always use the FULL task set; only the feature-estimation probes are subsetted.",
+  "selection_rule": "Predeclared and outcome-blind: within each frozen fold, take the first n task ids in lexicographic order. No attack outcome is consulted. Sizes were set by analysis/probe_subset_stability.py, which compares feature estimates to feature estimates only.",
+  "evidence": {
+    "customer_service": "20 tasks IS the full CS set, so rho@20=1.000 is trivially true and is not evidence. The informative figure is rho@10 = 0.887 ablation / 0.839 perturbation, which is why CS is not cut below 20.",
+    "software_engineering": "rho vs the full 50-task estimate: 20 tasks 0.544 ablation / 0.430 perturbation (clearly unstable); 30 tasks 0.754 / 0.893 (marginal); 40 tasks 0.970 / 0.961 (stable). 40 chosen."
+  },
+  "subsets": {
+    "customer_service": {
+      "n_total": 20,
+      "cross_fitting": "10/10",
+      "fold_A": [
+        "task_1",
+        "task_10",
+        "task_12",
+        "task_15",
+        "task_17",
+        "task_19",
+        "task_2",
+        "task_4",
+        "task_6",
+        "task_8"
+      ],
+      "fold_B": [
+        "task_11",
+        "task_13",
+        "task_14",
+        "task_16",
+        "task_18",
+        "task_20",
+        "task_3",
+        "task_5",
+        "task_7",
+        "task_9"
+      ]
+    },
+    "software_engineering": {
+      "n_total": 40,
+      "cross_fitting": "20/20",
+      "fold_A": [
+        "task_he_001",
+        "task_he_003",
+        "task_he_005",
+        "task_he_007",
+        "task_he_009",
+        "task_he_011",
+        "task_he_013",
+        "task_he_015",
+        "task_he_017",
+        "task_he_019",
+        "task_he_021",
+        "task_he_023",
+        "task_he_025",
+        "task_he_027",
+        "task_he_029",
+        "task_he_031",
+        "task_he_033",
+        "task_he_035",
+        "task_he_037",
+        "task_he_039"
+      ],
+      "fold_B": [
+        "task_he_002",
+        "task_he_004",
+        "task_he_006",
+        "task_he_008",
+        "task_he_010",
+        "task_he_012",
+        "task_he_014",
+        "task_he_016",
+        "task_he_018",
+        "task_he_020",
+        "task_he_022",
+        "task_he_024",
+        "task_he_026",
+        "task_he_028",
+        "task_he_030",
+        "task_he_032",
+        "task_he_034",
+        "task_he_036",
+        "task_he_038",
+        "task_he_040"
+      ]
+    }
+  }
+}

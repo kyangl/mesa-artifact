@@ -1,0 +1,452 @@
+{
+  "canonical_block": "structural_dynamic",
+  "n_features": 8,
+  "note": "Main-paper ranking table on the frozen eight-feature score. EVERY BUDGET CARRIES ITS OWN random and oracle column: exact random is k/|E| and k changes with the budget, so one random column is always wrong for one of them. Ratios are DESCRIPTIVE; inference is the paired configuration-level difference with a bootstrap CI and an exact sign-flip test.",
+  "scenarios": {
+    "customer_service": {
+      "by_model": {
+        "gemma4:e4b": {
+          "auc": 0.6796574488959807,
+          "auc_struct": 0.558718743411343,
+          "rho": 0.5415107315018197,
+          "mesa10": 0.44565697774711055,
+          "struct10": 0.18189047016656126,
+          "random10": 0.155,
+          "oracle10": 0.4579909435915129,
+          "mesa20": 0.5566529718436739,
+          "struct20": 0.2737809403331225,
+          "random20": 0.22000000000000003,
+          "oracle20": 0.5983196385103405,
+          "diff10": {
+            "mean": 0.2906569777471105,
+            "lo": 0.19019998849979874,
+            "hi": 0.38843434343434347,
+            "n": 5
+          },
+          "signflip10": {
+            "n": 5,
+            "observed_mean": 0.2906569777471105,
+            "exact": true,
+            "p_two_sided": 0.0625,
+            "n_patterns": 32,
+            "min_attainable_two_sided": 0.0625
+          },
+          "ratio10": 2.8752063080458745,
+          "diff20": {
+            "mean": 0.33665297184367393,
+            "lo": 0.29870820156019395,
+            "hi": 0.37459774212715385,
+            "n": 5
+          },
+          "signflip20": {
+            "n": 5,
+            "observed_mean": 0.33665297184367393,
+            "exact": true,
+            "p_two_sided": 0.0625,
+            "n_patterns": 32,
+            "min_attainable_two_sided": 0.0625
+          },
+          "ratio20": 2.5302407811076084,
+          "eight_minus_structural_auc": {
+            "mean": 0.12093870548463766,
+            "lo": 0.029223686221800584,
+            "hi": 0.21265372474747474,
+            "n": 5
+          },
+          "n_configurations": 5
+        },
+        "qwen3.5:9b": {
+          "auc": 0.6211656404574486,
+          "auc_struct": 0.5214496927803379,
+          "rho": 0.4440605360957724,
+          "mesa10": 0.3190418403045737,
+          "struct10": 0.1723022273425499,
+          "random10": 0.155,
+          "oracle10": 0.3931598056725391,
+          "mesa20": 0.38679625658721584,
+          "struct20": 0.25460445468509985,
+          "random20": 0.22000000000000003,
+          "oracle20": 0.5055451035947641,
+          "diff10": {
+            "mean": 0.16404184030457375,
+            "lo": 0.05901356213113427,
+            "hi": 0.30385700321184195,
+            "n": 5
+          },
+          "signflip10": {
+            "n": 5,
+            "observed_mean": 0.16404184030457375,
+            "exact": true,
+            "p_two_sided": 0.0625,
+            "n_patterns": 32,
+            "min_attainable_two_sided": 0.0625
+          },
+          "ratio10": 2.058334453577895,
+          "diff20": {
+            "mean": 0.1667962565872158,
+            "lo": 0.05899294607486456,
+            "hi": 0.308188800446865,
+            "n": 5
+          },
+          "signflip20": {
+            "n": 5,
+            "observed_mean": 0.1667962565872158,
+            "exact": true,
+            "p_two_sided": 0.0625,
+            "n_patterns": 32,
+            "min_attainable_two_sided": 0.0625
+          },
+          "ratio20": 1.7581648026691628,
+          "eight_minus_structural_auc": {
+            "mean": 0.09971594767711067,
+            "lo": -0.003976483547578624,
+            "hi": 0.20670779220779228,
+            "n": 5
+          },
+          "n_configurations": 5
+        },
+        "llama3.1:8b": {
+          "auc": 0.5770657506157699,
+          "auc_struct": 0.5246697298802563,
+          "rho": 0.3549653670232577,
+          "mesa10": 0.2508812174524249,
+          "struct10": 0.15376079086605404,
+          "random10": 0.155,
+          "oracle10": 0.3369824256124566,
+          "mesa20": 0.3436788569760706,
+          "struct20": 0.21752158173210806,
+          "random20": 0.22000000000000003,
+          "oracle20": 0.4469494592095211,
+          "diff10": {
+            "mean": 0.09588121745242488,
+            "lo": 0.06809417334185137,
+            "hi": 0.1236682615629984,
+            "n": 5
+          },
+          "signflip10": {
+            "n": 5,
+            "observed_mean": 0.09588121745242488,
+            "exact": true,
+            "p_two_sided": 0.0625,
+            "n_patterns": 32,
+            "min_attainable_two_sided": 0.0625
+          },
+          "ratio10": 1.618588499693064,
+          "diff20": {
+            "mean": 0.12367885697607059,
+            "lo": 0.11181565023670288,
+            "hi": 0.13322270322270321,
+            "n": 5
+          },
+          "signflip20": {
+            "n": 5,
+            "observed_mean": 0.12367885697607059,
+            "exact": true,
+            "p_two_sided": 0.0625,
+            "n_patterns": 32,
+            "min_attainable_two_sided": 0.0625
+          },
+          "ratio20": 1.5621766226185025,
+          "eight_minus_structural_auc": {
+            "mean": 0.05239602073551379,
+            "lo": 0.011053226500594926,
+            "hi": 0.11041069125018435,
+            "n": 5
+          },
+          "n_configurations": 5
+        }
+      },
+      "macro": {
+        "auc": 0.6259629466563997,
+        "auc_struct": 0.5349460553573124,
+        "rho": 0.4468455448736168,
+        "mesa10": 0.3385266785013697,
+        "struct10": 0.1693178294583884,
+        "random10": 0.155,
+        "oracle10": 0.3960443916255028,
+        "mesa20": 0.4290426951356535,
+        "struct20": 0.24863565891677683,
+        "random20": 0.22000000000000006,
+        "oracle20": 0.5169380671048753,
+        "diff10": {
+          "mean": 0.18352667850136975,
+          "lo": 0.12060836869871393,
+          "hi": 0.25535444785465355,
+          "n": 15
+        },
+        "signflip10": {
+          "n": 15,
+          "observed_mean": 0.18352667850136975,
+          "exact": true,
+          "p_two_sided": 6.103515625e-05,
+          "n_patterns": 32768,
+          "min_attainable_two_sided": 6.103515625e-05
+        },
+        "ratio10": 2.184043087105611,
+        "diff20": {
+          "mean": 0.20904269513565346,
+          "lo": 0.1469819018800291,
+          "hi": 0.2744821623899812,
+          "n": 15
+        },
+        "signflip20": {
+          "n": 15,
+          "observed_mean": 0.20904269513565346,
+          "exact": true,
+          "p_two_sided": 6.103515625e-05,
+          "n_patterns": 32768,
+          "min_attainable_two_sided": 6.103515625e-05
+        },
+        "ratio20": 1.9501940687984245,
+        "eight_minus_structural_auc": {
+          "mean": 0.09101689129908738,
+          "lo": 0.041509398047919706,
+          "hi": 0.1454178818120783,
+          "n": 15
+        },
+        "n_configurations": 15
+      },
+      "n_configurations": 15,
+      "configurations": [
+        "gemma4:e4b/centralized",
+        "gemma4:e4b/decentralized",
+        "gemma4:e4b/hierarchical",
+        "gemma4:e4b/hybrid",
+        "gemma4:e4b/sequential",
+        "llama3.1:8b/centralized",
+        "llama3.1:8b/decentralized",
+        "llama3.1:8b/hierarchical",
+        "llama3.1:8b/hybrid",
+        "llama3.1:8b/sequential",
+        "qwen3.5:9b/centralized",
+        "qwen3.5:9b/decentralized",
+        "qwen3.5:9b/hierarchical",
+        "qwen3.5:9b/hybrid",
+        "qwen3.5:9b/sequential"
+      ]
+    },
+    "software_engineering": {
+      "by_model": {
+        "gemma4:e4b": {
+          "auc": 0.4700172915319974,
+          "auc_struct": 0.4582563025210084,
+          "rho": -0.15555888267879364,
+          "mesa10": 0.14624434389140273,
+          "struct10": 0.13684873949579832,
+          "random10": 0.155,
+          "oracle10": 0.534295410471881,
+          "mesa20": 0.17248868778280543,
+          "struct20": 0.18369747899159664,
+          "random20": 0.22000000000000003,
+          "oracle20": 0.6285908209437621,
+          "diff10": {
+            "mean": -0.008755656108597298,
+            "lo": -0.09346153846153846,
+            "hi": 0.12470588235294118,
+            "n": 5
+          },
+          "signflip10": {
+            "n": 5,
+            "observed_mean": -0.008755656108597298,
+            "exact": true,
+            "p_two_sided": 0.9375,
+            "n_patterns": 32,
+            "min_attainable_two_sided": 0.0625
+          },
+          "ratio10": 0.943511896073566,
+          "diff20": {
+            "mean": -0.04751131221719457,
+            "lo": -0.15751131221719458,
+            "hi": 0.11248868778280544,
+            "n": 5
+          },
+          "signflip20": {
+            "n": 5,
+            "observed_mean": -0.04751131221719457,
+            "exact": true,
+            "p_two_sided": 0.5625,
+            "n_patterns": 32,
+            "min_attainable_two_sided": 0.0625
+          },
+          "ratio20": 0.7840394899218428,
+          "eight_minus_structural_auc": {
+            "mean": 0.011760989010989032,
+            "lo": -0.053881868131868106,
+            "hi": 0.07740384615384617,
+            "n": 5
+          },
+          "n_configurations": 5
+        },
+        "qwen3.5:9b": {
+          "auc": 0.5206000943500944,
+          "auc_struct": 0.45892857142857135,
+          "rho": 0.10766434774775462,
+          "mesa10": 0.13323065823065822,
+          "struct10": 0.13464285714285715,
+          "random10": 0.155,
+          "oracle10": 0.3804168054168054,
+          "mesa20": 0.24870684870684867,
+          "struct20": 0.1792857142857143,
+          "random20": 0.22000000000000003,
+          "oracle20": 0.528035853035853,
+          "diff10": {
+            "mean": -0.021769341769341775,
+            "lo": -0.07642135642135643,
+            "hi": 0.035860805860805846,
+            "n": 5
+          },
+          "signflip10": {
+            "n": 5,
+            "observed_mean": -0.021769341769341775,
+            "exact": true,
+            "p_two_sided": 0.5625,
+            "n_patterns": 32,
+            "min_attainable_two_sided": 0.0625
+          },
+          "ratio10": 0.8595526337461821,
+          "diff20": {
+            "mean": 0.02870684870684869,
+            "lo": -0.06785714285714287,
+            "hi": 0.11679487179487177,
+            "n": 5
+          },
+          "signflip20": {
+            "n": 5,
+            "observed_mean": 0.02870684870684869,
+            "exact": true,
+            "p_two_sided": 0.625,
+            "n_patterns": 32,
+            "min_attainable_two_sided": 0.0625
+          },
+          "ratio20": 1.130485675940221,
+          "eight_minus_structural_auc": {
+            "mean": 0.06167152292152293,
+            "lo": 0.01270687645687647,
+            "hi": 0.09416666666666663,
+            "n": 5
+          },
+          "n_configurations": 5
+        },
+        "llama3.1:8b": {
+          "auc": 0.5469773242630385,
+          "auc_struct": 0.5264668367346939,
+          "rho": 0.37353686650366896,
+          "mesa10": 0.22153792218641843,
+          "struct10": 0.16500425170068028,
+          "random10": 0.155,
+          "oracle10": 0.3341484664041055,
+          "mesa20": 0.26394438477145243,
+          "struct20": 0.24000850340136054,
+          "random20": 0.22000000000000003,
+          "oracle20": 0.4396671738870987,
+          "diff10": {
+            "mean": 0.06653792218641844,
+            "lo": 0.0209750566893424,
+            "hi": 0.12974415204678363,
+            "n": 5
+          },
+          "signflip10": {
+            "n": 5,
+            "observed_mean": 0.06653792218641844,
+            "exact": true,
+            "p_two_sided": 0.0625,
+            "n_patterns": 32,
+            "min_attainable_two_sided": 0.0625
+          },
+          "ratio10": 1.429276917331732,
+          "diff20": {
+            "mean": 0.04394438477145244,
+            "lo": -0.02564625850340137,
+            "hi": 0.12534789354338227,
+            "n": 5
+          },
+          "signflip20": {
+            "n": 5,
+            "observed_mean": 0.04394438477145244,
+            "exact": true,
+            "p_two_sided": 0.4375,
+            "n_patterns": 32,
+            "min_attainable_two_sided": 0.0625
+          },
+          "ratio20": 1.199747203506602,
+          "eight_minus_structural_auc": {
+            "mean": 0.020510487528344647,
+            "lo": -0.020753401360544245,
+            "hi": 0.06177437641723353,
+            "n": 5
+          },
+          "n_configurations": 5
+        }
+      },
+      "macro": {
+        "auc": 0.5125315700483768,
+        "auc_struct": 0.481217236894758,
+        "rho": 0.10854744385754331,
+        "mesa10": 0.16700430810282646,
+        "struct10": 0.1454986161131119,
+        "random10": 0.155,
+        "oracle10": 0.41628689409759734,
+        "mesa20": 0.22837997375370225,
+        "struct20": 0.20099723222622384,
+        "random20": 0.22000000000000006,
+        "oracle20": 0.5320979492889047,
+        "diff10": {
+          "mean": 0.01200430810282645,
+          "lo": -0.03590975481101532,
+          "hi": 0.06457712836596624,
+          "n": 15
+        },
+        "signflip10": {
+          "n": 15,
+          "observed_mean": 0.01200430810282645,
+          "exact": true,
+          "p_two_sided": 0.66668701171875,
+          "n_patterns": 32768,
+          "min_attainable_two_sided": 6.103515625e-05
+        },
+        "ratio10": 1.0774471490504933,
+        "diff20": {
+          "mean": 0.008379973753702188,
+          "lo": -0.05415897015371805,
+          "hi": 0.07286991172987406,
+          "n": 15
+        },
+        "signflip20": {
+          "n": 15,
+          "observed_mean": 0.008379973753702188,
+          "exact": true,
+          "p_two_sided": 0.8052978515625,
+          "n_patterns": 32768,
+          "min_attainable_two_sided": 6.103515625e-05
+        },
+        "ratio20": 1.0380907897895555,
+        "eight_minus_structural_auc": {
+          "mean": 0.03131433315361887,
+          "lo": -0.0009266414141414181,
+          "hi": 0.06250795485929413,
+          "n": 15
+        },
+        "n_configurations": 15
+      },
+      "n_configurations": 15,
+      "configurations": [
+        "gemma4:e4b/centralized",
+        "gemma4:e4b/decentralized",
+        "gemma4:e4b/hierarchical",
+        "gemma4:e4b/hybrid",
+        "gemma4:e4b/sequential",
+        "llama3.1:8b/centralized",
+        "llama3.1:8b/decentralized",
+        "llama3.1:8b/hierarchical",
+        "llama3.1:8b/hybrid",
+        "llama3.1:8b/sequential",
+        "qwen3.5:9b/centralized",
+        "qwen3.5:9b/decentralized",
+        "qwen3.5:9b/hierarchical",
+        "qwen3.5:9b/hybrid",
+        "qwen3.5:9b/sequential"
+      ]
+    }
+  },
+  "n_configurations_total": 30
+}

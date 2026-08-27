@@ -1,0 +1,483 @@
+{
+  "note": "Median WITHIN-CONFIGURATION Spearman correlation between feature pairs, per domain, never pooled across domains. Undefined correlations (a constant feature) are dropped from both numerator and denominator, never replaced with zero. Signed here; the feature-selection audit stores the absolute-value summary and this artifact reproduces every audited pair median to 1e-12.",
+  "features": [
+    "betweenness_centrality",
+    "endpoint_centrality_max",
+    "source_degree_centrality",
+    "target_degree_centrality",
+    "consequence_proximity",
+    "ablation_delta",
+    "perturbation_delta",
+    "receiver_response_sensitivity"
+  ],
+  "features_omitted_constant": [
+    "information_bottleneck",
+    "is_bridge"
+  ],
+  "flag_threshold": 0.8,
+  "duplicate_threshold": 0.9,
+  "scenarios": {
+    "customer_service": {
+      "pairs": [
+        {
+          "a": "source_degree_centrality",
+          "b": "receiver_response_sensitivity",
+          "median_spearman": 0.7191465199607915,
+          "median_abs_spearman": 0.7416198487095662,
+          "n_directions_evaluable": 24,
+          "n_directions_undefined": 6
+        },
+        {
+          "a": "betweenness_centrality",
+          "b": "consequence_proximity",
+          "median_spearman": 0.6723160927505965,
+          "median_abs_spearman": 0.6723160927505965,
+          "n_directions_evaluable": 18,
+          "n_directions_undefined": 12
+        },
+        {
+          "a": "source_degree_centrality",
+          "b": "target_degree_centrality",
+          "median_spearman": -0.6666666666666666,
+          "median_abs_spearman": 0.6666666666666666,
+          "n_directions_evaluable": 24,
+          "n_directions_undefined": 6
+        },
+        {
+          "a": "ablation_delta",
+          "b": "perturbation_delta",
+          "median_spearman": 0.632455532033676,
+          "median_abs_spearman": 0.632455532033676,
+          "n_directions_evaluable": 30,
+          "n_directions_undefined": 0
+        },
+        {
+          "a": "target_degree_centrality",
+          "b": "consequence_proximity",
+          "median_spearman": 0.5855400437691198,
+          "median_abs_spearman": 0.5855400437691198,
+          "n_directions_evaluable": 24,
+          "n_directions_undefined": 6
+        },
+        {
+          "a": "source_degree_centrality",
+          "b": "consequence_proximity",
+          "median_spearman": -0.21957751641341997,
+          "median_abs_spearman": 0.4970870928274516,
+          "n_directions_evaluable": 24,
+          "n_directions_undefined": 6
+        },
+        {
+          "a": "target_degree_centrality",
+          "b": "receiver_response_sensitivity",
+          "median_spearman": -0.42047784897496504,
+          "median_abs_spearman": 0.42047784897496504,
+          "n_directions_evaluable": 24,
+          "n_directions_undefined": 6
+        },
+        {
+          "a": "betweenness_centrality",
+          "b": "ablation_delta",
+          "median_spearman": -0.3417543977694031,
+          "median_abs_spearman": 0.3417543977694031,
+          "n_directions_evaluable": 18,
+          "n_directions_undefined": 12
+        },
+        {
+          "a": "source_degree_centrality",
+          "b": "perturbation_delta",
+          "median_spearman": -0.14512808660649015,
+          "median_abs_spearman": 0.34113245611637993,
+          "n_directions_evaluable": 24,
+          "n_directions_undefined": 6
+        },
+        {
+          "a": "target_degree_centrality",
+          "b": "perturbation_delta",
+          "median_spearman": -0.13323801470349822,
+          "median_abs_spearman": 0.3363220450553147,
+          "n_directions_evaluable": 24,
+          "n_directions_undefined": 6
+        },
+        {
+          "a": "endpoint_centrality_max",
+          "b": "ablation_delta",
+          "median_spearman": -0.31311526145548974,
+          "median_abs_spearman": 0.33266164149701316,
+          "n_directions_evaluable": 12,
+          "n_directions_undefined": 18
+        },
+        {
+          "a": "betweenness_centrality",
+          "b": "perturbation_delta",
+          "median_spearman": -0.14834502246954726,
+          "median_abs_spearman": 0.3293157713885888,
+          "n_directions_evaluable": 18,
+          "n_directions_undefined": 12
+        },
+        {
+          "a": "perturbation_delta",
+          "b": "receiver_response_sensitivity",
+          "median_spearman": 0.002936020385361676,
+          "median_abs_spearman": 0.316227766016838,
+          "n_directions_evaluable": 30,
+          "n_directions_undefined": 0
+        },
+        {
+          "a": "betweenness_centrality",
+          "b": "source_degree_centrality",
+          "median_spearman": 0.30618621784789724,
+          "median_abs_spearman": 0.30618621784789724,
+          "n_directions_evaluable": 18,
+          "n_directions_undefined": 12
+        },
+        {
+          "a": "betweenness_centrality",
+          "b": "target_degree_centrality",
+          "median_spearman": 0.30618621784789724,
+          "median_abs_spearman": 0.30618621784789724,
+          "n_directions_evaluable": 18,
+          "n_directions_undefined": 12
+        },
+        {
+          "a": "betweenness_centrality",
+          "b": "receiver_response_sensitivity",
+          "median_spearman": 0.26147889421751064,
+          "median_abs_spearman": 0.27524094128159016,
+          "n_directions_evaluable": 18,
+          "n_directions_undefined": 12
+        },
+        {
+          "a": "endpoint_centrality_max",
+          "b": "source_degree_centrality",
+          "median_spearman": 0.26352313834736496,
+          "median_abs_spearman": 0.26352313834736496,
+          "n_directions_evaluable": 12,
+          "n_directions_undefined": 18
+        },
+        {
+          "a": "endpoint_centrality_max",
+          "b": "target_degree_centrality",
+          "median_spearman": 0.26352313834736496,
+          "median_abs_spearman": 0.26352313834736496,
+          "n_directions_evaluable": 12,
+          "n_directions_undefined": 18
+        },
+        {
+          "a": "ablation_delta",
+          "b": "receiver_response_sensitivity",
+          "median_spearman": 0.087261719067456,
+          "median_abs_spearman": 0.2609827829831469,
+          "n_directions_evaluable": 30,
+          "n_directions_undefined": 0
+        },
+        {
+          "a": "source_degree_centrality",
+          "b": "ablation_delta",
+          "median_spearman": -0.035355339059327376,
+          "median_abs_spearman": 0.25343047831630366,
+          "n_directions_evaluable": 24,
+          "n_directions_undefined": 6
+        },
+        {
+          "a": "target_degree_centrality",
+          "b": "ablation_delta",
+          "median_spearman": -0.08241761438562593,
+          "median_abs_spearman": 0.24232714828804014,
+          "n_directions_evaluable": 24,
+          "n_directions_undefined": 6
+        },
+        {
+          "a": "endpoint_centrality_max",
+          "b": "perturbation_delta",
+          "median_spearman": -0.22441656722934744,
+          "median_abs_spearman": 0.24040661067606411,
+          "n_directions_evaluable": 12,
+          "n_directions_undefined": 18
+        },
+        {
+          "a": "consequence_proximity",
+          "b": "perturbation_delta",
+          "median_spearman": 0.13464153877670393,
+          "median_abs_spearman": 0.22374918841497557,
+          "n_directions_evaluable": 30,
+          "n_directions_undefined": 0
+        },
+        {
+          "a": "consequence_proximity",
+          "b": "receiver_response_sensitivity",
+          "median_spearman": -0.07751818561293322,
+          "median_abs_spearman": 0.19800083097768192,
+          "n_directions_evaluable": 30,
+          "n_directions_undefined": 0
+        },
+        {
+          "a": "consequence_proximity",
+          "b": "ablation_delta",
+          "median_spearman": 0.05481468129957154,
+          "median_abs_spearman": 0.16338793091385684,
+          "n_directions_evaluable": 30,
+          "n_directions_undefined": 0
+        },
+        {
+          "a": "endpoint_centrality_max",
+          "b": "receiver_response_sensitivity",
+          "median_spearman": 0.14213381090374028,
+          "median_abs_spearman": 0.14213381090374028,
+          "n_directions_evaluable": 12,
+          "n_directions_undefined": 18
+        },
+        {
+          "a": "endpoint_centrality_max",
+          "b": "consequence_proximity",
+          "median_spearman": -0.11572751247156893,
+          "median_abs_spearman": 0.11572751247156893,
+          "n_directions_evaluable": 12,
+          "n_directions_undefined": 18
+        },
+        {
+          "a": "betweenness_centrality",
+          "b": "endpoint_centrality_max",
+          "median_spearman": 0.0,
+          "median_abs_spearman": 0.0,
+          "n_directions_evaluable": 12,
+          "n_directions_undefined": 18
+        }
+      ],
+      "n_pairs": 28,
+      "n_pairs_above_flag": 0,
+      "n_pairs_above_duplicate": 0
+    },
+    "software_engineering": {
+      "pairs": [
+        {
+          "a": "target_degree_centrality",
+          "b": "consequence_proximity",
+          "median_spearman": 0.5855400437691198,
+          "median_abs_spearman": 0.6800683565053016,
+          "n_directions_evaluable": 24,
+          "n_directions_undefined": 6
+        },
+        {
+          "a": "betweenness_centrality",
+          "b": "consequence_proximity",
+          "median_spearman": 0.6723160927505965,
+          "median_abs_spearman": 0.6723160927505965,
+          "n_directions_evaluable": 18,
+          "n_directions_undefined": 12
+        },
+        {
+          "a": "source_degree_centrality",
+          "b": "target_degree_centrality",
+          "median_spearman": -0.6666666666666666,
+          "median_abs_spearman": 0.6666666666666666,
+          "n_directions_evaluable": 24,
+          "n_directions_undefined": 6
+        },
+        {
+          "a": "betweenness_centrality",
+          "b": "receiver_response_sensitivity",
+          "median_spearman": 0.5091957413709418,
+          "median_abs_spearman": 0.5091957413709418,
+          "n_directions_evaluable": 18,
+          "n_directions_undefined": 12
+        },
+        {
+          "a": "source_degree_centrality",
+          "b": "consequence_proximity",
+          "median_spearman": -0.21957751641341997,
+          "median_abs_spearman": 0.49708709282745167,
+          "n_directions_evaluable": 24,
+          "n_directions_undefined": 6
+        },
+        {
+          "a": "endpoint_centrality_max",
+          "b": "ablation_delta",
+          "median_spearman": -0.38008921049424793,
+          "median_abs_spearman": 0.47138538714435585,
+          "n_directions_evaluable": 12,
+          "n_directions_undefined": 18
+        },
+        {
+          "a": "consequence_proximity",
+          "b": "ablation_delta",
+          "median_spearman": 0.0558327830191609,
+          "median_abs_spearman": 0.4004211737274196,
+          "n_directions_evaluable": 30,
+          "n_directions_undefined": 0
+        },
+        {
+          "a": "consequence_proximity",
+          "b": "receiver_response_sensitivity",
+          "median_spearman": 0.29474937289114916,
+          "median_abs_spearman": 0.39999999999999997,
+          "n_directions_evaluable": 30,
+          "n_directions_undefined": 0
+        },
+        {
+          "a": "target_degree_centrality",
+          "b": "perturbation_delta",
+          "median_spearman": 0.03621034121889507,
+          "median_abs_spearman": 0.36575893180125046,
+          "n_directions_evaluable": 24,
+          "n_directions_undefined": 6
+        },
+        {
+          "a": "consequence_proximity",
+          "b": "perturbation_delta",
+          "median_spearman": 0.017796592469784458,
+          "median_abs_spearman": 0.36075698351312835,
+          "n_directions_evaluable": 30,
+          "n_directions_undefined": 0
+        },
+        {
+          "a": "source_degree_centrality",
+          "b": "receiver_response_sensitivity",
+          "median_spearman": -0.07702780130777283,
+          "median_abs_spearman": 0.34345004766719217,
+          "n_directions_evaluable": 24,
+          "n_directions_undefined": 6
+        },
+        {
+          "a": "betweenness_centrality",
+          "b": "source_degree_centrality",
+          "median_spearman": 0.30618621784789724,
+          "median_abs_spearman": 0.30618621784789724,
+          "n_directions_evaluable": 18,
+          "n_directions_undefined": 12
+        },
+        {
+          "a": "betweenness_centrality",
+          "b": "target_degree_centrality",
+          "median_spearman": 0.30618621784789724,
+          "median_abs_spearman": 0.30618621784789724,
+          "n_directions_evaluable": 18,
+          "n_directions_undefined": 12
+        },
+        {
+          "a": "source_degree_centrality",
+          "b": "perturbation_delta",
+          "median_spearman": 0.0,
+          "median_abs_spearman": 0.2951275789769503,
+          "n_directions_evaluable": 24,
+          "n_directions_undefined": 6
+        },
+        {
+          "a": "perturbation_delta",
+          "b": "receiver_response_sensitivity",
+          "median_spearman": -0.061182911528063925,
+          "median_abs_spearman": 0.2871834471516924,
+          "n_directions_evaluable": 30,
+          "n_directions_undefined": 0
+        },
+        {
+          "a": "betweenness_centrality",
+          "b": "ablation_delta",
+          "median_spearman": -0.23195999634466752,
+          "median_abs_spearman": 0.28475948169688947,
+          "n_directions_evaluable": 18,
+          "n_directions_undefined": 12
+        },
+        {
+          "a": "source_degree_centrality",
+          "b": "ablation_delta",
+          "median_spearman": -0.16113813962843682,
+          "median_abs_spearman": 0.274721127897378,
+          "n_directions_evaluable": 24,
+          "n_directions_undefined": 6
+        },
+        {
+          "a": "ablation_delta",
+          "b": "perturbation_delta",
+          "median_spearman": 0.24921383647798742,
+          "median_abs_spearman": 0.27079782629886706,
+          "n_directions_evaluable": 30,
+          "n_directions_undefined": 0
+        },
+        {
+          "a": "target_degree_centrality",
+          "b": "receiver_response_sensitivity",
+          "median_spearman": 0.26393941736622895,
+          "median_abs_spearman": 0.2696799449852968,
+          "n_directions_evaluable": 24,
+          "n_directions_undefined": 6
+        },
+        {
+          "a": "endpoint_centrality_max",
+          "b": "perturbation_delta",
+          "median_spearman": -0.09499999705421017,
+          "median_abs_spearman": 0.2665200621754421,
+          "n_directions_evaluable": 12,
+          "n_directions_undefined": 18
+        },
+        {
+          "a": "endpoint_centrality_max",
+          "b": "source_degree_centrality",
+          "median_spearman": 0.26352313834736496,
+          "median_abs_spearman": 0.26352313834736496,
+          "n_directions_evaluable": 12,
+          "n_directions_undefined": 18
+        },
+        {
+          "a": "endpoint_centrality_max",
+          "b": "target_degree_centrality",
+          "median_spearman": 0.26352313834736496,
+          "median_abs_spearman": 0.26352313834736496,
+          "n_directions_evaluable": 12,
+          "n_directions_undefined": 18
+        },
+        {
+          "a": "betweenness_centrality",
+          "b": "perturbation_delta",
+          "median_spearman": 0.021650635094610966,
+          "median_abs_spearman": 0.24402486486846792,
+          "n_directions_evaluable": 18,
+          "n_directions_undefined": 12
+        },
+        {
+          "a": "ablation_delta",
+          "b": "receiver_response_sensitivity",
+          "median_spearman": 0.0,
+          "median_abs_spearman": 0.23982066262151625,
+          "n_directions_evaluable": 30,
+          "n_directions_undefined": 0
+        },
+        {
+          "a": "target_degree_centrality",
+          "b": "ablation_delta",
+          "median_spearman": 0.0,
+          "median_abs_spearman": 0.22005657434804432,
+          "n_directions_evaluable": 24,
+          "n_directions_undefined": 6
+        },
+        {
+          "a": "endpoint_centrality_max",
+          "b": "receiver_response_sensitivity",
+          "median_spearman": 0.03553345272593507,
+          "median_abs_spearman": 0.14213381090374028,
+          "n_directions_evaluable": 12,
+          "n_directions_undefined": 18
+        },
+        {
+          "a": "endpoint_centrality_max",
+          "b": "consequence_proximity",
+          "median_spearman": -0.11572751247156893,
+          "median_abs_spearman": 0.11572751247156893,
+          "n_directions_evaluable": 12,
+          "n_directions_undefined": 18
+        },
+        {
+          "a": "betweenness_centrality",
+          "b": "endpoint_centrality_max",
+          "median_spearman": 0.0,
+          "median_abs_spearman": 0.0,
+          "n_directions_evaluable": 12,
+          "n_directions_undefined": 18
+        }
+      ],
+      "n_pairs": 28,
+      "n_pairs_above_flag": 0,
+      "n_pairs_above_duplicate": 0
+    }
+  }
+}

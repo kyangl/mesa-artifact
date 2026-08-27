@@ -1,0 +1,5 @@
+metric,estimate,ci_lo,ci_hi,denominator,unit,scope,model,domain,stratum,budget,fold_direction,status,feature_block,source,source_sha16
+corrected_asr,0.09145367412140575,,,2504,eligible trial,"10 configurations, 8 routing-unchanged",gemma4:26b,,,,,canonical,n/a (no ranking claim),tables/breadth_audit.json,451a46da200845a9
+corrected_asr,0.12823299282764616,,,4601,eligible trial,"15 configurations, 12 routing-unchanged",gemma4:e4b,,,,,canonical,n/a (no ranking claim),tables/breadth_audit.json,451a46da200845a9
+corrected_asr,0.24128389596015495,,,1807,eligible trial,"10 configurations, 8 routing-unchanged",llama3.1:8b,,,,,canonical,n/a (no ranking claim),tables/breadth_audit.json,451a46da200845a9
+corrected_asr,0.16377413835248106,,,4091,eligible trial,"15 configurations, 12 routing-unchanged",qwen3.5:9b,,,,,canonical,n/a (no ranking claim),tables/breadth_audit.json,451a46da200845a9

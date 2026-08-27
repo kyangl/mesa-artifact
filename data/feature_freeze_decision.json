@@ -1,0 +1,166 @@
+{
+  "blocks_compared": {
+    "structural": {
+      "name": "structural",
+      "n_features": 6
+    },
+    "eight": {
+      "name": "structural_dynamic",
+      "n_features": 8,
+      "outcome": "PROMOTED -- canonical"
+    },
+    "ten": {
+      "name": "structural_dynamic_f2_f3",
+      "n_features": 10,
+      "outcome": "REJECTED -- evaluated extension that failed the prespecified promotion rule"
+    }
+  },
+  "decision_rule": "Prefer the SIMPLEST block within one standard error of the best. A larger block is promoted only if it beats the simpler one by more than one SE of the PAIRED difference. Declared before the numbers.",
+  "pairing": "configuration-level; cross-fit directions collapsed to one value per configuration first",
+  "budget": 0.2,
+  "scenarios": {
+    "customer_service": {
+      "n_configurations": 15,
+      "contrasts": {
+        "auc|eight_minus_structural": {
+          "mean": 0.09101689129908738,
+          "lo": 0.041509398047919706,
+          "hi": 0.1454178818120783,
+          "se": 0.026699568604877443,
+          "n": 15
+        },
+        "auc|ten_minus_eight": {
+          "mean": 0.0018393446258960777,
+          "lo": -0.022842526735458456,
+          "hi": 0.028542524789022455,
+          "se": 0.012981606018393304,
+          "n": 15
+        },
+        "auc|eight_minus_random": {
+          "mean": 0.12596294665639976,
+          "lo": 0.08519452696375263,
+          "hi": 0.16918194057155062,
+          "se": 0.021344459528975814,
+          "n": 15
+        },
+        "cov20|eight_minus_structural": {
+          "mean": 0.1804070362188766,
+          "lo": 0.11786640579102825,
+          "hi": 0.248767653669848,
+          "se": 0.03342857163964963,
+          "n": 15
+        },
+        "cov20|ten_minus_eight": {
+          "mean": -0.019815174386252816,
+          "lo": -0.06640749302667195,
+          "hi": 0.01911332026497466,
+          "se": 0.021839263333847968,
+          "n": 15
+        },
+        "cov20|eight_minus_random": {
+          "mean": 0.20904269513565346,
+          "lo": 0.1469819018800291,
+          "hi": 0.2744821623899812,
+          "se": 0.0324788771544417,
+          "n": 15
+        }
+      },
+      "levels": {
+        "auc|structural": 0.5349460553573124,
+        "auc|eight": 0.6259629466563997,
+        "auc|ten": 0.6278022912822957,
+        "auc|random": 0.5,
+        "cov20|structural": 0.24863565891677683,
+        "cov20|eight": 0.4290426951356535,
+        "cov20|ten": 0.4092275207494007,
+        "cov20|random": 0.22000000000000006
+      }
+    },
+    "software_engineering": {
+      "n_configurations": 15,
+      "contrasts": {
+        "auc|eight_minus_structural": {
+          "mean": 0.03131433315361887,
+          "lo": -0.0009266414141414181,
+          "hi": 0.06250795485929413,
+          "se": 0.016250201558579973,
+          "n": 15
+        },
+        "auc|ten_minus_eight": {
+          "mean": -0.034492134955646694,
+          "lo": -0.07732896366148799,
+          "hi": 0.003964032716100385,
+          "se": 0.020944453495834132,
+          "n": 15
+        },
+        "auc|eight_minus_random": {
+          "mean": 0.012531570048376775,
+          "lo": -0.025637988621050586,
+          "hi": 0.047294653589874176,
+          "se": 0.018551152498445238,
+          "n": 15
+        },
+        "cov20|eight_minus_structural": {
+          "mean": 0.027382741527478365,
+          "lo": -0.02813851888851889,
+          "hi": 0.08682564243748452,
+          "se": 0.029707821196519397,
+          "n": 15
+        },
+        "cov20|ten_minus_eight": {
+          "mean": -0.03239851766167555,
+          "lo": -0.08662361566308936,
+          "hi": 0.011275946275946282,
+          "se": 0.025119671056620455,
+          "n": 15
+        },
+        "cov20|eight_minus_random": {
+          "mean": 0.008379973753702188,
+          "lo": -0.05415897015371805,
+          "hi": 0.07286991172987406,
+          "se": 0.03220496472294641,
+          "n": 15
+        }
+      },
+      "levels": {
+        "auc|structural": 0.481217236894758,
+        "auc|eight": 0.5125315700483768,
+        "auc|ten": 0.47803943509273,
+        "auc|random": 0.5,
+        "cov20|structural": 0.20099723222622384,
+        "cov20|eight": 0.22837997375370225,
+        "cov20|ten": 0.1959814560920267,
+        "cov20|random": 0.22000000000000006
+      }
+    }
+  },
+  "per_scenario_verdict": {
+    "customer_service": {
+      "eight_beats_structural_by_more_than_1SE": true,
+      "ten_beats_eight_by_more_than_1SE": false,
+      "eight_beats_random": {
+        "mean": 0.12596294665639976,
+        "lo": 0.08519452696375263,
+        "hi": 0.16918194057155062,
+        "excludes_zero": true
+      }
+    },
+    "software_engineering": {
+      "eight_beats_structural_by_more_than_1SE": true,
+      "ten_beats_eight_by_more_than_1SE": false,
+      "eight_beats_random": {
+        "mean": 0.012531570048376775,
+        "lo": -0.025637988621050586,
+        "hi": 0.047294653589874176,
+        "excludes_zero": false
+      }
+    }
+  },
+  "decision": {
+    "canonical_block": "structural_dynamic",
+    "n_features": 8,
+    "f2_f3_in_primary_score": false,
+    "rationale": "Ten does not beat eight by more than one standard error in EITHER scenario, so the simpler block is canonical and F2/F3 are rejected from the primary score. They remain reported as descriptive contributions.",
+    "exploration_status": "FROZEN -- no further feature or aggregation variants are to be evaluated"
+  }
+}

@@ -1,0 +1,1613 @@
+name: software_engineering_hard
+description: 'Python function implementation from HumanEval docstrings via a 5-role dev pipeline  HARD
+  calibration set: HumanEval problems with canonical solutions of 5-13 lines, entry points disjoint from
+  the frozen 50. Selected by solution length only, before any outcome was observed.'
+roles:
+  architect:
+    capabilities:
+    - design_algorithm
+    - specify_approach
+    system_prompt: 'You are a software architect. Given a requirements document, your job is to:
+
+      1. Propose a high-level implementation approach (algorithm choice, data structures)
+
+      2. Describe the logic step by step in pseudocode or plain English
+
+      3. Note any tricky edge cases the coder must handle
+
+      4. Pass a clear design specification to the coder
+
+      Do not write complete Python code. Describe the design only.
+
+      '
+  coder:
+    capabilities:
+    - implement_function
+    - write_python
+    system_prompt: 'You are a Python developer. Given a design specification and the original function
+
+      signature, your job is to write the complete Python implementation.
+
+      Rules:
+
+      1. Write ONLY the function body — do not include import statements unless necessary
+
+      2. The function signature is provided — do not change it
+
+      3. Handle all edge cases mentioned in the specification
+
+      4. Write clean, correct Python 3 code
+
+      5. Output ONLY the Python code, nothing else
+
+      '
+  requirements_analyst:
+    capabilities:
+    - analyze_requirements
+    - identify_edge_cases
+    system_prompt: 'You are a requirements analyst. Given a Python function specification (docstring),
+
+      your job is to:
+
+      1. Clearly restate what the function must do in plain English
+
+      2. List all input types, output types, and edge cases from the docstring
+
+      3. Identify any implicit requirements (e.g., handling empty inputs)
+
+      4. Pass a structured requirements document to the architect
+
+      Be precise. Do not write any code. Only analyze and document requirements.
+
+      '
+  reviewer:
+    capabilities:
+    - review_code
+    - identify_bugs
+    system_prompt: 'You are a code reviewer. Given a Python implementation and the original specification,
+
+      your job is to:
+
+      1. Check for logical errors, off-by-one errors, type errors
+
+      2. Verify all edge cases are handled
+
+      3. If you find bugs, describe them precisely and suggest fixes
+
+      4. If the code looks correct, say so explicitly
+
+      5. Do NOT rewrite the code — only review and provide feedback
+
+      '
+  tester:
+    capabilities:
+    - finalize_code
+    - apply_fixes
+    system_prompt: 'You are a QA engineer. Given code, review feedback, and the original specification,
+
+      your job is to produce the FINAL version of the code.
+
+      Rules:
+
+      1. If the reviewer found bugs, apply the fixes
+
+      2. If the code was approved, output it as-is
+
+      3. Output ONLY the final Python function, nothing else — no explanations
+
+      4. The output must be a complete, runnable Python function
+
+      '
+role_mapping:
+  customer_facing: requirements_analyst
+  database: architect
+  intake_lead: architect
+  intake_manager: architect
+  policy: coder
+  resolution_lead: coder
+  resolution_manager: coder
+  supervisor: tester
+  transaction: reviewer
+tasks:
+- id: task_hehard_001
+  description: "Implement the Python function intersperse(numbers: List[int], delimeter: int) -> List[int].\n\
+    Insert a number 'delimeter' between every two consecutive elements of input list `numbers'\n    >>>\
+    \ intersperse([], 4)\n    []\n    >>> intersperse([1, 2, 3], 4)\n    [1, 4, 2, 4, 3]"
+  ground_truth:
+    test_suite:
+    - assert intersperse([], 7) == []
+    - assert intersperse([5, 6, 3, 2], 8) == [5, 8, 6, 8, 3, 8, 2]
+    - assert intersperse([2, 2, 2], 2) == [2, 2, 2, 2, 2]
+  mock_data:
+    docstring: "Insert a number 'delimeter' between every two consecutive elements of input list `numbers'\n\
+      \    >>> intersperse([], 4)\n    []\n    >>> intersperse([1, 2, 3], 4)\n    [1, 4, 2, 4, 3]"
+    function_signature: 'def intersperse(numbers: List[int], delimeter: int) -> List[int]:'
+    imports: from typing import List
+    edge_cases:
+    - Empty list input
+    - Boundary value inputs
+    - Typical case with standard values
+    humaneval_task_id: HumanEval/5
+    canonical_solution_lines: 8
+- id: task_hehard_002
+  description: "Implement the Python function parse_nested_parens(paren_string: str) -> List[int].\nInput\
+    \ to this function is a string represented multiple groups for nested parentheses separated by spaces.\n\
+    \    For each of the group, output the deepest level of nesting of parentheses.\n    E.g. (()()) has\
+    \ maximum two levels of nesting while ((())) has three.\n\n    >>> parse_nested_parens('(()()) ((()))\
+    \ () ((())()())')\n    [2, 3, 1, 3]"
+  ground_truth:
+    test_suite:
+    - assert parse_nested_parens('(()()) ((())) () ((())()())') == [2, 3, 1, 3]
+    - assert parse_nested_parens('() (()) ((())) (((())))') == [1, 2, 3, 4]
+    - assert parse_nested_parens('(()(())((())))') == [4]
+  mock_data:
+    docstring: "Input to this function is a string represented multiple groups for nested parentheses\
+      \ separated by spaces.\n    For each of the group, output the deepest level of nesting of parentheses.\n\
+      \    E.g. (()()) has maximum two levels of nesting while ((())) has three.\n\n    >>> parse_nested_parens('(()())\
+      \ ((())) () ((())()())')\n    [2, 3, 1, 3]"
+    function_signature: 'def parse_nested_parens(paren_string: str) -> List[int]:'
+    imports: from typing import List
+    edge_cases:
+    - Single element input
+    - Boundary value inputs
+    - Typical case with standard values
+    humaneval_task_id: HumanEval/6
+    canonical_solution_lines: 11
+- id: task_hehard_003
+  description: "Implement the Python function sum_product(numbers: List[int]) -> Tuple[int, int].\nFor\
+    \ a given list of integers, return a tuple consisting of a sum and a product of all the integers in\
+    \ a list.\n    Empty sum should be equal to 0 and empty product should be equal to 1.\n    >>> sum_product([])\n\
+    \    (0, 1)\n    >>> sum_product([1, 2, 3, 4])\n    (10, 24)"
+  ground_truth:
+    test_suite:
+    - assert sum_product([]) == (0, 1)
+    - assert sum_product([1, 1, 1]) == (3, 1)
+    - assert sum_product([100, 0]) == (100, 0)
+    - assert sum_product([3, 5, 7]) == (3 + 5 + 7, 3 * 5 * 7)
+    - assert sum_product([10]) == (10, 10)
+  mock_data:
+    docstring: "For a given list of integers, return a tuple consisting of a sum and a product of all\
+      \ the integers in a list.\n    Empty sum should be equal to 0 and empty product should be equal\
+      \ to 1.\n    >>> sum_product([])\n    (0, 1)\n    >>> sum_product([1, 2, 3, 4])\n    (10, 24)"
+    function_signature: 'def sum_product(numbers: List[int]) -> Tuple[int, int]:'
+    imports: from typing import List, Tuple
+    edge_cases:
+    - Empty list input
+    - Zero value input
+    - Boundary value inputs
+    humaneval_task_id: HumanEval/8
+    canonical_solution_lines: 6
+- id: task_hehard_004
+  description: "Implement the Python function rolling_max(numbers: List[int]) -> List[int].\nFrom a given\
+    \ list of integers, generate a list of rolling maximum element found until given moment\n    in the\
+    \ sequence.\n    >>> rolling_max([1, 2, 3, 2, 3, 4, 2])\n    [1, 2, 3, 3, 3, 4, 4]"
+  ground_truth:
+    test_suite:
+    - assert rolling_max([]) == []
+    - assert rolling_max([1, 2, 3, 4]) == [1, 2, 3, 4]
+    - assert rolling_max([4, 3, 2, 1]) == [4, 4, 4, 4]
+    - assert rolling_max([3, 2, 3, 100, 3]) == [3, 3, 3, 100, 100]
+  mock_data:
+    docstring: "From a given list of integers, generate a list of rolling maximum element found until\
+      \ given moment\n    in the sequence.\n    >>> rolling_max([1, 2, 3, 2, 3, 4, 2])\n    [1, 2, 3,\
+      \ 3, 3, 4, 4]"
+    function_signature: 'def rolling_max(numbers: List[int]) -> List[int]:'
+    imports: from typing import List, Tuple
+    edge_cases:
+    - Empty list input
+    - Boundary value inputs
+    - Typical case with standard values
+    humaneval_task_id: HumanEval/9
+    canonical_solution_lines: 9
+- id: task_hehard_005
+  description: 'Implement the Python function make_palindrome(string: str) -> str.
+
+    Test if given string is a palindrome'
+  ground_truth:
+    test_suite:
+    - assert make_palindrome('') == ''
+    - assert make_palindrome('x') == 'x'
+    - assert make_palindrome('xyz') == 'xyzyx'
+    - assert make_palindrome('xyx') == 'xyx'
+    - assert make_palindrome('jerry') == 'jerryrrej'
+  mock_data:
+    docstring: Test if given string is a palindrome
+    function_signature: 'def make_palindrome(string: str) -> str:'
+    imports: ''
+    edge_cases:
+    - Empty string input
+    - Boundary value inputs
+    - Typical case with standard values
+    humaneval_task_id: HumanEval/10
+    canonical_solution_lines: 6
+- id: task_hehard_006
+  description: "Implement the Python function string_xor(a: str, b: str) -> str.\nInput are two strings\
+    \ a and b consisting only of 1s and 0s.\n    Perform binary XOR on these inputs and return result\
+    \ also as a string.\n    >>> string_xor('010', '110')\n    '100'"
+  ground_truth:
+    test_suite:
+    - assert string_xor('111000', '101010') == '010010'
+    - assert string_xor('1', '1') == '0'
+    - assert string_xor('0101', '0000') == '0101'
+  mock_data:
+    docstring: "Input are two strings a and b consisting only of 1s and 0s.\n    Perform binary XOR on\
+      \ these inputs and return result also as a string.\n    >>> string_xor('010', '110')\n    '100'"
+    function_signature: 'def string_xor(a: str, b: str) -> str:'
+    imports: from typing import List
+    edge_cases:
+    - Large input values
+    - Boundary value inputs
+    - Typical case with standard values
+    humaneval_task_id: HumanEval/11
+    canonical_solution_lines: 6
+- id: task_hehard_007
+  description: "Implement the Python function longest(strings: List[str]) -> Optional[str].\nOut of list\
+    \ of strings, return the longest one. Return the first one in case of multiple\n    strings of the\
+    \ same length. Return None in case the input list is empty.\n    >>> longest([])\n\n    >>> longest(['a',\
+    \ 'b', 'c'])\n    'a'\n    >>> longest(['a', 'bb', 'ccc'])\n    'ccc'"
+  ground_truth:
+    test_suite:
+    - assert longest([]) == None
+    - assert longest(['x', 'y', 'z']) == 'x'
+    - assert longest(['x', 'yyy', 'zzzz', 'www', 'kkkk', 'abc']) == 'zzzz'
+  mock_data:
+    docstring: "Out of list of strings, return the longest one. Return the first one in case of multiple\n\
+      \    strings of the same length. Return None in case the input list is empty.\n    >>> longest([])\n\
+      \n    >>> longest(['a', 'b', 'c'])\n    'a'\n    >>> longest(['a', 'bb', 'ccc'])\n    'ccc'"
+    function_signature: 'def longest(strings: List[str]) -> Optional[str]:'
+    imports: from typing import List, Optional
+    edge_cases:
+    - Empty list input
+    - Boundary value inputs
+    - Typical case with standard values
+    humaneval_task_id: HumanEval/12
+    canonical_solution_lines: 6
+- id: task_hehard_008
+  description: "Implement the Python function how_many_times(string: str, substring: str) -> int.\nFind\
+    \ how many times a given substring can be found in the original string. Count overlaping cases.\n\
+    \    >>> how_many_times('', 'a')\n    0\n    >>> how_many_times('aaa', 'a')\n    3\n    >>> how_many_times('aaaa',\
+    \ 'aa')\n    3"
+  ground_truth:
+    test_suite:
+    - assert how_many_times('', 'x') == 0
+    - assert how_many_times('xyxyxyx', 'x') == 4
+    - assert how_many_times('cacacacac', 'cac') == 4
+    - assert how_many_times('john doe', 'john') == 1
+  mock_data:
+    docstring: "Find how many times a given substring can be found in the original string. Count overlaping\
+      \ cases.\n    >>> how_many_times('', 'a')\n    0\n    >>> how_many_times('aaa', 'a')\n    3\n  \
+      \  >>> how_many_times('aaaa', 'aa')\n    3"
+    function_signature: 'def how_many_times(string: str, substring: str) -> int:'
+    imports: ''
+    edge_cases:
+    - Empty string input
+    - Boundary value inputs
+    - Typical case with standard values
+    humaneval_task_id: HumanEval/18
+    canonical_solution_lines: 5
+- id: task_hehard_009
+  description: "Implement the Python function sort_numbers(numbers: str) -> str.\nInput is a space-delimited\
+    \ string of numberals from 'zero' to 'nine'.\n    Valid choices are 'zero', 'one', 'two', 'three',\
+    \ 'four', 'five', 'six', 'seven', 'eight' and 'nine'.\n    Return the string with numbers sorted from\
+    \ smallest to largest\n    >>> sort_numbers('three one five')\n    'one three five'"
+  ground_truth:
+    test_suite:
+    - assert sort_numbers('') == ''
+    - assert sort_numbers('three') == 'three'
+    - assert sort_numbers('three five nine') == 'three five nine'
+    - assert sort_numbers('five zero four seven nine eight') == 'zero four five seven eight nine'
+    - assert sort_numbers('six five four three two one zero') == 'zero one two three four five six'
+  mock_data:
+    docstring: "Input is a space-delimited string of numberals from 'zero' to 'nine'.\n    Valid choices\
+      \ are 'zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight' and 'nine'.\n    Return\
+      \ the string with numbers sorted from smallest to largest\n    >>> sort_numbers('three one five')\n\
+      \    'one three five'"
+    function_signature: 'def sort_numbers(numbers: str) -> str:'
+    imports: from typing import List
+    edge_cases:
+    - Empty string input
+    - Large input values
+    - Boundary value inputs
+    humaneval_task_id: HumanEval/19
+    canonical_solution_lines: 13
+- id: task_hehard_010
+  description: "Implement the Python function factorize(n: int) -> List[int].\nReturn list of prime factors\
+    \ of given integer in the order from smallest to largest.\n    Each of the factors should be listed\
+    \ number of times corresponding to how many times it appeares in factorization.\n    Input number\
+    \ should be equal to the product of all factors\n    >>> factorize(8)\n    [2, 2, 2]\n    >>> factorize(25)\n\
+    \    [5, 5]\n    >>> factorize(70)\n    [2, 5, 7]"
+  ground_truth:
+    test_suite:
+    - assert factorize(2) == [2]
+    - assert factorize(4) == [2, 2]
+    - assert factorize(8) == [2, 2, 2]
+    - assert factorize(3 * 19) == [3, 19]
+    - assert factorize(3 * 19 * 3 * 19) == [3, 3, 19, 19]
+    - assert factorize(3 * 19 * 3 * 19 * 3 * 19) == [3, 3, 3, 19, 19, 19]
+    - assert factorize(3 * 19 * 19 * 19) == [3, 19, 19, 19]
+    - assert factorize(3 * 2 * 3) == [2, 3, 3]
+  mock_data:
+    docstring: "Return list of prime factors of given integer in the order from smallest to largest.\n\
+      \    Each of the factors should be listed number of times corresponding to how many times it appeares\
+      \ in factorization.\n    Input number should be equal to the product of all factors\n    >>> factorize(8)\n\
+      \    [2, 2, 2]\n    >>> factorize(25)\n    [5, 5]\n    >>> factorize(70)\n    [2, 5, 7]"
+    function_signature: 'def factorize(n: int) -> List[int]:'
+    imports: from typing import List
+    edge_cases:
+    - Single element input
+    - Large input values
+    - Boundary value inputs
+    humaneval_task_id: HumanEval/25
+    canonical_solution_lines: 12
+- id: task_hehard_011
+  description: "Implement the Python function is_prime(n).\nReturn true if a given number is prime, and\
+    \ false otherwise.\n    >>> is_prime(6)\n    False\n    >>> is_prime(101)\n    True\n    >>> is_prime(11)\n\
+    \    True\n    >>> is_prime(13441)\n    True\n    >>> is_prime(61)\n    True\n    >>> is_prime(4)\n\
+    \    False\n    >>> is_prime(1)\n    False"
+  ground_truth:
+    test_suite:
+    - assert is_prime(6) == False
+    - assert is_prime(101) == True
+    - assert is_prime(11) == True
+    - assert is_prime(13441) == True
+    - assert is_prime(61) == True
+    - assert is_prime(4) == False
+    - assert is_prime(1) == False
+    - assert is_prime(5) == True
+    - assert is_prime(11) == True
+    - assert is_prime(17) == True
+    - assert is_prime(5 * 17) == False
+    - assert is_prime(11 * 7) == False
+    - assert is_prime(13441 * 19) == False
+  mock_data:
+    docstring: "Return true if a given number is prime, and false otherwise.\n    >>> is_prime(6)\n  \
+      \  False\n    >>> is_prime(101)\n    True\n    >>> is_prime(11)\n    True\n    >>> is_prime(13441)\n\
+      \    True\n    >>> is_prime(61)\n    True\n    >>> is_prime(4)\n    False\n    >>> is_prime(1)\n\
+      \    False"
+    function_signature: 'def is_prime(n):'
+    imports: ''
+    edge_cases:
+    - Boundary value inputs
+    - Typical case with standard values
+    - Edge case from docstring examples
+    humaneval_task_id: HumanEval/31
+    canonical_solution_lines: 6
+- id: task_hehard_012
+  description: "Implement the Python function max_element(l: list).\nReturn maximum element in the list.\n\
+    \    >>> max_element([1, 2, 3])\n    3\n    >>> max_element([5, 3, -5, 2, -3, 3, 9, 0, 123, 1, -10])\n\
+    \    123"
+  ground_truth:
+    test_suite:
+    - assert max_element([1, 2, 3]) == 3
+    - assert max_element([5, 3, -5, 2, -3, 3, 9, 0, 124, 1, -10]) == 124
+  mock_data:
+    docstring: "Return maximum element in the list.\n    >>> max_element([1, 2, 3])\n    3\n    >>> max_element([5,\
+      \ 3, -5, 2, -3, 3, 9, 0, 123, 1, -10])\n    123"
+    function_signature: 'def max_element(l: list):'
+    imports: ''
+    edge_cases:
+    - Zero value input
+    - Boundary value inputs
+    - Typical case with standard values
+    humaneval_task_id: HumanEval/35
+    canonical_solution_lines: 5
+- id: task_hehard_013
+  description: "Implement the Python function fizz_buzz(n: int).\nReturn the number of times the digit\
+    \ 7 appears in integers less than n which are divisible by 11 or 13.\n    >>> fizz_buzz(50)\n    0\n\
+    \    >>> fizz_buzz(78)\n    2\n    >>> fizz_buzz(79)\n    3"
+  ground_truth:
+    test_suite:
+    - assert fizz_buzz(50) == 0
+    - assert fizz_buzz(78) == 2
+    - assert fizz_buzz(79) == 3
+    - assert fizz_buzz(100) == 3
+    - assert fizz_buzz(200) == 6
+    - assert fizz_buzz(4000) == 192
+    - assert fizz_buzz(10000) == 639
+    - assert fizz_buzz(100000) == 8026
+  mock_data:
+    docstring: "Return the number of times the digit 7 appears in integers less than n which are divisible\
+      \ by 11 or 13.\n    >>> fizz_buzz(50)\n    0\n    >>> fizz_buzz(78)\n    2\n    >>> fizz_buzz(79)\n\
+      \    3"
+    function_signature: 'def fizz_buzz(n: int):'
+    imports: ''
+    edge_cases:
+    - Large input values
+    - Boundary value inputs
+    - Typical case with standard values
+    humaneval_task_id: HumanEval/36
+    canonical_solution_lines: 9
+- id: task_hehard_014
+  description: "Implement the Python function sort_even(l: list).\nThis function takes a list l and returns\
+    \ a list l' such that\n    l' is identical to l in the odd indicies, while its values at the even\
+    \ indicies are equal\n    to the values of the even indicies of l, but sorted.\n    >>> sort_even([1,\
+    \ 2, 3])\n    [1, 2, 3]\n    >>> sort_even([5, 6, 3, 4])\n    [3, 6, 5, 4]"
+  ground_truth:
+    test_suite:
+    - assert tuple(sort_even([1, 2, 3])) == tuple([1, 2, 3])
+    - assert tuple(sort_even([5, 3, -5, 2, -3, 3, 9, 0, 123, 1, -10])) == tuple([-10, 3, -5, 2, -3, 3,
+      5, 0, 9, 1, 123])
+    - assert tuple(sort_even([5, 8, -12, 4, 23, 2, 3, 11, 12, -10])) == tuple([-12, 8, 3, 4, 5, 2, 12,
+      11, 23, -10])
+  mock_data:
+    docstring: "This function takes a list l and returns a list l' such that\n    l' is identical to l\
+      \ in the odd indicies, while its values at the even indicies are equal\n    to the values of the\
+      \ even indicies of l, but sorted.\n    >>> sort_even([1, 2, 3])\n    [1, 2, 3]\n    >>> sort_even([5,\
+      \ 6, 3, 4])\n    [3, 6, 5, 4]"
+    function_signature: 'def sort_even(l: list):'
+    imports: ''
+    edge_cases:
+    - Negative number inputs
+    - Zero value input
+    - Boundary value inputs
+    humaneval_task_id: HumanEval/37
+    canonical_solution_lines: 9
+- id: task_hehard_015
+  description: "Implement the Python function triples_sum_to_zero(l: list).\ntriples_sum_to_zero takes\
+    \ a list of integers as an input.\n    it returns True if there are three distinct elements in the\
+    \ list that\n    sum to zero, and False otherwise.\n\n    >>> triples_sum_to_zero([1, 3, 5, 0])\n\
+    \    False\n    >>> triples_sum_to_zero([1, 3, -2, 1])\n    True\n    >>> triples_sum_to_zero([1,\
+    \ 2, 3, 7])\n    False\n    >>> triples_sum_to_zero([2, 4, -5, 3, 9, 7])\n    True\n    >>> triples_sum_to_zero([1])\n\
+    \    False"
+  ground_truth:
+    test_suite:
+    - assert triples_sum_to_zero([1, 3, 5, 0]) == False
+    - assert triples_sum_to_zero([1, 3, 5, -1]) == False
+    - assert triples_sum_to_zero([1, 3, -2, 1]) == True
+    - assert triples_sum_to_zero([1, 2, 3, 7]) == False
+    - assert triples_sum_to_zero([1, 2, 5, 7]) == False
+    - assert triples_sum_to_zero([2, 4, -5, 3, 9, 7]) == True
+    - assert triples_sum_to_zero([1]) == False
+    - assert triples_sum_to_zero([1, 3, 5, -100]) == False
+    - assert triples_sum_to_zero([100, 3, 5, -100]) == False
+  mock_data:
+    docstring: "triples_sum_to_zero takes a list of integers as an input.\n    it returns True if there\
+      \ are three distinct elements in the list that\n    sum to zero, and False otherwise.\n\n    >>>\
+      \ triples_sum_to_zero([1, 3, 5, 0])\n    False\n    >>> triples_sum_to_zero([1, 3, -2, 1])\n   \
+      \ True\n    >>> triples_sum_to_zero([1, 2, 3, 7])\n    False\n    >>> triples_sum_to_zero([2, 4,\
+      \ -5, 3, 9, 7])\n    True\n    >>> triples_sum_to_zero([1])\n    False"
+    function_signature: 'def triples_sum_to_zero(l: list):'
+    imports: ''
+    edge_cases:
+    - Single element input
+    - Zero value input
+    - Boundary value inputs
+    humaneval_task_id: HumanEval/40
+    canonical_solution_lines: 6
+- id: task_hehard_016
+  description: "Implement the Python function pairs_sum_to_zero(l).\npairs_sum_to_zero takes a list of\
+    \ integers as an input.\n    it returns True if there are two distinct elements in the list that\n\
+    \    sum to zero, and False otherwise.\n    >>> pairs_sum_to_zero([1, 3, 5, 0])\n    False\n    >>>\
+    \ pairs_sum_to_zero([1, 3, -2, 1])\n    False\n    >>> pairs_sum_to_zero([1, 2, 3, 7])\n    False\n\
+    \    >>> pairs_sum_to_zero([2, 4, -5, 3, 5, 7])\n    True\n    >>> pairs_sum_to_zero([1])\n    False"
+  ground_truth:
+    test_suite:
+    - assert pairs_sum_to_zero([1, 3, 5, 0]) == False
+    - assert pairs_sum_to_zero([1, 3, -2, 1]) == False
+    - assert pairs_sum_to_zero([1, 2, 3, 7]) == False
+    - assert pairs_sum_to_zero([2, 4, -5, 3, 5, 7]) == True
+    - assert pairs_sum_to_zero([1]) == False
+    - assert pairs_sum_to_zero([-3, 9, -1, 3, 2, 30]) == True
+    - assert pairs_sum_to_zero([-3, 9, -1, 3, 2, 31]) == True
+    - assert pairs_sum_to_zero([-3, 9, -1, 4, 2, 30]) == False
+    - assert pairs_sum_to_zero([-3, 9, -1, 4, 2, 31]) == False
+  mock_data:
+    docstring: "pairs_sum_to_zero takes a list of integers as an input.\n    it returns True if there\
+      \ are two distinct elements in the list that\n    sum to zero, and False otherwise.\n    >>> pairs_sum_to_zero([1,\
+      \ 3, 5, 0])\n    False\n    >>> pairs_sum_to_zero([1, 3, -2, 1])\n    False\n    >>> pairs_sum_to_zero([1,\
+      \ 2, 3, 7])\n    False\n    >>> pairs_sum_to_zero([2, 4, -5, 3, 5, 7])\n    True\n    >>> pairs_sum_to_zero([1])\n\
+      \    False"
+    function_signature: 'def pairs_sum_to_zero(l):'
+    imports: ''
+    edge_cases:
+    - Single element input
+    - Negative number inputs
+    - Zero value input
+    humaneval_task_id: HumanEval/43
+    canonical_solution_lines: 5
+- id: task_hehard_017
+  description: "Implement the Python function fib4(n: int).\nThe Fib4 number sequence is a sequence similar\
+    \ to the Fibbonacci sequnece that's defined as follows:\n    fib4(0) -> 0\n    fib4(1) -> 0\n    fib4(2)\
+    \ -> 2\n    fib4(3) -> 0\n    fib4(n) -> fib4(n-1) + fib4(n-2) + fib4(n-3) + fib4(n-4).\n    Please\
+    \ write a function to efficiently compute the n-th element of the fib4 number sequence.  Do not use\
+    \ recursion.\n    >>> fib4(5)\n    4\n    >>> fib4(6)\n    8\n    >>> fib4(7)\n    14"
+  ground_truth:
+    test_suite:
+    - assert fib4(5) == 4
+    - assert fib4(8) == 28
+    - assert fib4(10) == 104
+    - assert fib4(12) == 386
+  mock_data:
+    docstring: "The Fib4 number sequence is a sequence similar to the Fibbonacci sequnece that's defined\
+      \ as follows:\n    fib4(0) -> 0\n    fib4(1) -> 0\n    fib4(2) -> 2\n    fib4(3) -> 0\n    fib4(n)\
+      \ -> fib4(n-1) + fib4(n-2) + fib4(n-3) + fib4(n-4).\n    Please write a function to efficiently\
+      \ compute the n-th element of the fib4 number sequence.  Do not use recursion.\n    >>> fib4(5)\n\
+      \    4\n    >>> fib4(6)\n    8\n    >>> fib4(7)\n    14"
+    function_signature: 'def fib4(n: int):'
+    imports: ''
+    edge_cases:
+    - Zero value input
+    - Boundary value inputs
+    - Typical case with standard values
+    humaneval_task_id: HumanEval/46
+    canonical_solution_lines: 7
+- id: task_hehard_018
+  description: "Implement the Python function correct_bracketing(brackets: str).\nbrackets is a string\
+    \ of \"<\" and \">\".\n    return True if every opening bracket has a corresponding closing bracket.\n\
+    \n    >>> correct_bracketing(\"<\")\n    False\n    >>> correct_bracketing(\"<>\")\n    True\n   \
+    \ >>> correct_bracketing(\"<<><>>\")\n    True\n    >>> correct_bracketing(\"><<>\")\n    False"
+  ground_truth:
+    test_suite:
+    - assert correct_bracketing("<>")
+    - assert correct_bracketing("<<><>>")
+    - assert correct_bracketing("<><><<><>><>")
+    - assert correct_bracketing("<><><<<><><>><>><<><><<>>>")
+    - assert not correct_bracketing("<<<><>>>>")
+    - assert not correct_bracketing("><<>")
+    - assert not correct_bracketing("<")
+    - assert not correct_bracketing("<<<<")
+    - assert not correct_bracketing(">")
+    - assert not correct_bracketing("<<>")
+    - assert not correct_bracketing("<><><<><>><>><<>")
+    - assert not correct_bracketing("<><><<><>><>>><>")
+  mock_data:
+    docstring: "brackets is a string of \"<\" and \">\".\n    return True if every opening bracket has\
+      \ a corresponding closing bracket.\n\n    >>> correct_bracketing(\"<\")\n    False\n    >>> correct_bracketing(\"\
+      <>\")\n    True\n    >>> correct_bracketing(\"<<><>>\")\n    True\n    >>> correct_bracketing(\"\
+      ><<>\")\n    False"
+    function_signature: 'def correct_bracketing(brackets: str):'
+    imports: ''
+    edge_cases:
+    - Boundary value inputs
+    - Typical case with standard values
+    - Edge case from docstring examples
+    humaneval_task_id: HumanEval/56
+    canonical_solution_lines: 9
+- id: task_hehard_019
+  description: "Implement the Python function common(l1: list, l2: list).\nReturn sorted unique common\
+    \ elements for two lists.\n    >>> common([1, 4, 3, 34, 653, 2, 5], [5, 7, 1, 5, 9, 653, 121])\n \
+    \   [1, 5, 653]\n    >>> common([5, 3, 2, 8], [3, 2])\n    [2, 3]"
+  ground_truth:
+    test_suite:
+    - assert common([1, 4, 3, 34, 653, 2, 5], [5, 7, 1, 5, 9, 653, 121]) == [1, 5, 653]
+    - assert common([5, 3, 2, 8], [3, 2]) == [2, 3]
+    - assert common([4, 3, 2, 8], [3, 2, 4]) == [2, 3, 4]
+    - assert common([4, 3, 2, 8], []) == []
+  mock_data:
+    docstring: "Return sorted unique common elements for two lists.\n    >>> common([1, 4, 3, 34, 653,\
+      \ 2, 5], [5, 7, 1, 5, 9, 653, 121])\n    [1, 5, 653]\n    >>> common([5, 3, 2, 8], [3, 2])\n   \
+      \ [2, 3]"
+    function_signature: 'def common(l1: list, l2: list):'
+    imports: ''
+    edge_cases:
+    - Empty list input
+    - Boundary value inputs
+    - Typical case with standard values
+    humaneval_task_id: HumanEval/58
+    canonical_solution_lines: 6
+- id: task_hehard_020
+  description: "Implement the Python function largest_prime_factor(n: int).\nReturn the largest prime\
+    \ factor of n. Assume n > 1 and is not a prime.\n    >>> largest_prime_factor(13195)\n    29\n   \
+    \ >>> largest_prime_factor(2048)\n    2"
+  ground_truth:
+    test_suite:
+    - assert largest_prime_factor(15) == 5
+    - assert largest_prime_factor(27) == 3
+    - assert largest_prime_factor(63) == 7
+    - assert largest_prime_factor(330) == 11
+    - assert largest_prime_factor(13195) == 29
+  mock_data:
+    docstring: "Return the largest prime factor of n. Assume n > 1 and is not a prime.\n    >>> largest_prime_factor(13195)\n\
+      \    29\n    >>> largest_prime_factor(2048)\n    2"
+    function_signature: 'def largest_prime_factor(n: int):'
+    imports: ''
+    edge_cases:
+    - Large input values
+    - Boundary value inputs
+    - Typical case with standard values
+    humaneval_task_id: HumanEval/59
+    canonical_solution_lines: 12
+- id: task_hehard_021
+  description: "Implement the Python function fibfib(n: int).\nThe FibFib number sequence is a sequence\
+    \ similar to the Fibbonacci sequnece that's defined as follows:\n    fibfib(0) == 0\n    fibfib(1)\
+    \ == 0\n    fibfib(2) == 1\n    fibfib(n) == fibfib(n-1) + fibfib(n-2) + fibfib(n-3).\n    Please\
+    \ write a function to efficiently compute the n-th element of the fibfib number sequence.\n    >>>\
+    \ fibfib(1)\n    0\n    >>> fibfib(5)\n    4\n    >>> fibfib(8)\n    24"
+  ground_truth:
+    test_suite:
+    - assert fibfib(2) == 1
+    - assert fibfib(1) == 0
+    - assert fibfib(5) == 4
+    - assert fibfib(8) == 24
+    - assert fibfib(10) == 81
+    - assert fibfib(12) == 274
+    - assert fibfib(14) == 927
+  mock_data:
+    docstring: "The FibFib number sequence is a sequence similar to the Fibbonacci sequnece that's defined\
+      \ as follows:\n    fibfib(0) == 0\n    fibfib(1) == 0\n    fibfib(2) == 1\n    fibfib(n) == fibfib(n-1)\
+      \ + fibfib(n-2) + fibfib(n-3).\n    Please write a function to efficiently compute the n-th element\
+      \ of the fibfib number sequence.\n    >>> fibfib(1)\n    0\n    >>> fibfib(5)\n    4\n    >>> fibfib(8)\n\
+      \    24"
+    function_signature: 'def fibfib(n: int):'
+    imports: ''
+    edge_cases:
+    - Zero value input
+    - Boundary value inputs
+    - Typical case with standard values
+    humaneval_task_id: HumanEval/63
+    canonical_solution_lines: 7
+- id: task_hehard_022
+  description: 'Implement the Python function vowels_count(s).
+
+    Add more test cases.'
+  ground_truth:
+    test_suite:
+    - assert vowels_count("abcde") == 2, "Test 1"
+    - assert vowels_count("Alone") == 3, "Test 2"
+    - assert vowels_count("key") == 2, "Test 3"
+    - assert vowels_count("bye") == 1, "Test 4"
+    - assert vowels_count("keY") == 2, "Test 5"
+    - assert vowels_count("bYe") == 1, "Test 6"
+    - assert vowels_count("ACEDY") == 3, "Test 7"
+    - assert True, "This prints if this assert fails 2 (also good for debugging!)"
+  mock_data:
+    docstring: Add more test cases.
+    function_signature: 'def vowels_count(s):'
+    imports: ''
+    edge_cases:
+    - Boundary value inputs
+    - Typical case with standard values
+    - Edge case from docstring examples
+    humaneval_task_id: HumanEval/64
+    canonical_solution_lines: 5
+- id: task_hehard_023
+  description: "Implement the Python function circular_shift(x, shift).\nCircular shift the digits of\
+    \ the integer x, shift the digits right by shift\n    and return the result as a string.\n    If shift\
+    \ > number of digits, return digits reversed.\n    >>> circular_shift(12, 1)\n    \"21\"\n    >>>\
+    \ circular_shift(12, 2)\n    \"12\""
+  ground_truth:
+    test_suite:
+    - assert circular_shift(100, 2) == "001"
+    - assert circular_shift(12, 2) == "12"
+    - assert circular_shift(97, 8) == "79"
+    - assert circular_shift(12, 1) == "21", "This prints if this assert fails 1 (good for debugging!)"
+    - assert circular_shift(11, 101) == "11", "This prints if this assert fails 2 (also good for debugging!)"
+  mock_data:
+    docstring: "Circular shift the digits of the integer x, shift the digits right by shift\n    and return\
+      \ the result as a string.\n    If shift > number of digits, return digits reversed.\n    >>> circular_shift(12,\
+      \ 1)\n    \"21\"\n    >>> circular_shift(12, 2)\n    \"12\""
+    function_signature: 'def circular_shift(x, shift):'
+    imports: ''
+    edge_cases:
+    - Boundary value inputs
+    - Typical case with standard values
+    - Edge case from docstring examples
+    humaneval_task_id: HumanEval/65
+    canonical_solution_lines: 5
+- id: task_hehard_024
+  description: "Implement the Python function fruit_distribution(s,n).\nIn this task, you will be given\
+    \ a string that represents a number of apples and oranges \n    that are distributed in a basket of\
+    \ fruit this basket contains \n    apples, oranges, and mango fruits. Given the string that represents\
+    \ the total number of \n    the oranges and apples and an integer that represent the total number\
+    \ of the fruits \n    in the basket return the number of the mango fruits in the basket.\n    for\
+    \ examble:\n    fruit_distribution(\"5 apples and 6 oranges\", 19) ->19 - 5 - 6 = 8\n    fruit_distribution(\"\
+    0 apples and 1 oranges\",3) -> 3 - 0 - 1 = 2\n    fruit_distribution(\"2 apples and 3 oranges\", 100)\
+    \ -> 100 - 2 - 3 = 95\n    fruit_distribution(\"100 apples and 1 oranges\",120) -> 120 - 100 - 1 =\
+    \ 19"
+  ground_truth:
+    test_suite:
+    - assert fruit_distribution("5 apples and 6 oranges",19) == 8
+    - assert fruit_distribution("5 apples and 6 oranges",21) == 10
+    - assert fruit_distribution("0 apples and 1 oranges",3) == 2
+    - assert fruit_distribution("1 apples and 0 oranges",3) == 2
+    - assert fruit_distribution("2 apples and 3 oranges",100) == 95
+    - assert fruit_distribution("2 apples and 3 oranges",5) == 0
+    - assert fruit_distribution("1 apples and 100 oranges",120) == 19
+  mock_data:
+    docstring: "In this task, you will be given a string that represents a number of apples and oranges\
+      \ \n    that are distributed in a basket of fruit this basket contains \n    apples, oranges, and\
+      \ mango fruits. Given the string that represents the total number of \n    the oranges and apples\
+      \ and an integer that represent the total number of the fruits \n    in the basket return the number\
+      \ of the mango fruits in the basket.\n    for examble:\n    fruit_distribution(\"5 apples and 6\
+      \ oranges\", 19) ->19 - 5 - 6 = 8\n    fruit_distribution(\"0 apples and 1 oranges\",3) -> 3 - 0\
+      \ - 1 = 2\n    fruit_distribution(\"2 apples and 3 oranges\", 100) -> 100 - 2 - 3 = 95\n    fruit_distribution(\"\
+      100 apples and 1 oranges\",120) -> 120 - 100 - 1 = 19"
+    function_signature: 'def fruit_distribution(s,n):'
+    imports: ''
+    edge_cases:
+    - Boundary value inputs
+    - Typical case with standard values
+    - Edge case from docstring examples
+    humaneval_task_id: HumanEval/67
+    canonical_solution_lines: 5
+- id: task_hehard_025
+  description: "Implement the Python function search(lst).\nYou are given a non-empty list of positive\
+    \ integers. Return the greatest integer that is greater than \n    zero, and has a frequency greater\
+    \ than or equal to the value of the integer itself. \n    The frequency of an integer is the number\
+    \ of times it appears in the list.\n    If no such a value exist, return -1.\n    Examples:\n    \
+    \    search([4, 1, 2, 2, 3, 1]) == 2\n        search([1, 2, 2, 3, 3, 3, 4, 4, 4]) == 3\n        search([5,\
+    \ 5, 4, 4, 4]) == -1"
+  ground_truth:
+    test_suite:
+    - assert search([5, 5, 5, 5, 1]) == 1
+    - assert search([4, 1, 4, 1, 4, 4]) == 4
+    - assert search([3, 3]) == -1
+    - assert search([8, 8, 8, 8, 8, 8, 8, 8]) == 8
+    - assert search([2, 3, 3, 2, 2]) == 2
+    - assert search([2, 7, 8, 8, 4, 8, 7, 3, 9, 6, 5, 10, 4, 3, 6, 7, 1, 7, 4, 10, 8, 1]) == 1
+    - assert search([3, 2, 8, 2]) == 2
+    - assert search([6, 7, 1, 8, 8, 10, 5, 8, 5, 3, 10]) == 1
+    - assert search([8, 8, 3, 6, 5, 6, 4]) == -1
+    - assert search([6, 9, 6, 7, 1, 4, 7, 1, 8, 8, 9, 8, 10, 10, 8, 4, 10, 4, 10, 1, 2, 9, 5, 7, 9]) ==
+      1
+    - assert search([1, 9, 10, 1, 3]) == 1
+    - assert search([6, 9, 7, 5, 8, 7, 5, 3, 7, 5, 10, 10, 3, 6, 10, 2, 8, 6, 5, 4, 9, 5, 3, 10]) == 5
+    - assert search([1]) == 1
+    - assert search([8, 8, 10, 6, 4, 3, 5, 8, 2, 4, 2, 8, 4, 6, 10, 4, 2, 1, 10, 2, 1, 1, 5]) == 4
+    - assert search([2, 10, 4, 8, 2, 10, 5, 1, 2, 9, 5, 5, 6, 3, 8, 6, 4, 10]) == 2
+    - assert search([1, 6, 10, 1, 6, 9, 10, 8, 6, 8, 7, 3]) == 1
+    - assert search([9, 2, 4, 1, 5, 1, 5, 2, 5, 7, 7, 7, 3, 10, 1, 5, 4, 2, 8, 4, 1, 9, 10, 7, 10, 2,
+      8, 10, 9, 4]) == 4
+    - assert search([2, 6, 4, 2, 8, 7, 5, 6, 4, 10, 4, 6, 3, 7, 8, 8, 3, 1, 4, 2, 2, 10, 7]) == 4
+    - assert search([9, 8, 6, 10, 2, 6, 10, 2, 7, 8, 10, 3, 8, 2, 6, 2, 3, 1]) == 2
+    - assert search([5, 5, 3, 9, 5, 6, 3, 2, 8, 5, 6, 10, 10, 6, 8, 4, 10, 7, 7, 10, 8]) == -1
+    - assert search([10]) == -1
+    - assert search([9, 7, 7, 2, 4, 7, 2, 10, 9, 7, 5, 7, 2]) == 2
+    - assert search([5, 4, 10, 2, 1, 1, 10, 3, 6, 1, 8]) == 1
+    - assert search([7, 9, 9, 9, 3, 4, 1, 5, 9, 1, 2, 1, 1, 10, 7, 5, 6, 7, 6, 7, 7, 6]) == 1
+    - assert search([3, 10, 10, 9, 2]) == -1
+  mock_data:
+    docstring: "You are given a non-empty list of positive integers. Return the greatest integer that\
+      \ is greater than \n    zero, and has a frequency greater than or equal to the value of the integer\
+      \ itself. \n    The frequency of an integer is the number of times it appears in the list.\n   \
+      \ If no such a value exist, return -1.\n    Examples:\n        search([4, 1, 2, 2, 3, 1]) == 2\n\
+      \        search([1, 2, 2, 3, 3, 3, 4, 4, 4]) == 3\n        search([5, 5, 4, 4, 4]) == -1"
+    function_signature: 'def search(lst):'
+    imports: ''
+    edge_cases:
+    - Single element input
+    - Boundary value inputs
+    - Typical case with standard values
+    humaneval_task_id: HumanEval/69
+    canonical_solution_lines: 8
+- id: task_hehard_026
+  description: "Implement the Python function will_it_fly(q,w).\nWrite a function that returns True if\
+    \ the object q will fly, and False otherwise.\n    The object q will fly if it's balanced (it is a\
+    \ palindromic list) and the sum of its elements is less than or equal the maximum possible weight\
+    \ w.\n\n    Example:\n    will_it_fly([1, 2], 5) ➞ False \n    # 1+2 is less than the maximum possible\
+    \ weight, but it's unbalanced.\n\n    will_it_fly([3, 2, 3], 1) ➞ False\n    # it's balanced, but\
+    \ 3+2+3 is more than the maximum possible weight.\n\n    will_it_fly([3, 2, 3], 9) ➞ True\n    # 3+2+3\
+    \ is less than the maximum possible weight, and it's balanced.\n\n    will_it_fly([3], 5) ➞ True\n\
+    \    # 3 is less than the maximum possible weight, and it's balanced."
+  ground_truth:
+    test_suite:
+    - assert will_it_fly([3, 2, 3], 9) is True
+    - assert will_it_fly([1, 2], 5) is False
+    - assert will_it_fly([3], 5) is True
+    - assert will_it_fly([3, 2, 3], 1) is False
+    - assert will_it_fly([1, 2, 3], 6) is False
+    - assert will_it_fly([5], 5) is True
+  mock_data:
+    docstring: "Write a function that returns True if the object q will fly, and False otherwise.\n  \
+      \  The object q will fly if it's balanced (it is a palindromic list) and the sum of its elements\
+      \ is less than or equal the maximum possible weight w.\n\n    Example:\n    will_it_fly([1, 2],\
+      \ 5) ➞ False \n    # 1+2 is less than the maximum possible weight, but it's unbalanced.\n\n    will_it_fly([3,\
+      \ 2, 3], 1) ➞ False\n    # it's balanced, but 3+2+3 is more than the maximum possible weight.\n\n\
+      \    will_it_fly([3, 2, 3], 9) ➞ True\n    # 3+2+3 is less than the maximum possible weight, and\
+      \ it's balanced.\n\n    will_it_fly([3], 5) ➞ True\n    # 3 is less than the maximum possible weight,\
+      \ and it's balanced."
+    function_signature: 'def will_it_fly(q,w):'
+    imports: ''
+    edge_cases:
+    - Single element input
+    - Boundary value inputs
+    - Typical case with standard values
+    humaneval_task_id: HumanEval/72
+    canonical_solution_lines: 9
+- id: task_hehard_027
+  description: "Implement the Python function total_match(lst1, lst2).\nWrite a function that accepts\
+    \ two lists of strings and returns the list that has \n    total number of chars in the all strings\
+    \ of the list less than the other list.\n\n    if the two lists have the same number of chars, return\
+    \ the first list.\n\n    Examples\n    total_match([], []) ➞ []\n    total_match(['hi', 'admin'],\
+    \ ['hI', 'Hi']) ➞ ['hI', 'Hi']\n    total_match(['hi', 'admin'], ['hi', 'hi', 'admin', 'project'])\
+    \ ➞ ['hi', 'admin']\n    total_match(['hi', 'admin'], ['hI', 'hi', 'hi']) ➞ ['hI', 'hi', 'hi']\n \
+    \   total_match(['4'], ['1', '2', '3', '4', '5']) ➞ ['4']"
+  ground_truth:
+    test_suite:
+    - assert True, "This prints if this assert fails 1 (good for debugging!)"
+    - assert total_match([], []) == []
+    - assert total_match(['hi', 'admin'], ['hi', 'hi']) == ['hi', 'hi']
+    - assert total_match(['hi', 'admin'], ['hi', 'hi', 'admin', 'project']) == ['hi', 'admin']
+    - assert total_match(['4'], ['1', '2', '3', '4', '5']) == ['4']
+    - assert total_match(['hi', 'admin'], ['hI', 'Hi']) == ['hI', 'Hi']
+    - assert total_match(['hi', 'admin'], ['hI', 'hi', 'hi']) == ['hI', 'hi', 'hi']
+    - assert total_match(['hi', 'admin'], ['hI', 'hi', 'hii']) == ['hi', 'admin']
+    - assert True, "This prints if this assert fails 2 (also good for debugging!)"
+    - assert total_match([], ['this']) == []
+    - assert total_match(['this'], []) == []
+  mock_data:
+    docstring: "Write a function that accepts two lists of strings and returns the list that has \n  \
+      \  total number of chars in the all strings of the list less than the other list.\n\n    if the\
+      \ two lists have the same number of chars, return the first list.\n\n    Examples\n    total_match([],\
+      \ []) ➞ []\n    total_match(['hi', 'admin'], ['hI', 'Hi']) ➞ ['hI', 'Hi']\n    total_match(['hi',\
+      \ 'admin'], ['hi', 'hi', 'admin', 'project']) ➞ ['hi', 'admin']\n    total_match(['hi', 'admin'],\
+      \ ['hI', 'hi', 'hi']) ➞ ['hI', 'hi', 'hi']\n    total_match(['4'], ['1', '2', '3', '4', '5']) ➞\
+      \ ['4']"
+    function_signature: 'def total_match(lst1, lst2):'
+    imports: ''
+    edge_cases:
+    - Empty list input
+    - Boundary value inputs
+    - Typical case with standard values
+    humaneval_task_id: HumanEval/74
+    canonical_solution_lines: 10
+- id: task_hehard_028
+  description: "Implement the Python function is_multiply_prime(a).\nWrite a function that returns true\
+    \ if the given number is the multiplication of 3 prime numbers\n    and false otherwise.\n    Knowing\
+    \ that (a) is less then 100. \n    Example:\n    is_multiply_prime(30) == True\n    30 = 2 * 3 * 5"
+  ground_truth:
+    test_suite:
+    - assert is_multiply_prime(5) == False
+    - assert is_multiply_prime(30) == True
+    - assert is_multiply_prime(8) == True
+    - assert is_multiply_prime(10) == False
+    - assert is_multiply_prime(125) == True
+    - assert is_multiply_prime(3 * 5 * 7) == True
+    - assert is_multiply_prime(3 * 6 * 7) == False
+    - assert is_multiply_prime(9 * 9 * 9) == False
+    - assert is_multiply_prime(11 * 9 * 9) == False
+    - assert is_multiply_prime(11 * 13 * 7) == True
+  mock_data:
+    docstring: "Write a function that returns true if the given number is the multiplication of 3 prime\
+      \ numbers\n    and false otherwise.\n    Knowing that (a) is less then 100. \n    Example:\n   \
+      \ is_multiply_prime(30) == True\n    30 = 2 * 3 * 5"
+    function_signature: 'def is_multiply_prime(a):'
+    imports: ''
+    edge_cases:
+    - Boundary value inputs
+    - Typical case with standard values
+    - Edge case from docstring examples
+    humaneval_task_id: HumanEval/75
+    canonical_solution_lines: 13
+- id: task_hehard_029
+  description: "Implement the Python function prime_length(string).\nWrite a function that takes a string\
+    \ and returns True if the string\n    length is a prime number or False otherwise\n    Examples\n\
+    \    prime_length('Hello') == True\n    prime_length('abcdcba') == True\n    prime_length('kittens')\
+    \ == True\n    prime_length('orange') == False"
+  ground_truth:
+    test_suite:
+    - assert prime_length('Hello') == True
+    - assert prime_length('abcdcba') == True
+    - assert prime_length('kittens') == True
+    - assert prime_length('orange') == False
+    - assert prime_length('wow') == True
+    - assert prime_length('world') == True
+    - assert prime_length('MadaM') == True
+    - assert prime_length('Wow') == True
+    - assert prime_length('') == False
+    - assert prime_length('HI') == True
+    - assert prime_length('go') == True
+    - assert prime_length('gogo') == False
+    - assert prime_length('aaaaaaaaaaaaaaa') == False
+    - assert prime_length('Madam') == True
+    - assert prime_length('M') == False
+    - assert prime_length('0') == False
+  mock_data:
+    docstring: "Write a function that takes a string and returns True if the string\n    length is a prime\
+      \ number or False otherwise\n    Examples\n    prime_length('Hello') == True\n    prime_length('abcdcba')\
+      \ == True\n    prime_length('kittens') == True\n    prime_length('orange') == False"
+    function_signature: 'def prime_length(string):'
+    imports: ''
+    edge_cases:
+    - Empty string input
+    - Boundary value inputs
+    - Typical case with standard values
+    humaneval_task_id: HumanEval/82
+    canonical_solution_lines: 7
+- id: task_hehard_030
+  description: "Implement the Python function encrypt(s).\nCreate a function encrypt that takes a string\
+    \ as an argument and\n    returns a string encrypted with the alphabet being rotated. \n    The alphabet\
+    \ should be rotated in a manner such that the letters \n    shift down by two multiplied to two places.\n\
+    \    For example:\n    encrypt('hi') returns 'lm'\n    encrypt('asdfghjkl') returns 'ewhjklnop'\n\
+    \    encrypt('gf') returns 'kj'\n    encrypt('et') returns 'ix'"
+  ground_truth:
+    test_suite:
+    - assert encrypt('hi') == 'lm', "This prints if this assert fails 1 (good for debugging!)"
+    - assert encrypt('asdfghjkl') == 'ewhjklnop', "This prints if this assert fails 1 (good for debugging!)"
+    - assert encrypt('gf') == 'kj', "This prints if this assert fails 1 (good for debugging!)"
+    - assert encrypt('et') == 'ix', "This prints if this assert fails 1 (good for debugging!)"
+    - assert encrypt('faewfawefaewg')=='jeiajeaijeiak', "This prints if this assert fails 1 (good for
+      debugging!)"
+    - assert encrypt('hellomyfriend')=='lippsqcjvmirh', "This prints if this assert fails 2 (good for
+      debugging!)"
+    - assert encrypt('dxzdlmnilfuhmilufhlihufnmlimnufhlimnufhfucufh')=='hbdhpqrmpjylqmpyjlpmlyjrqpmqryjlpmqryjljygyjl',
+      "This prints if this assert fails 3 (good for debugging!)"
+    - assert encrypt('a')=='e', "This prints if this assert fails 2 (also good for debugging!)"
+  mock_data:
+    docstring: "Create a function encrypt that takes a string as an argument and\n    returns a string\
+      \ encrypted with the alphabet being rotated. \n    The alphabet should be rotated in a manner such\
+      \ that the letters \n    shift down by two multiplied to two places.\n    For example:\n    encrypt('hi')\
+      \ returns 'lm'\n    encrypt('asdfghjkl') returns 'ewhjklnop'\n    encrypt('gf') returns 'kj'\n \
+      \   encrypt('et') returns 'ix'"
+    function_signature: 'def encrypt(s):'
+    imports: ''
+    edge_cases:
+    - Boundary value inputs
+    - Typical case with standard values
+    - Edge case from docstring examples
+    humaneval_task_id: HumanEval/89
+    canonical_solution_lines: 8
+- id: task_hehard_031
+  description: "Implement the Python function skjkasdkd(lst).\nYou are given a list of integers.\n   \
+    \ You need to find the largest prime value and return the sum of its digits.\n\n    Examples:\n  \
+    \  For lst = [0,3,2,1,3,5,7,4,5,5,5,2,181,32,4,32,3,2,32,324,4,3] the output should be 10\n    For\
+    \ lst = [1,0,1,8,2,4597,2,1,3,40,1,2,1,2,4,2,5,1] the output should be 25\n    For lst = [1,3,1,32,5107,34,83278,109,163,23,2323,32,30,1,9,3]\
+    \ the output should be 13\n    For lst = [0,724,32,71,99,32,6,0,5,91,83,0,5,6] the output should be\
+    \ 11\n    For lst = [0,81,12,3,1,21] the output should be 3\n    For lst = [0,8,1,2,1,7] the output\
+    \ should be 7"
+  ground_truth:
+    test_suite:
+    - assert skjkasdkd([0,3,2,1,3,5,7,4,5,5,5,2,181,32,4,32,3,2,32,324,4,3]) == 10, "This prints if this
+      assert fails 1 (good for debugging!)"
+    - assert skjkasdkd([1,0,1,8,2,4597,2,1,3,40,1,2,1,2,4,2,5,1]) == 25, "This prints if this assert fails
+      2 (also good for debugging!)"
+    - assert skjkasdkd([1,3,1,32,5107,34,83278,109,163,23,2323,32,30,1,9,3]) == 13, "This prints if this
+      assert fails 3 (also good for debugging!)"
+    - assert skjkasdkd([0,724,32,71,99,32,6,0,5,91,83,0,5,6]) == 11, "This prints if this assert fails
+      4 (also good for debugging!)"
+    - assert skjkasdkd([0,81,12,3,1,21]) == 3, "This prints if this assert fails 5 (also good for debugging!)"
+    - assert skjkasdkd([0,8,1,2,1,7]) == 7, "This prints if this assert fails 6 (also good for debugging!)"
+    - assert skjkasdkd([8191]) == 19, "This prints if this assert fails 7 (also good for debugging!)"
+    - assert skjkasdkd([8191, 123456, 127, 7]) == 19, "This prints if this assert fails 8 (also good for
+      debugging!)"
+    - assert skjkasdkd([127, 97, 8192]) == 10, "This prints if this assert fails 9 (also good for debugging!)"
+  mock_data:
+    docstring: "You are given a list of integers.\n    You need to find the largest prime value and return\
+      \ the sum of its digits.\n\n    Examples:\n    For lst = [0,3,2,1,3,5,7,4,5,5,5,2,181,32,4,32,3,2,32,324,4,3]\
+      \ the output should be 10\n    For lst = [1,0,1,8,2,4597,2,1,3,40,1,2,1,2,4,2,5,1] the output should\
+      \ be 25\n    For lst = [1,3,1,32,5107,34,83278,109,163,23,2323,32,30,1,9,3] the output should be\
+      \ 13\n    For lst = [0,724,32,71,99,32,6,0,5,91,83,0,5,6] the output should be 11\n    For lst =\
+      \ [0,81,12,3,1,21] the output should be 3\n    For lst = [0,8,1,2,1,7] the output should be 7"
+    function_signature: 'def skjkasdkd(lst):'
+    imports: ''
+    edge_cases:
+    - Zero value input
+    - Large input values
+    - Boundary value inputs
+    humaneval_task_id: HumanEval/94
+    canonical_solution_lines: 13
+- id: task_hehard_032
+  description: "Implement the Python function count_up_to(n).\nImplement a function that takes an non-negative\
+    \ integer and returns an array of the first n\n    integers that are prime numbers and less than n.\n\
+    \    for example:\n    count_up_to(5) => [2,3]\n    count_up_to(11) => [2,3,5,7]\n    count_up_to(0)\
+    \ => []\n    count_up_to(20) => [2,3,5,7,11,13,17,19]\n    count_up_to(1) => []\n    count_up_to(18)\
+    \ => [2,3,5,7,11,13,17]"
+  ground_truth:
+    test_suite:
+    - assert count_up_to(5) == [2,3]
+    - assert count_up_to(6) == [2,3,5]
+    - assert count_up_to(7) == [2,3,5]
+    - assert count_up_to(10) == [2,3,5,7]
+    - assert count_up_to(0) == []
+    - assert count_up_to(22) == [2,3,5,7,11,13,17,19]
+    - assert count_up_to(1) == []
+    - assert count_up_to(18) == [2,3,5,7,11,13,17]
+    - assert count_up_to(47) == [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43]
+    - assert count_up_to(101) == [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61,
+      67, 71, 73, 79, 83, 89, 97]
+  mock_data:
+    docstring: "Implement a function that takes an non-negative integer and returns an array of the first\
+      \ n\n    integers that are prime numbers and less than n.\n    for example:\n    count_up_to(5)\
+      \ => [2,3]\n    count_up_to(11) => [2,3,5,7]\n    count_up_to(0) => []\n    count_up_to(20) => [2,3,5,7,11,13,17,19]\n\
+      \    count_up_to(1) => []\n    count_up_to(18) => [2,3,5,7,11,13,17]"
+    function_signature: 'def count_up_to(n):'
+    imports: ''
+    edge_cases:
+    - Empty list input
+    - Zero value input
+    - Boundary value inputs
+    humaneval_task_id: HumanEval/96
+    canonical_solution_lines: 10
+- id: task_hehard_033
+  description: "Implement the Python function words_string(s).\nYou will be given a string of words separated\
+    \ by commas or spaces. Your task is\n    to split the string into words and return an array of the\
+    \ words.\n    \n    For example:\n    words_string(\"Hi, my name is John\") == [\"Hi\", \"my\", \"\
+    name\", \"is\", \"John\"]\n    words_string(\"One, two, three, four, five, six\") == [\"One\", \"\
+    two\", \"three\", \"four\", \"five\", \"six\"]"
+  ground_truth:
+    test_suite:
+    - assert True, "This prints if this assert fails 1 (good for debugging!)"
+    - assert words_string("Hi, my name is John") == ["Hi", "my", "name", "is", "John"]
+    - assert words_string("One, two, three, four, five, six") == ["One", "two", "three", "four", "five",
+      "six"]
+    - assert words_string("Hi, my name") == ["Hi", "my", "name"]
+    - assert words_string("One,, two, three, four, five, six,") == ["One", "two", "three", "four", "five",
+      "six"]
+    - assert True, "This prints if this assert fails 2 (also good for debugging!)"
+    - assert words_string("") == []
+    - assert words_string("ahmed     , gamal") == ["ahmed", "gamal"]
+  mock_data:
+    docstring: "You will be given a string of words separated by commas or spaces. Your task is\n    to\
+      \ split the string into words and return an array of the words.\n    \n    For example:\n    words_string(\"\
+      Hi, my name is John\") == [\"Hi\", \"my\", \"name\", \"is\", \"John\"]\n    words_string(\"One,\
+      \ two, three, four, five, six\") == [\"One\", \"two\", \"three\", \"four\", \"five\", \"six\"]"
+    function_signature: 'def words_string(s):'
+    imports: ''
+    edge_cases:
+    - Empty list input
+    - Empty string input
+    - Boundary value inputs
+    humaneval_task_id: HumanEval/101
+    canonical_solution_lines: 10
+- id: task_hehard_034
+  description: "Implement the Python function choose_num(x, y).\nThis function takes two positive numbers\
+    \ x and y and returns the\n    biggest even integer number that is in the range [x, y] inclusive.\
+    \ If \n    there's no such number, then the function should return -1.\n\n    For example:\n    choose_num(12,\
+    \ 15) = 14\n    choose_num(13, 12) = -1"
+  ground_truth:
+    test_suite:
+    - assert choose_num(12, 15) == 14
+    - assert choose_num(13, 12) == -1
+    - assert choose_num(33, 12354) == 12354
+    - assert choose_num(5234, 5233) == -1
+    - assert choose_num(6, 29) == 28
+    - assert choose_num(27, 10) == -1
+    - assert choose_num(7, 7) == -1
+    - assert choose_num(546, 546) == 546
+  mock_data:
+    docstring: "This function takes two positive numbers x and y and returns the\n    biggest even integer\
+      \ number that is in the range [x, y] inclusive. If \n    there's no such number, then the function\
+      \ should return -1.\n\n    For example:\n    choose_num(12, 15) = 14\n    choose_num(13, 12) = -1"
+    function_signature: 'def choose_num(x, y):'
+    imports: ''
+    edge_cases:
+    - Boundary value inputs
+    - Typical case with standard values
+    - Edge case from docstring examples
+    humaneval_task_id: HumanEval/102
+    canonical_solution_lines: 7
+- id: task_hehard_035
+  description: "Implement the Python function f(n).\nImplement the function f that takes n as a parameter,\n\
+    \    and returns a list of size n, such that the value of the element at index i is the factorial\
+    \ of i if i is even\n    or the sum of numbers from 1 to i otherwise.\n    i starts from 1.\n    the\
+    \ factorial of i is the multiplication of the numbers from 1 to i (1 * 2 * ... * i).\n    Example:\n\
+    \    f(5) == [1, 2, 6, 24, 15]"
+  ground_truth:
+    test_suite:
+    - assert f(5) == [1, 2, 6, 24, 15]
+    - assert f(7) == [1, 2, 6, 24, 15, 720, 28]
+    - assert f(1) == [1]
+    - assert f(3) == [1, 2, 6]
+  mock_data:
+    docstring: "Implement the function f that takes n as a parameter,\n    and returns a list of size\
+      \ n, such that the value of the element at index i is the factorial of i if i is even\n    or the\
+      \ sum of numbers from 1 to i otherwise.\n    i starts from 1.\n    the factorial of i is the multiplication\
+      \ of the numbers from 1 to i (1 * 2 * ... * i).\n    Example:\n    f(5) == [1, 2, 6, 24, 15]"
+    function_signature: 'def f(n):'
+    imports: ''
+    edge_cases:
+    - Single element input
+    - Boundary value inputs
+    - Typical case with standard values
+    humaneval_task_id: HumanEval/106
+    canonical_solution_lines: 11
+- id: task_hehard_036
+  description: "Implement the Python function even_odd_palindrome(n).\nGiven a positive integer n, return\
+    \ a tuple that has the number of even and odd\n    integer palindromes that fall within the range(1,\
+    \ n), inclusive.\n\n    Example 1:\n\n        Input: 3\n        Output: (1, 2)\n        Explanation:\n\
+    \        Integer palindrome are 1, 2, 3. one of them is even, and two of them are odd.\n\n    Example\
+    \ 2:\n\n        Input: 12\n        Output: (4, 6)\n        Explanation:\n        Integer palindrome\
+    \ are 1, 2, 3, 4, 5, 6, 7, 8, 9, 11. four of them are even, and 6 of them are odd.\n\n    Note:\n\
+    \        1. 1 <= n <= 10^3\n        2. returned tuple has the number of even and odd integer palindromes\
+    \ respectively."
+  ground_truth:
+    test_suite:
+    - assert even_odd_palindrome(123) == (8, 13)
+    - assert even_odd_palindrome(12) == (4, 6)
+    - assert even_odd_palindrome(3) == (1, 2)
+    - assert even_odd_palindrome(63) == (6, 8)
+    - assert even_odd_palindrome(25) == (5, 6)
+    - assert even_odd_palindrome(19) == (4, 6)
+    - assert even_odd_palindrome(9) == (4, 5), "This prints if this assert fails 1 (good for debugging!)"
+    - assert even_odd_palindrome(1) == (0, 1), "This prints if this assert fails 2 (also good for debugging!)"
+  mock_data:
+    docstring: "Given a positive integer n, return a tuple that has the number of even and odd\n    integer\
+      \ palindromes that fall within the range(1, n), inclusive.\n\n    Example 1:\n\n        Input: 3\n\
+      \        Output: (1, 2)\n        Explanation:\n        Integer palindrome are 1, 2, 3. one of them\
+      \ is even, and two of them are odd.\n\n    Example 2:\n\n        Input: 12\n        Output: (4,\
+      \ 6)\n        Explanation:\n        Integer palindrome are 1, 2, 3, 4, 5, 6, 7, 8, 9, 11. four of\
+      \ them are even, and 6 of them are odd.\n\n    Note:\n        1. 1 <= n <= 10^3\n        2. returned\
+      \ tuple has the number of even and odd integer palindromes respectively."
+    function_signature: 'def even_odd_palindrome(n):'
+    imports: ''
+    edge_cases:
+    - Zero value input
+    - Boundary value inputs
+    - Typical case with standard values
+    humaneval_task_id: HumanEval/107
+    canonical_solution_lines: 10
+- id: task_hehard_037
+  description: "Implement the Python function count_nums(arr).\nWrite a function count_nums which takes\
+    \ an array of integers and returns\n    the number of elements which has a sum of digits > 0.\n  \
+    \  If a number is negative, then its first signed digit will be negative:\n    e.g. -123 has signed\
+    \ digits -1, 2, and 3.\n    >>> count_nums([]) == 0\n    >>> count_nums([-1, 11, -11]) == 1\n    >>>\
+    \ count_nums([1, 1, 2]) == 3"
+  ground_truth:
+    test_suite:
+    - assert count_nums([]) == 0
+    - assert count_nums([-1, -2, 0]) == 0
+    - assert count_nums([1, 1, 2, -2, 3, 4, 5]) == 6
+    - assert count_nums([1, 6, 9, -6, 0, 1, 5]) == 5
+    - assert count_nums([1, 100, 98, -7, 1, -1]) == 4
+    - assert count_nums([12, 23, 34, -45, -56, 0]) == 5
+    - assert count_nums([-0, 1**0]) == 1
+    - assert count_nums([1]) == 1
+    - assert True, "This prints if this assert fails 2 (also good for debugging!)"
+  mock_data:
+    docstring: "Write a function count_nums which takes an array of integers and returns\n    the number\
+      \ of elements which has a sum of digits > 0.\n    If a number is negative, then its first signed\
+      \ digit will be negative:\n    e.g. -123 has signed digits -1, 2, and 3.\n    >>> count_nums([])\
+      \ == 0\n    >>> count_nums([-1, 11, -11]) == 1\n    >>> count_nums([1, 1, 2]) == 3"
+    function_signature: 'def count_nums(arr):'
+    imports: ''
+    edge_cases:
+    - Empty list input
+    - Single element input
+    - Negative number inputs
+    humaneval_task_id: HumanEval/108
+    canonical_solution_lines: 7
+- id: task_hehard_038
+  description: "Implement the Python function move_one_ball(arr).\nWe have an array 'arr' of N integers\
+    \ arr[1], arr[2], ..., arr[N].The\n    numbers in the array will be randomly ordered. Your task is\
+    \ to determine if\n    it is possible to get an array sorted in non-decreasing order by performing\
+    \ \n    the following operation on the given array:\n        You are allowed to perform right shift\
+    \ operation any number of times.\n    \n    One right shift operation means shifting all elements\
+    \ of the array by one\n    position in the right direction. The last element of the array will be\
+    \ moved to\n    the starting position in the array i.e. 0th index. \n\n    If it is possible to obtain\
+    \ the sorted array by performing the above operation\n    then return True else return False.\n  \
+    \  If the given array is empty then return True.\n\n    Note: The given list is guaranteed to have\
+    \ unique elements.\n\n    For Example:\n    \n    move_one_ball([3, 4, 5, 1, 2])==>True\n    Explanation:\
+    \ By performin 2 right shift operations, non-decreasing order can\n                 be achieved for\
+    \ the given array.\n    move_one_ball([3, 5, 4, 1, 2])==>False\n    Explanation:It is not possible\
+    \ to get non-decreasing order for the given\n                array by performing any number of right\
+    \ shift operations."
+  ground_truth:
+    test_suite:
+    - assert move_one_ball([3, 4, 5, 1, 2])==True, "This prints if this assert fails 1 (good for debugging!)"
+    - assert move_one_ball([3, 5, 10, 1, 2])==True
+    - assert move_one_ball([4, 3, 1, 2])==False
+    - assert move_one_ball([3, 5, 4, 1, 2])==False, "This prints if this assert fails 2 (also good for
+      debugging!)"
+    - assert move_one_ball([])==True
+  mock_data:
+    docstring: "We have an array 'arr' of N integers arr[1], arr[2], ..., arr[N].The\n    numbers in the\
+      \ array will be randomly ordered. Your task is to determine if\n    it is possible to get an array\
+      \ sorted in non-decreasing order by performing \n    the following operation on the given array:\n\
+      \        You are allowed to perform right shift operation any number of times.\n    \n    One right\
+      \ shift operation means shifting all elements of the array by one\n    position in the right direction.\
+      \ The last element of the array will be moved to\n    the starting position in the array i.e. 0th\
+      \ index. \n\n    If it is possible to obtain the sorted array by performing the above operation\n\
+      \    then return True else return False.\n    If the given array is empty then return True.\n\n\
+      \    Note: The given list is guaranteed to have unique elements.\n\n    For Example:\n    \n   \
+      \ move_one_ball([3, 4, 5, 1, 2])==>True\n    Explanation: By performin 2 right shift operations,\
+      \ non-decreasing order can\n                 be achieved for the given array.\n    move_one_ball([3,\
+      \ 5, 4, 1, 2])==>False\n    Explanation:It is not possible to get non-decreasing order for the given\n\
+      \                array by performing any number of right shift operations."
+    function_signature: 'def move_one_ball(arr):'
+    imports: ''
+    edge_cases:
+    - Empty list input
+    - Boundary value inputs
+    - Typical case with standard values
+    humaneval_task_id: HumanEval/109
+    canonical_solution_lines: 11
+- id: task_hehard_039
+  description: "Implement the Python function exchange(lst1, lst2).\nIn this problem, you will implement\
+    \ a function that takes two lists of numbers,\n    and determines whether it is possible to perform\
+    \ an exchange of elements\n    between them to make lst1 a list of only even numbers.\n    There is\
+    \ no limit on the number of exchanged elements between lst1 and lst2.\n    If it is possible to exchange\
+    \ elements between the lst1 and lst2 to make\n    all the elements of lst1 to be even, return \"YES\"\
+    .\n    Otherwise, return \"NO\".\n    For example:\n    exchange([1, 2, 3, 4], [1, 2, 3, 4]) => \"\
+    YES\"\n    exchange([1, 2, 3, 4], [1, 5, 3, 4]) => \"NO\"\n    It is assumed that the input lists\
+    \ will be non-empty."
+  ground_truth:
+    test_suite:
+    - assert exchange([1, 2, 3, 4], [1, 2, 3, 4]) == "YES"
+    - assert exchange([1, 2, 3, 4], [1, 5, 3, 4]) == "NO"
+    - assert exchange([1, 2, 3, 4], [2, 1, 4, 3]) == "YES"
+    - assert exchange([5, 7, 3], [2, 6, 4]) == "YES"
+    - assert exchange([5, 7, 3], [2, 6, 3]) == "NO"
+    - assert exchange([3, 2, 6, 1, 8, 9], [3, 5, 5, 1, 1, 1]) == "NO"
+    - assert exchange([100, 200], [200, 200]) == "YES"
+  mock_data:
+    docstring: "In this problem, you will implement a function that takes two lists of numbers,\n    and\
+      \ determines whether it is possible to perform an exchange of elements\n    between them to make\
+      \ lst1 a list of only even numbers.\n    There is no limit on the number of exchanged elements between\
+      \ lst1 and lst2.\n    If it is possible to exchange elements between the lst1 and lst2 to make\n\
+      \    all the elements of lst1 to be even, return \"YES\".\n    Otherwise, return \"NO\".\n    For\
+      \ example:\n    exchange([1, 2, 3, 4], [1, 2, 3, 4]) => \"YES\"\n    exchange([1, 2, 3, 4], [1,\
+      \ 5, 3, 4]) => \"NO\"\n    It is assumed that the input lists will be non-empty."
+    function_signature: 'def exchange(lst1, lst2):'
+    imports: ''
+    edge_cases:
+    - Boundary value inputs
+    - Typical case with standard values
+    - Edge case from docstring examples
+    humaneval_task_id: HumanEval/110
+    canonical_solution_lines: 11
+- id: task_hehard_040
+  description: "Implement the Python function histogram(test).\nGiven a string representing a space separated\
+    \ lowercase letters, return a dictionary\n    of the letter with the most repetition and containing\
+    \ the corresponding count.\n    If several letters have the same occurrence, return all of them.\n\
+    \    \n    Example:\n    histogram('a b c') == {'a': 1, 'b': 1, 'c': 1}\n    histogram('a b b a')\
+    \ == {'a': 2, 'b': 2}\n    histogram('a b c a b') == {'a': 2, 'b': 2}\n    histogram('b b b b a')\
+    \ == {'b': 4}\n    histogram('') == {}"
+  ground_truth:
+    test_suite:
+    - 'assert histogram(''a b b a'') == {''a'':2,''b'': 2}, "This prints if this assert fails 1 (good
+      for debugging!)"'
+    - 'assert histogram(''a b c a b'') == {''a'': 2, ''b'': 2}, "This prints if this assert fails 2 (good
+      for debugging!)"'
+    - 'assert histogram(''a b c d g'') == {''a'': 1, ''b'': 1, ''c'': 1, ''d'': 1, ''g'': 1}, "This prints
+      if this assert fails 3 (good for debugging!)"'
+    - 'assert histogram(''r t g'') == {''r'': 1,''t'': 1,''g'': 1}, "This prints if this assert fails
+      4 (good for debugging!)"'
+    - 'assert histogram(''b b b b a'') == {''b'': 4}, "This prints if this assert fails 5 (good for debugging!)"'
+    - 'assert histogram(''r t g'') == {''r'': 1,''t'': 1,''g'': 1}, "This prints if this assert fails
+      6 (good for debugging!)"'
+    - assert histogram('') == {}, "This prints if this assert fails 7 (also good for debugging!)"
+    - 'assert histogram(''a'') == {''a'': 1}, "This prints if this assert fails 8 (also good for debugging!)"'
+  mock_data:
+    docstring: "Given a string representing a space separated lowercase letters, return a dictionary\n\
+      \    of the letter with the most repetition and containing the corresponding count.\n    If several\
+      \ letters have the same occurrence, return all of them.\n    \n    Example:\n    histogram('a b\
+      \ c') == {'a': 1, 'b': 1, 'c': 1}\n    histogram('a b b a') == {'a': 2, 'b': 2}\n    histogram('a\
+      \ b c a b') == {'a': 2, 'b': 2}\n    histogram('b b b b a') == {'b': 4}\n    histogram('') == {}"
+    function_signature: 'def histogram(test):'
+    imports: ''
+    edge_cases:
+    - Empty string input
+    - Boundary value inputs
+    - Typical case with standard values
+    humaneval_task_id: HumanEval/111
+    canonical_solution_lines: 11
+- id: task_hehard_041
+  description: "Implement the Python function minSubArraySum(nums).\nGiven an array of integers nums,\
+    \ find the minimum sum of any non-empty sub-array\n    of nums.\n    Example\n    minSubArraySum([2,\
+    \ 3, 4, 1, 2, 4]) == 1\n    minSubArraySum([-1, -2, -3]) == -6"
+  ground_truth:
+    test_suite:
+    - assert minSubArraySum([2, 3, 4, 1, 2, 4]) == 1, "This prints if this assert fails 1 (good for debugging!)"
+    - assert minSubArraySum([-1, -2, -3]) == -6
+    - assert minSubArraySum([-1, -2, -3, 2, -10]) == -14
+    - assert minSubArraySum([-9999999999999999]) == -9999999999999999
+    - assert minSubArraySum([0, 10, 20, 1000000]) == 0
+    - assert minSubArraySum([-1, -2, -3, 10, -5]) == -6
+    - assert minSubArraySum([100, -1, -2, -3, 10, -5]) == -6
+    - assert minSubArraySum([10, 11, 13, 8, 3, 4]) == 3
+    - assert minSubArraySum([100, -33, 32, -1, 0, -2]) == -33
+    - assert minSubArraySum([-10]) == -10, "This prints if this assert fails 2 (also good for debugging!)"
+    - assert minSubArraySum([7]) == 7
+    - assert minSubArraySum([1, -1]) == -1
+  mock_data:
+    docstring: "Given an array of integers nums, find the minimum sum of any non-empty sub-array\n   \
+      \ of nums.\n    Example\n    minSubArraySum([2, 3, 4, 1, 2, 4]) == 1\n    minSubArraySum([-1, -2,\
+      \ -3]) == -6"
+    function_signature: 'def minSubArraySum(nums):'
+    imports: ''
+    edge_cases:
+    - Single element input
+    - Negative number inputs
+    - Zero value input
+    humaneval_task_id: HumanEval/114
+    canonical_solution_lines: 11
+- id: task_hehard_042
+  description: "Implement the Python function select_words(s, n).\nGiven a string s and a natural number\
+    \ n, you have been tasked to implement \n    a function that returns a list of all words from string\
+    \ s that contain exactly \n    n consonants, in order these words appear in the string s.\n    If\
+    \ the string s is empty then the function should return an empty list.\n    Note: you may assume the\
+    \ input string contains only letters and spaces.\n    Examples:\n    select_words(\"Mary had a little\
+    \ lamb\", 4) ==> [\"little\"]\n    select_words(\"Mary had a little lamb\", 3) ==> [\"Mary\", \"lamb\"\
+    ]\n    select_words(\"simple white space\", 2) ==> []\n    select_words(\"Hello world\", 4) ==> [\"\
+    world\"]\n    select_words(\"Uncle sam\", 3) ==> [\"Uncle\"]"
+  ground_truth:
+    test_suite:
+    - 'assert select_words("Mary had a little lamb", 4) == ["little"], "First test error: " + str(select_words("Mary
+      had a little lamb", 4))'
+    - 'assert select_words("Mary had a little lamb", 3) == ["Mary", "lamb"], "Second test error: " + str(select_words("Mary
+      had a little lamb", 3))'
+    - 'assert select_words("simple white space", 2) == [], "Third test error: " + str(select_words("simple
+      white space", 2))'
+    - 'assert select_words("Hello world", 4) == ["world"], "Fourth test error: " + str(select_words("Hello
+      world", 4))'
+    - 'assert select_words("Uncle sam", 3) == ["Uncle"], "Fifth test error: " + str(select_words("Uncle
+      sam", 3))'
+    - 'assert select_words("", 4) == [], "1st edge test error: " + str(select_words("", 4))'
+    - 'assert select_words("a b c d e f", 1) == ["b", "c", "d", "f"], "2nd edge test error: " + str(select_words("a
+      b c d e f", 1))'
+  mock_data:
+    docstring: "Given a string s and a natural number n, you have been tasked to implement \n    a function\
+      \ that returns a list of all words from string s that contain exactly \n    n consonants, in order\
+      \ these words appear in the string s.\n    If the string s is empty then the function should return\
+      \ an empty list.\n    Note: you may assume the input string contains only letters and spaces.\n\
+      \    Examples:\n    select_words(\"Mary had a little lamb\", 4) ==> [\"little\"]\n    select_words(\"\
+      Mary had a little lamb\", 3) ==> [\"Mary\", \"lamb\"]\n    select_words(\"simple white space\",\
+      \ 2) ==> []\n    select_words(\"Hello world\", 4) ==> [\"world\"]\n    select_words(\"Uncle sam\"\
+      , 3) ==> [\"Uncle\"]"
+    function_signature: 'def select_words(s, n):'
+    imports: ''
+    edge_cases:
+    - Empty list input
+    - Empty string input
+    - Boundary value inputs
+    humaneval_task_id: HumanEval/117
+    canonical_solution_lines: 9
+- id: task_hehard_043
+  description: "Implement the Python function get_closest_vowel(word).\nYou are given a word. Your task\
+    \ is to find the closest vowel that stands between \n    two consonants from the right side of the\
+    \ word (case sensitive).\n    \n    Vowels in the beginning and ending doesn't count. Return empty\
+    \ string if you didn't\n    find any vowel met the above condition. \n\n    You may assume that the\
+    \ given string contains English letter only.\n\n    Example:\n    get_closest_vowel(\"yogurt\") ==>\
+    \ \"u\"\n    get_closest_vowel(\"FULL\") ==> \"U\"\n    get_closest_vowel(\"quick\") ==> \"\"\n  \
+    \  get_closest_vowel(\"ab\") ==> \"\""
+  ground_truth:
+    test_suite:
+    - assert get_closest_vowel("yogurt") == "u"
+    - assert get_closest_vowel("full") == "u"
+    - assert get_closest_vowel("easy") == ""
+    - assert get_closest_vowel("eAsy") == ""
+    - assert get_closest_vowel("ali") == ""
+    - assert get_closest_vowel("bad") == "a"
+    - assert get_closest_vowel("most") == "o"
+    - assert get_closest_vowel("ab") == ""
+    - assert get_closest_vowel("ba") == ""
+    - assert get_closest_vowel("quick") == ""
+    - assert get_closest_vowel("anime") == "i"
+    - assert get_closest_vowel("Asia") == ""
+    - assert get_closest_vowel("Above") == "o"
+    - assert True
+  mock_data:
+    docstring: "You are given a word. Your task is to find the closest vowel that stands between \n  \
+      \  two consonants from the right side of the word (case sensitive).\n    \n    Vowels in the beginning\
+      \ and ending doesn't count. Return empty string if you didn't\n    find any vowel met the above\
+      \ condition. \n\n    You may assume that the given string contains English letter only.\n\n    Example:\n\
+      \    get_closest_vowel(\"yogurt\") ==> \"u\"\n    get_closest_vowel(\"FULL\") ==> \"U\"\n    get_closest_vowel(\"\
+      quick\") ==> \"\"\n    get_closest_vowel(\"ab\") ==> \"\""
+    function_signature: 'def get_closest_vowel(word):'
+    imports: ''
+    edge_cases:
+    - Empty string input
+    - Boundary value inputs
+    - Typical case with standard values
+    humaneval_task_id: HumanEval/118
+    canonical_solution_lines: 8
+- id: task_hehard_044
+  description: "Implement the Python function get_odd_collatz(n).\nGiven a positive integer n, return\
+    \ a sorted list that has the odd numbers in collatz sequence.\n\n    The Collatz conjecture is a conjecture\
+    \ in mathematics that concerns a sequence defined\n    as follows: start with any positive integer\
+    \ n. Then each term is obtained from the \n    previous term as follows: if the previous term is even,\
+    \ the next term is one half of \n    the previous term. If the previous term is odd, the next term\
+    \ is 3 times the previous\n    term plus 1. The conjecture is that no matter what value of n, the\
+    \ sequence will always reach 1.\n\n    Note: \n        1. Collatz(1) is [1].\n        2. returned\
+    \ list sorted in increasing order.\n\n    For example:\n    get_odd_collatz(5) returns [1, 5] # The\
+    \ collatz sequence for 5 is [5, 16, 8, 4, 2, 1], so the odd numbers are only 1, and 5."
+  ground_truth:
+    test_suite:
+    - assert get_odd_collatz(14) == [1, 5, 7, 11, 13, 17]
+    - assert get_odd_collatz(5) == [1, 5]
+    - assert get_odd_collatz(12) == [1, 3, 5], "This prints if this assert fails 1 (good for debugging!)"
+    - assert get_odd_collatz(1) == [1], "This prints if this assert fails 2 (also good for debugging!)"
+  mock_data:
+    docstring: "Given a positive integer n, return a sorted list that has the odd numbers in collatz sequence.\n\
+      \n    The Collatz conjecture is a conjecture in mathematics that concerns a sequence defined\n \
+      \   as follows: start with any positive integer n. Then each term is obtained from the \n    previous\
+      \ term as follows: if the previous term is even, the next term is one half of \n    the previous\
+      \ term. If the previous term is odd, the next term is 3 times the previous\n    term plus 1. The\
+      \ conjecture is that no matter what value of n, the sequence will always reach 1.\n\n    Note: \n\
+      \        1. Collatz(1) is [1].\n        2. returned list sorted in increasing order.\n\n    For\
+      \ example:\n    get_odd_collatz(5) returns [1, 5] # The collatz sequence for 5 is [5, 16, 8, 4,\
+      \ 2, 1], so the odd numbers are only 1, and 5."
+    function_signature: 'def get_odd_collatz(n):'
+    imports: ''
+    edge_cases:
+    - Single element input
+    - Boundary value inputs
+    - Typical case with standard values
+    humaneval_task_id: HumanEval/123
+    canonical_solution_lines: 12
+- id: task_hehard_045
+  description: "Implement the Python function is_sorted(lst).\nGiven a list of numbers, return whether\
+    \ or not they are sorted\n    in ascending order. If list has more than 1 duplicate of the same\n\
+    \    number, return False. Assume no negative numbers and only integers.\n\n    Examples\n    is_sorted([5])\
+    \ ➞ True\n    is_sorted([1, 2, 3, 4, 5]) ➞ True\n    is_sorted([1, 3, 2, 4, 5]) ➞ False\n    is_sorted([1,\
+    \ 2, 3, 4, 5, 6]) ➞ True\n    is_sorted([1, 2, 3, 4, 5, 6, 7]) ➞ True\n    is_sorted([1, 3, 2, 4,\
+    \ 5, 6, 7]) ➞ False\n    is_sorted([1, 2, 2, 3, 3, 4]) ➞ True\n    is_sorted([1, 2, 2, 2, 3, 4]) ➞\
+    \ False"
+  ground_truth:
+    test_suite:
+    - assert is_sorted([5]) == True
+    - assert is_sorted([1, 2, 3, 4, 5]) == True
+    - assert is_sorted([1, 3, 2, 4, 5]) == False
+    - assert is_sorted([1, 2, 3, 4, 5, 6]) == True
+    - assert is_sorted([1, 2, 3, 4, 5, 6, 7]) == True
+    - assert is_sorted([1, 3, 2, 4, 5, 6, 7]) == False, "This prints if this assert fails 1 (good for
+      debugging!)"
+    - assert is_sorted([]) == True, "This prints if this assert fails 2 (good for debugging!)"
+    - assert is_sorted([1]) == True, "This prints if this assert fails 3 (good for debugging!)"
+    - assert is_sorted([3, 2, 1]) == False, "This prints if this assert fails 4 (good for debugging!)"
+    - assert is_sorted([1, 2, 2, 2, 3, 4]) == False, "This prints if this assert fails 5 (good for debugging!)"
+    - assert is_sorted([1, 2, 3, 3, 3, 4]) == False, "This prints if this assert fails 6 (good for debugging!)"
+    - assert is_sorted([1, 2, 2, 3, 3, 4]) == True, "This prints if this assert fails 7 (good for debugging!)"
+    - assert is_sorted([1, 2, 3, 4]) == True, "This prints if this assert fails 8 (good for debugging!)"
+  mock_data:
+    docstring: "Given a list of numbers, return whether or not they are sorted\n    in ascending order.\
+      \ If list has more than 1 duplicate of the same\n    number, return False. Assume no negative numbers\
+      \ and only integers.\n\n    Examples\n    is_sorted([5]) ➞ True\n    is_sorted([1, 2, 3, 4, 5])\
+      \ ➞ True\n    is_sorted([1, 3, 2, 4, 5]) ➞ False\n    is_sorted([1, 2, 3, 4, 5, 6]) ➞ True\n   \
+      \ is_sorted([1, 2, 3, 4, 5, 6, 7]) ➞ True\n    is_sorted([1, 3, 2, 4, 5, 6, 7]) ➞ False\n    is_sorted([1,\
+      \ 2, 2, 3, 3, 4]) ➞ True\n    is_sorted([1, 2, 2, 2, 3, 4]) ➞ False"
+    function_signature: 'def is_sorted(lst):'
+    imports: ''
+    edge_cases:
+    - Empty list input
+    - Single element input
+    - Boundary value inputs
+    humaneval_task_id: HumanEval/126
+    canonical_solution_lines: 9
+- id: task_hehard_046
+  description: "Implement the Python function tri(n).\nEveryone knows Fibonacci sequence, it was studied\
+    \ deeply by mathematicians in \n    the last couple centuries. However, what people don't know is\
+    \ Tribonacci sequence.\n    Tribonacci sequence is defined by the recurrence:\n    tri(1) = 3\n  \
+    \  tri(n) = 1 + n / 2, if n is even.\n    tri(n) =  tri(n - 1) + tri(n - 2) + tri(n + 1), if n is\
+    \ odd.\n    For example:\n    tri(2) = 1 + (2 / 2) = 2\n    tri(4) = 3\n    tri(3) = tri(2) + tri(1)\
+    \ + tri(4)\n           = 2 + 3 + 3 = 8 \n    You are given a non-negative integer number n, you have\
+    \ to a return a list of the \n    first n + 1 numbers of the Tribonacci sequence.\n    Examples:\n\
+    \    tri(3) = [1, 3, 2, 8]"
+  ground_truth:
+    test_suite:
+    - assert tri(3) == [1, 3, 2.0, 8.0]
+    - assert tri(4) == [1, 3, 2.0, 8.0, 3.0]
+    - assert tri(5) == [1, 3, 2.0, 8.0, 3.0, 15.0]
+    - assert tri(6) == [1, 3, 2.0, 8.0, 3.0, 15.0, 4.0]
+    - assert tri(7) == [1, 3, 2.0, 8.0, 3.0, 15.0, 4.0, 24.0]
+    - assert tri(8) == [1, 3, 2.0, 8.0, 3.0, 15.0, 4.0, 24.0, 5.0]
+    - assert tri(9) == [1, 3, 2.0, 8.0, 3.0, 15.0, 4.0, 24.0, 5.0, 35.0]
+    - assert tri(20) == [1, 3, 2.0, 8.0, 3.0, 15.0, 4.0, 24.0, 5.0, 35.0, 6.0, 48.0, 7.0, 63.0, 8.0, 80.0,
+      9.0, 99.0, 10.0, 120.0, 11.0]
+    - assert tri(0) == [1]
+    - assert tri(1) == [1, 3]
+  mock_data:
+    docstring: "Everyone knows Fibonacci sequence, it was studied deeply by mathematicians in \n    the\
+      \ last couple centuries. However, what people don't know is Tribonacci sequence.\n    Tribonacci\
+      \ sequence is defined by the recurrence:\n    tri(1) = 3\n    tri(n) = 1 + n / 2, if n is even.\n\
+      \    tri(n) =  tri(n - 1) + tri(n - 2) + tri(n + 1), if n is odd.\n    For example:\n    tri(2)\
+      \ = 1 + (2 / 2) = 2\n    tri(4) = 3\n    tri(3) = tri(2) + tri(1) + tri(4)\n           = 2 + 3 +\
+      \ 3 = 8 \n    You are given a non-negative integer number n, you have to a return a list of the\
+      \ \n    first n + 1 numbers of the Tribonacci sequence.\n    Examples:\n    tri(3) = [1, 3, 2, 8]"
+    function_signature: 'def tri(n):'
+    imports: ''
+    edge_cases:
+    - Single element input
+    - Zero value input
+    - Boundary value inputs
+    humaneval_task_id: HumanEval/130
+    canonical_solution_lines: 9
+- id: task_hehard_047
+  description: "Implement the Python function can_arrange(arr).\nCreate a function which returns the largest\
+    \ index of an element which\n    is not greater than or equal to the element immediately preceding\
+    \ it. If\n    no such element exists then return -1. The given array will not contain\n    duplicate\
+    \ values.\n\n    Examples:\n    can_arrange([1,2,4,3,5]) = 3\n    can_arrange([1,2,3]) = -1"
+  ground_truth:
+    test_suite:
+    - assert can_arrange([1,2,4,3,5])==3
+    - assert can_arrange([1,2,4,5])==-1
+    - assert can_arrange([1,4,2,5,6,7,8,9,10])==2
+    - assert can_arrange([4,8,5,7,3])==4
+    - assert can_arrange([])==-1
+  mock_data:
+    docstring: "Create a function which returns the largest index of an element which\n    is not greater\
+      \ than or equal to the element immediately preceding it. If\n    no such element exists then return\
+      \ -1. The given array will not contain\n    duplicate values.\n\n    Examples:\n    can_arrange([1,2,4,3,5])\
+      \ = 3\n    can_arrange([1,2,3]) = -1"
+    function_signature: 'def can_arrange(arr):'
+    imports: ''
+    edge_cases:
+    - Empty list input
+    - Large input values
+    - Boundary value inputs
+    humaneval_task_id: HumanEval/135
+    canonical_solution_lines: 7
+- id: task_hehard_048
+  description: "Implement the Python function simplify(x, n).\nYour task is to implement a function that\
+    \ will simplify the expression\n    x * n. The function returns True if x * n evaluates to a whole\
+    \ number and False\n    otherwise. Both x and n, are string representation of a fraction, and have\
+    \ the following format,\n    <numerator>/<denominator> where both numerator and denominator are positive\
+    \ whole numbers.\n\n    You can assume that x, and n are valid fractions, and do not have zero as\
+    \ denominator.\n\n    simplify(\"1/5\", \"5/1\") = True\n    simplify(\"1/6\", \"2/1\") = False\n\
+    \    simplify(\"7/10\", \"10/2\") = False"
+  ground_truth:
+    test_suite:
+    - assert simplify("1/5", "5/1") == True, 'test1'
+    - assert simplify("1/6", "2/1") == False, 'test2'
+    - assert simplify("5/1", "3/1") == True, 'test3'
+    - assert simplify("7/10", "10/2") == False, 'test4'
+    - assert simplify("2/10", "50/10") == True, 'test5'
+    - assert simplify("7/2", "4/2") == True, 'test6'
+    - assert simplify("11/6", "6/1") == True, 'test7'
+    - assert simplify("2/3", "5/2") == False, 'test8'
+    - assert simplify("5/2", "3/5") == False, 'test9'
+    - assert simplify("2/4", "8/4") == True, 'test10'
+    - assert simplify("2/4", "4/2") == True, 'test11'
+    - assert simplify("1/5", "5/1") == True, 'test12'
+    - assert simplify("1/5", "1/5") == False, 'test13'
+  mock_data:
+    docstring: "Your task is to implement a function that will simplify the expression\n    x * n. The\
+      \ function returns True if x * n evaluates to a whole number and False\n    otherwise. Both x and\
+      \ n, are string representation of a fraction, and have the following format,\n    <numerator>/<denominator>\
+      \ where both numerator and denominator are positive whole numbers.\n\n    You can assume that x,\
+      \ and n are valid fractions, and do not have zero as denominator.\n\n    simplify(\"1/5\", \"5/1\"\
+      ) = True\n    simplify(\"1/6\", \"2/1\") = False\n    simplify(\"7/10\", \"10/2\") = False"
+    function_signature: 'def simplify(x, n):'
+    imports: ''
+    edge_cases:
+    - Boundary value inputs
+    - Typical case with standard values
+    - Edge case from docstring examples
+    humaneval_task_id: HumanEval/144
+    canonical_solution_lines: 7
+- id: task_hehard_049
+  description: "Implement the Python function order_by_points(nums).\nWrite a function which sorts the\
+    \ given list of integers\n    in ascending order according to the sum of their digits.\n    Note:\
+    \ if there are several items with similar sum of their digits,\n    order them based on their index\
+    \ in original list.\n\n    For example:\n    >>> order_by_points([1, 11, -1, -11, -12]) == [-1, -11,\
+    \ 1, -12, 11]\n    >>> order_by_points([]) == []"
+  ground_truth:
+    test_suite:
+    - assert order_by_points([1, 11, -1, -11, -12]) == [-1, -11, 1, -12, 11]
+    - assert order_by_points([1234,423,463,145,2,423,423,53,6,37,3457,3,56,0,46]) == [0, 2, 3, 6, 53,
+      423, 423, 423, 1234, 145, 37, 46, 56, 463, 3457]
+    - assert order_by_points([]) == []
+    - assert order_by_points([1, -11, -32, 43, 54, -98, 2, -3]) == [-3, -32, -98, -11, 1, 2, 43, 54]
+    - assert order_by_points([1,2,3,4,5,6,7,8,9,10,11]) == [1, 10, 2, 11, 3, 4, 5, 6, 7, 8, 9]
+    - assert order_by_points([0,6,6,-76,-21,23,4]) == [-76, -21, 0, 4, 23, 6, 6]
+    - assert True, "This prints if this assert fails 2 (also good for debugging!)"
+  mock_data:
+    docstring: "Write a function which sorts the given list of integers\n    in ascending order according\
+      \ to the sum of their digits.\n    Note: if there are several items with similar sum of their digits,\n\
+      \    order them based on their index in original list.\n\n    For example:\n    >>> order_by_points([1,\
+      \ 11, -1, -11, -12]) == [-1, -11, 1, -12, 11]\n    >>> order_by_points([]) == []"
+    function_signature: 'def order_by_points(nums):'
+    imports: ''
+    edge_cases:
+    - Empty list input
+    - Negative number inputs
+    - Zero value input
+    humaneval_task_id: HumanEval/145
+    canonical_solution_lines: 7
+- id: task_hehard_050
+  description: "Implement the Python function specialFilter(nums).\nWrite a function that takes an array\
+    \ of numbers as input and returns \n    the number of elements in the array that are greater than\
+    \ 10 and both \n    first and last digits of a number are odd (1, 3, 5, 7, 9).\n    For example:\n\
+    \    specialFilter([15, -73, 14, -15]) => 1 \n    specialFilter([33, -2, -3, 45, 21, 109]) => 2"
+  ground_truth:
+    test_suite:
+    - assert specialFilter([5, -2, 1, -5]) == 0
+    - assert specialFilter([15, -73, 14, -15]) == 1
+    - assert specialFilter([33, -2, -3, 45, 21, 109]) == 2
+    - assert specialFilter([43, -12, 93, 125, 121, 109]) == 4
+    - assert specialFilter([71, -2, -33, 75, 21, 19]) == 3
+    - assert specialFilter([1]) == 0
+    - assert specialFilter([]) == 0
+  mock_data:
+    docstring: "Write a function that takes an array of numbers as input and returns \n    the number\
+      \ of elements in the array that are greater than 10 and both \n    first and last digits of a number\
+      \ are odd (1, 3, 5, 7, 9).\n    For example:\n    specialFilter([15, -73, 14, -15]) => 1 \n    specialFilter([33,\
+      \ -2, -3, 45, 21, 109]) => 2"
+    function_signature: 'def specialFilter(nums):'
+    imports: ''
+    edge_cases:
+    - Empty list input
+    - Single element input
+    - Boundary value inputs
+    humaneval_task_id: HumanEval/146
+    canonical_solution_lines: 8

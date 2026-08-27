@@ -1,0 +1,5380 @@
+{
+  "note": "Feature-selection audit. Existing data only; no experiment was launched and the feature freeze is unchanged. The outcome-blind sections (inventory, redundancy, rank equivalence, monitored sets) never see an attack label; the leave-one-out and block sections are post-hoc explanatory diagnostics and are not a selection rule.",
+  "canonical_block": "structural_dynamic",
+  "n_features_declared": 8,
+  "declared_features": [
+    "betweenness_centrality",
+    "information_bottleneck",
+    "is_bridge",
+    "endpoint_centrality_max",
+    "source_degree_centrality",
+    "target_degree_centrality",
+    "ablation_delta",
+    "perturbation_delta"
+  ],
+  "denominators": {
+    "n_configurations_total": 30,
+    "n_configurations_per_domain": {
+      "customer_service": 15,
+      "software_engineering": 15
+    },
+    "n_configuration_directions_total": 60,
+    "n_edge_rows_per_domain": {
+      "customer_service": 222,
+      "software_engineering": 222
+    },
+    "n_enforcement_configurations": 10,
+    "rank_equivalence_budgets": [
+      0.1,
+      0.2,
+      0.4
+    ],
+    "diagnostic_budget": 0.2
+  },
+  "inventory": {
+    "betweenness_centrality": {
+      "mechanism": "graph: fraction of shortest paths through the edge",
+      "cost_class": "graph-only",
+      "sign": 1,
+      "in_canonical_block": true,
+      "available": true,
+      "coverage": 1.0,
+      "n_configurations_varies": 18,
+      "fraction_configurations_varies": 0.6,
+      "n_directions_varies": 36,
+      "median_distinct_values": 2.0,
+      "by_domain": {
+        "customer_service": {
+          "n_configurations": 15,
+          "n_configurations_varies": 9,
+          "n_configurations_varies_in_both_directions": 9,
+          "n_directions": 30,
+          "n_directions_varies": 18,
+          "median_distinct_values": 2.0,
+          "max_distinct_values": 3
+        },
+        "software_engineering": {
+          "n_configurations": 15,
+          "n_configurations_varies": 9,
+          "n_configurations_varies_in_both_directions": 9,
+          "n_directions": 30,
+          "n_directions_varies": 18,
+          "median_distinct_values": 2.0,
+          "max_distinct_values": 3
+        }
+      },
+      "status": "included",
+      "reason": "In the canonical block; varies in 18 of the 30 configurations."
+    },
+    "information_bottleneck": {
+      "mechanism": "graph: does removing the edge disconnect a source-sink information path",
+      "cost_class": "graph-only",
+      "sign": 1,
+      "in_canonical_block": true,
+      "available": true,
+      "coverage": 1.0,
+      "n_configurations_varies": 0,
+      "fraction_configurations_varies": 0.0,
+      "n_directions_varies": 0,
+      "median_distinct_values": 1.0,
+      "by_domain": {
+        "customer_service": {
+          "n_configurations": 15,
+          "n_configurations_varies": 0,
+          "n_configurations_varies_in_both_directions": 0,
+          "n_directions": 30,
+          "n_directions_varies": 0,
+          "median_distinct_values": 1.0,
+          "max_distinct_values": 1
+        },
+        "software_engineering": {
+          "n_configurations": 15,
+          "n_configurations_varies": 0,
+          "n_configurations_varies_in_both_directions": 0,
+          "n_directions": 30,
+          "n_directions_varies": 0,
+          "median_distinct_values": 1.0,
+          "max_distinct_values": 1
+        }
+      },
+      "status": "included (inert)",
+      "reason": "In the canonical block, but constant across the edges of every one of the 30 configurations, in both cross-fit directions. Within-configuration normalization maps a constant column to a single value, so this feature adds the same amount to every edge and cannot change any ranking. It is declared, not active."
+    },
+    "is_bridge": {
+      "mechanism": "graph: edge is a bridge of the undirected support (binary)",
+      "cost_class": "graph-only",
+      "sign": 1,
+      "in_canonical_block": true,
+      "available": true,
+      "coverage": 1.0,
+      "n_configurations_varies": 0,
+      "fraction_configurations_varies": 0.0,
+      "n_directions_varies": 0,
+      "median_distinct_values": 1.0,
+      "by_domain": {
+        "customer_service": {
+          "n_configurations": 15,
+          "n_configurations_varies": 0,
+          "n_configurations_varies_in_both_directions": 0,
+          "n_directions": 30,
+          "n_directions_varies": 0,
+          "median_distinct_values": 1.0,
+          "max_distinct_values": 1
+        },
+        "software_engineering": {
+          "n_configurations": 15,
+          "n_configurations_varies": 0,
+          "n_configurations_varies_in_both_directions": 0,
+          "n_directions": 30,
+          "n_directions_varies": 0,
+          "median_distinct_values": 1.0,
+          "max_distinct_values": 1
+        }
+      },
+      "status": "included (inert)",
+      "reason": "In the canonical block, but constant across the edges of every one of the 30 configurations, in both cross-fit directions. Within-configuration normalization maps a constant column to a single value, so this feature adds the same amount to every edge and cannot change any ranking. It is declared, not active."
+    },
+    "endpoint_centrality_max": {
+      "mechanism": "graph: max(source degree centrality, target degree centrality) -- DERIVED from the two features below",
+      "cost_class": "graph-only",
+      "sign": -1,
+      "in_canonical_block": true,
+      "available": true,
+      "coverage": 1.0,
+      "n_configurations_varies": 12,
+      "fraction_configurations_varies": 0.4,
+      "n_directions_varies": 24,
+      "median_distinct_values": 1.0,
+      "by_domain": {
+        "customer_service": {
+          "n_configurations": 15,
+          "n_configurations_varies": 6,
+          "n_configurations_varies_in_both_directions": 6,
+          "n_directions": 30,
+          "n_directions_varies": 12,
+          "median_distinct_values": 1.0,
+          "max_distinct_values": 2
+        },
+        "software_engineering": {
+          "n_configurations": 15,
+          "n_configurations_varies": 6,
+          "n_configurations_varies_in_both_directions": 6,
+          "n_directions": 30,
+          "n_directions_varies": 12,
+          "median_distinct_values": 1.0,
+          "max_distinct_values": 2
+        }
+      },
+      "status": "included",
+      "reason": "In the canonical block; varies in 12 of the 30 configurations."
+    },
+    "source_degree_centrality": {
+      "mechanism": "graph: degree centrality of the sending agent",
+      "cost_class": "graph-only",
+      "sign": -1,
+      "in_canonical_block": true,
+      "available": true,
+      "coverage": 1.0,
+      "n_configurations_varies": 24,
+      "fraction_configurations_varies": 0.8,
+      "n_directions_varies": 48,
+      "median_distinct_values": 2.0,
+      "by_domain": {
+        "customer_service": {
+          "n_configurations": 15,
+          "n_configurations_varies": 12,
+          "n_configurations_varies_in_both_directions": 12,
+          "n_directions": 30,
+          "n_directions_varies": 24,
+          "median_distinct_values": 2.0,
+          "max_distinct_values": 3
+        },
+        "software_engineering": {
+          "n_configurations": 15,
+          "n_configurations_varies": 12,
+          "n_configurations_varies_in_both_directions": 12,
+          "n_directions": 30,
+          "n_directions_varies": 24,
+          "median_distinct_values": 2.0,
+          "max_distinct_values": 3
+        }
+      },
+      "status": "included",
+      "reason": "In the canonical block; varies in 24 of the 30 configurations."
+    },
+    "target_degree_centrality": {
+      "mechanism": "graph: degree centrality of the receiving agent",
+      "cost_class": "graph-only",
+      "sign": -1,
+      "in_canonical_block": true,
+      "available": true,
+      "coverage": 1.0,
+      "n_configurations_varies": 24,
+      "fraction_configurations_varies": 0.8,
+      "n_directions_varies": 48,
+      "median_distinct_values": 2.0,
+      "by_domain": {
+        "customer_service": {
+          "n_configurations": 15,
+          "n_configurations_varies": 12,
+          "n_configurations_varies_in_both_directions": 12,
+          "n_directions": 30,
+          "n_directions_varies": 24,
+          "median_distinct_values": 2.0,
+          "max_distinct_values": 3
+        },
+        "software_engineering": {
+          "n_configurations": 15,
+          "n_configurations_varies": 12,
+          "n_configurations_varies_in_both_directions": 12,
+          "n_directions": 30,
+          "n_directions_varies": 24,
+          "median_distinct_values": 2.0,
+          "max_distinct_values": 3
+        }
+      },
+      "status": "included",
+      "reason": "In the canonical block; varies in 24 of the 30 configurations."
+    },
+    "ablation_delta": {
+      "mechanism": "probe: remove the edge, re-run the clean workflow, paired drop in decision accuracy",
+      "cost_class": "workflow re-execution",
+      "sign": 1,
+      "in_canonical_block": true,
+      "available": true,
+      "coverage": 1.0,
+      "n_configurations_varies": 30,
+      "fraction_configurations_varies": 1.0,
+      "n_directions_varies": 60,
+      "median_distinct_values": 4.0,
+      "by_domain": {
+        "customer_service": {
+          "n_configurations": 15,
+          "n_configurations_varies": 15,
+          "n_configurations_varies_in_both_directions": 15,
+          "n_directions": 30,
+          "n_directions_varies": 30,
+          "median_distinct_values": 4.0,
+          "max_distinct_values": 6
+        },
+        "software_engineering": {
+          "n_configurations": 15,
+          "n_configurations_varies": 15,
+          "n_configurations_varies_in_both_directions": 15,
+          "n_directions": 30,
+          "n_directions_varies": 30,
+          "median_distinct_values": 3.0,
+          "max_distinct_values": 7
+        }
+      },
+      "status": "included",
+      "reason": "In the canonical block; varies in 30 of the 30 configurations."
+    },
+    "perturbation_delta": {
+      "mechanism": "probe: inject noise on the edge, re-run the clean workflow, paired drop in decision accuracy",
+      "cost_class": "workflow re-execution",
+      "sign": 1,
+      "in_canonical_block": true,
+      "available": true,
+      "coverage": 1.0,
+      "n_configurations_varies": 30,
+      "fraction_configurations_varies": 1.0,
+      "n_directions_varies": 60,
+      "median_distinct_values": 4.0,
+      "by_domain": {
+        "customer_service": {
+          "n_configurations": 15,
+          "n_configurations_varies": 15,
+          "n_configurations_varies_in_both_directions": 15,
+          "n_directions": 30,
+          "n_directions_varies": 30,
+          "median_distinct_values": 4.0,
+          "max_distinct_values": 6
+        },
+        "software_engineering": {
+          "n_configurations": 15,
+          "n_configurations_varies": 15,
+          "n_configurations_varies_in_both_directions": 15,
+          "n_directions": 30,
+          "n_directions_varies": 30,
+          "median_distinct_values": 3.0,
+          "max_distinct_values": 6
+        }
+      },
+      "status": "included",
+      "reason": "In the canonical block; varies in 30 of the 30 configurations."
+    },
+    "semantic_non_recoverability": {
+      "mechanism": "probe: 1 - E_t[max_c sim(message, receiver's prior context)]",
+      "cost_class": "clean transcripts + embedding",
+      "sign": 1,
+      "in_canonical_block": false,
+      "available": false,
+      "measured_in_archival_study": true,
+      "coverage": 0.0,
+      "archival_coverage": 1.0,
+      "n_configurations_varies": null,
+      "fraction_configurations_varies": null,
+      "median_distinct_values": null,
+      "archival": {
+        "available": true,
+        "source": "paper_results/mas_features.json",
+        "n_records": 168,
+        "n_records_with_f1": 168,
+        "coverage": 1.0,
+        "n_configurations": 21,
+        "models": [
+          "gemma4:e4b",
+          "qwen3.5:9b"
+        ],
+        "records_by_scenario": {
+          "customer_service": 94,
+          "software_engineering": 74
+        },
+        "f1_task_evaluations": 5380,
+        "primary_statistic": "nr_max",
+        "bias_note_as_recorded": "nr_max falls as the number of alternative contexts rises; n_context and nr_mean are emitted so the bias can be modelled or checked against in-degree",
+        "confounding": {
+          "against": "n_context",
+          "all_archival_records": {
+            "n": 168,
+            "spearman_rho": -0.6996413199832885,
+            "p_value": 5.0990631989138365e-26
+          },
+          "by_scenario": {
+            "customer_service": {
+              "n": 94,
+              "spearman_rho": -0.8084420119004236,
+              "p_value": 6.770557032457102e-23
+            },
+            "software_engineering": {
+              "n": 74,
+              "spearman_rho": -0.5523507090143221,
+              "p_value": 3.3609260417527257e-07
+            }
+          },
+          "reading": "nr_max falls as the number of alternative contexts rises. That count is essentially receiver in-degree, which the structural block already carries at zero marginal cost, so the feature largely re-expresses a graph quantity rather than adding semantic information."
+        },
+        "rebuilt_for_current_matrix": false,
+        "current_matrix_coverage": 0.0,
+        "status": "earlier two-model diagnostic; rejected for strong context-count confounding; not rebuilt for the expanded 30-configuration matrix",
+        "excluded_from_block_comparison_because": "the block comparison holds the sample fixed and varies only the feature set. F1 exists on 21 archival two-model configurations and the comparison runs on 30 three-model ones, so including it would change the feature set and the sample in the same step and no difference could be attributed to either.",
+        "not_a_claim": "This is NOT 'never measured'. F1 was computed at full coverage on 168 records over 5380 task evaluations, and rejected on the evidence recorded here."
+      },
+      "status": "earlier two-model diagnostic; rejected for strong context-count confounding; not rebuilt for the expanded 30-configuration matrix",
+      "reason": "MEASURED, THEN REJECTED -- not absent for want of effort. The archival two-model matrix (paper_results/mas_features.json) carries 168 F1 records at 100% coverage over 5380 task evaluations, spanning 21 configurations and gemma4:e4b and qwen3.5:9b. It was rejected because its primary statistic (nr_max) is strongly confounded with n_context, the count of alternative contexts available to the receiver: customer service n=94, Spearman rho=-0.808, p=6.8e-23; all archival records n=168, rho=-0.700. That count is essentially receiver in-degree, which the structural block already supplies at no marginal cost. F1 was therefore NOT rebuilt when the matrix was expanded to three models and 30 configurations, and it is held out of the equal-coverage block comparison so that the feature set and the sample are never varied in the same step."
+    },
+    "receiver_response_sensitivity": {
+      "mechanism": "probe: E_t[1 - sim(receiver output, receiver output under a neutral placeholder)]",
+      "cost_class": "receiver probe generation + embedding",
+      "sign": 1,
+      "in_canonical_block": false,
+      "available": true,
+      "coverage": 1.0,
+      "n_configurations_varies": 30,
+      "fraction_configurations_varies": 1.0,
+      "n_directions_varies": 60,
+      "median_distinct_values": 8.0,
+      "by_domain": {
+        "customer_service": {
+          "n_configurations": 15,
+          "n_configurations_varies": 15,
+          "n_configurations_varies_in_both_directions": 15,
+          "n_directions": 30,
+          "n_directions_varies": 30,
+          "median_distinct_values": 8.0,
+          "max_distinct_values": 10
+        },
+        "software_engineering": {
+          "n_configurations": 15,
+          "n_configurations_varies": 15,
+          "n_configurations_varies_in_both_directions": 15,
+          "n_directions": 30,
+          "n_directions_varies": 30,
+          "median_distinct_values": 8.0,
+          "max_distinct_values": 10
+        }
+      },
+      "status": "declared, not in canonical block",
+      "reason": "Excluded by the freeze: the ten-feature block never beat the eight by more than one SE and was worse on software engineering. Most expensive candidate measured."
+    },
+    "consequence_proximity": {
+      "mechanism": "graph: 1 / (1 + directed distance from receiver to nearest declared sink)",
+      "cost_class": "graph-only",
+      "sign": 1,
+      "in_canonical_block": false,
+      "available": true,
+      "coverage": 1.0,
+      "n_configurations_varies": 30,
+      "fraction_configurations_varies": 1.0,
+      "n_directions_varies": 60,
+      "median_distinct_values": 3.0,
+      "by_domain": {
+        "customer_service": {
+          "n_configurations": 15,
+          "n_configurations_varies": 15,
+          "n_configurations_varies_in_both_directions": 15,
+          "n_directions": 30,
+          "n_directions_varies": 30,
+          "median_distinct_values": 3.0,
+          "max_distinct_values": 4
+        },
+        "software_engineering": {
+          "n_configurations": 15,
+          "n_configurations_varies": 15,
+          "n_configurations_varies_in_both_directions": 15,
+          "n_directions": 30,
+          "n_directions_varies": 30,
+          "median_distinct_values": 3.0,
+          "max_distinct_values": 5
+        }
+      },
+      "status": "declared, not in canonical block",
+      "reason": "Excluded by the freeze, with the same rule as F2. Graph-only, so it is the cheapest excluded candidate."
+    }
+  },
+  "f1_archival": {
+    "available": true,
+    "source": "paper_results/mas_features.json",
+    "n_records": 168,
+    "n_records_with_f1": 168,
+    "coverage": 1.0,
+    "n_configurations": 21,
+    "models": [
+      "gemma4:e4b",
+      "qwen3.5:9b"
+    ],
+    "records_by_scenario": {
+      "customer_service": 94,
+      "software_engineering": 74
+    },
+    "f1_task_evaluations": 5380,
+    "primary_statistic": "nr_max",
+    "bias_note_as_recorded": "nr_max falls as the number of alternative contexts rises; n_context and nr_mean are emitted so the bias can be modelled or checked against in-degree",
+    "confounding": {
+      "against": "n_context",
+      "all_archival_records": {
+        "n": 168,
+        "spearman_rho": -0.6996413199832885,
+        "p_value": 5.0990631989138365e-26
+      },
+      "by_scenario": {
+        "customer_service": {
+          "n": 94,
+          "spearman_rho": -0.8084420119004236,
+          "p_value": 6.770557032457102e-23
+        },
+        "software_engineering": {
+          "n": 74,
+          "spearman_rho": -0.5523507090143221,
+          "p_value": 3.3609260417527257e-07
+        }
+      },
+      "reading": "nr_max falls as the number of alternative contexts rises. That count is essentially receiver in-degree, which the structural block already carries at zero marginal cost, so the feature largely re-expresses a graph quantity rather than adding semantic information."
+    },
+    "rebuilt_for_current_matrix": false,
+    "current_matrix_coverage": 0.0,
+    "status": "earlier two-model diagnostic; rejected for strong context-count confounding; not rebuilt for the expanded 30-configuration matrix",
+    "excluded_from_block_comparison_because": "the block comparison holds the sample fixed and varies only the feature set. F1 exists on 21 archival two-model configurations and the comparison runs on 30 three-model ones, so including it would change the feature set and the sample in the same step and no difference could be attributed to either.",
+    "not_a_claim": "This is NOT 'never measured'. F1 was computed at full coverage on 168 records over 5380 task evaluations, and rejected on the evidence recorded here."
+  },
+  "float_tie_sensitivity": {
+    "customer_service": {
+      "coverage_auc_unrounded": 0.6259629466563997,
+      "coverage_auc_rounded": 0.6258209312643844,
+      "coverage_auc_difference": -0.00014201539201530444,
+      "coverage_at_20_unrounded": 0.4290426951356535,
+      "coverage_at_20_rounded": 0.4290426951356535,
+      "coverage_at_20_difference": 0.0
+    },
+    "software_engineering": {
+      "coverage_auc_unrounded": 0.5125315700483768,
+      "coverage_auc_rounded": 0.5126597751765819,
+      "coverage_auc_difference": 0.00012820512820510555,
+      "coverage_at_20_unrounded": 0.22837997375370225,
+      "coverage_at_20_rounded": 0.22837997375370225,
+      "coverage_at_20_difference": 0.0
+    },
+    "note": "coverage@20% is IDENTICAL either way: a budget cutoff is a coarse enough functional that last-bit tie splitting does not reach it. coverage-AUC is not -- it integrates over every cutoff, so every split tie contributes. The canonical table reports the unrounded AUC; the difference is in the fourth decimal and changes no conclusion, but it is arithmetic rather than signal and the audit's own numbers are the rounded ones."
+  },
+  "redundancy": {
+    "customer_service": {
+      "n_configurations": 15,
+      "n_directions": 30,
+      "flag_threshold": 0.8,
+      "duplicate_threshold": 0.9,
+      "n_pairs": 45,
+      "n_pairs_evaluable": 28,
+      "n_pairs_never_evaluable": 17,
+      "n_pairs_median_above_flag": 0,
+      "n_pairs_median_above_duplicate": 0,
+      "note": "Fractions divide by n_directions_evaluable, NOT by n_directions_total. Undefined correlations are never replaced by zero. A pair involving a feature that is constant in every configuration is never evaluable at all, which is a statement about the feature, not evidence that the two are independent.",
+      "pairs": [
+        {
+          "a": "source_degree_centrality",
+          "b": "receiver_response_sensitivity",
+          "n_directions_total": 30,
+          "n_directions_evaluable": 24,
+          "n_directions_undefined": 6,
+          "median_abs_spearman": 0.7416198487095662,
+          "n_above_0.80": 6,
+          "n_above_0.90": 0,
+          "fraction_above_0.80": 0.25,
+          "fraction_above_0.90": 0.0,
+          "undefined_note": null
+        },
+        {
+          "a": "betweenness_centrality",
+          "b": "consequence_proximity",
+          "n_directions_total": 30,
+          "n_directions_evaluable": 18,
+          "n_directions_undefined": 12,
+          "median_abs_spearman": 0.6723160927505965,
+          "n_above_0.80": 0,
+          "n_above_0.90": 0,
+          "fraction_above_0.80": 0.0,
+          "fraction_above_0.90": 0.0,
+          "undefined_note": null
+        },
+        {
+          "a": "source_degree_centrality",
+          "b": "target_degree_centrality",
+          "n_directions_total": 30,
+          "n_directions_evaluable": 24,
+          "n_directions_undefined": 6,
+          "median_abs_spearman": 0.6666666666666666,
+          "n_above_0.80": 6,
+          "n_above_0.90": 6,
+          "fraction_above_0.80": 0.25,
+          "fraction_above_0.90": 0.25,
+          "undefined_note": null
+        },
+        {
+          "a": "ablation_delta",
+          "b": "perturbation_delta",
+          "n_directions_total": 30,
+          "n_directions_evaluable": 30,
+          "n_directions_undefined": 0,
+          "median_abs_spearman": 0.632455532033676,
+          "n_above_0.80": 8,
+          "n_above_0.90": 3,
+          "fraction_above_0.80": 0.26666666666666666,
+          "fraction_above_0.90": 0.1,
+          "undefined_note": null
+        },
+        {
+          "a": "target_degree_centrality",
+          "b": "consequence_proximity",
+          "n_directions_total": 30,
+          "n_directions_evaluable": 24,
+          "n_directions_undefined": 6,
+          "median_abs_spearman": 0.5855400437691198,
+          "n_above_0.80": 0,
+          "n_above_0.90": 0,
+          "fraction_above_0.80": 0.0,
+          "fraction_above_0.90": 0.0,
+          "undefined_note": null
+        },
+        {
+          "a": "source_degree_centrality",
+          "b": "consequence_proximity",
+          "n_directions_total": 30,
+          "n_directions_evaluable": 24,
+          "n_directions_undefined": 6,
+          "median_abs_spearman": 0.4970870928274516,
+          "n_above_0.80": 6,
+          "n_above_0.90": 0,
+          "fraction_above_0.80": 0.25,
+          "fraction_above_0.90": 0.0,
+          "undefined_note": null
+        },
+        {
+          "a": "target_degree_centrality",
+          "b": "receiver_response_sensitivity",
+          "n_directions_total": 30,
+          "n_directions_evaluable": 24,
+          "n_directions_undefined": 6,
+          "median_abs_spearman": 0.42047784897496504,
+          "n_above_0.80": 0,
+          "n_above_0.90": 0,
+          "fraction_above_0.80": 0.0,
+          "fraction_above_0.90": 0.0,
+          "undefined_note": null
+        },
+        {
+          "a": "betweenness_centrality",
+          "b": "ablation_delta",
+          "n_directions_total": 30,
+          "n_directions_evaluable": 18,
+          "n_directions_undefined": 12,
+          "median_abs_spearman": 0.3417543977694031,
+          "n_above_0.80": 2,
+          "n_above_0.90": 2,
+          "fraction_above_0.80": 0.1111111111111111,
+          "fraction_above_0.90": 0.1111111111111111,
+          "undefined_note": null
+        },
+        {
+          "a": "source_degree_centrality",
+          "b": "perturbation_delta",
+          "n_directions_total": 30,
+          "n_directions_evaluable": 24,
+          "n_directions_undefined": 6,
+          "median_abs_spearman": 0.34113245611637993,
+          "n_above_0.80": 2,
+          "n_above_0.90": 0,
+          "fraction_above_0.80": 0.08333333333333333,
+          "fraction_above_0.90": 0.0,
+          "undefined_note": null
+        },
+        {
+          "a": "target_degree_centrality",
+          "b": "perturbation_delta",
+          "n_directions_total": 30,
+          "n_directions_evaluable": 24,
+          "n_directions_undefined": 6,
+          "median_abs_spearman": 0.3363220450553147,
+          "n_above_0.80": 3,
+          "n_above_0.90": 1,
+          "fraction_above_0.80": 0.125,
+          "fraction_above_0.90": 0.041666666666666664,
+          "undefined_note": null
+        },
+        {
+          "a": "endpoint_centrality_max",
+          "b": "ablation_delta",
+          "n_directions_total": 30,
+          "n_directions_evaluable": 12,
+          "n_directions_undefined": 18,
+          "median_abs_spearman": 0.33266164149701316,
+          "n_above_0.80": 1,
+          "n_above_0.90": 0,
+          "fraction_above_0.80": 0.08333333333333333,
+          "fraction_above_0.90": 0.0,
+          "undefined_note": null
+        },
+        {
+          "a": "betweenness_centrality",
+          "b": "perturbation_delta",
+          "n_directions_total": 30,
+          "n_directions_evaluable": 18,
+          "n_directions_undefined": 12,
+          "median_abs_spearman": 0.3293157713885888,
+          "n_above_0.80": 2,
+          "n_above_0.90": 1,
+          "fraction_above_0.80": 0.1111111111111111,
+          "fraction_above_0.90": 0.05555555555555555,
+          "undefined_note": null
+        },
+        {
+          "a": "perturbation_delta",
+          "b": "receiver_response_sensitivity",
+          "n_directions_total": 30,
+          "n_directions_evaluable": 30,
+          "n_directions_undefined": 0,
+          "median_abs_spearman": 0.316227766016838,
+          "n_above_0.80": 3,
+          "n_above_0.90": 1,
+          "fraction_above_0.80": 0.1,
+          "fraction_above_0.90": 0.03333333333333333,
+          "undefined_note": null
+        },
+        {
+          "a": "betweenness_centrality",
+          "b": "source_degree_centrality",
+          "n_directions_total": 30,
+          "n_directions_evaluable": 18,
+          "n_directions_undefined": 12,
+          "median_abs_spearman": 0.30618621784789724,
+          "n_above_0.80": 0,
+          "n_above_0.90": 0,
+          "fraction_above_0.80": 0.0,
+          "fraction_above_0.90": 0.0,
+          "undefined_note": null
+        },
+        {
+          "a": "betweenness_centrality",
+          "b": "target_degree_centrality",
+          "n_directions_total": 30,
+          "n_directions_evaluable": 18,
+          "n_directions_undefined": 12,
+          "median_abs_spearman": 0.30618621784789724,
+          "n_above_0.80": 0,
+          "n_above_0.90": 0,
+          "fraction_above_0.80": 0.0,
+          "fraction_above_0.90": 0.0,
+          "undefined_note": null
+        },
+        {
+          "a": "betweenness_centrality",
+          "b": "receiver_response_sensitivity",
+          "n_directions_total": 30,
+          "n_directions_evaluable": 18,
+          "n_directions_undefined": 12,
+          "median_abs_spearman": 0.27524094128159016,
+          "n_above_0.80": 2,
+          "n_above_0.90": 0,
+          "fraction_above_0.80": 0.1111111111111111,
+          "fraction_above_0.90": 0.0,
+          "undefined_note": null
+        },
+        {
+          "a": "endpoint_centrality_max",
+          "b": "source_degree_centrality",
+          "n_directions_total": 30,
+          "n_directions_evaluable": 12,
+          "n_directions_undefined": 18,
+          "median_abs_spearman": 0.26352313834736496,
+          "n_above_0.80": 0,
+          "n_above_0.90": 0,
+          "fraction_above_0.80": 0.0,
+          "fraction_above_0.90": 0.0,
+          "undefined_note": null
+        },
+        {
+          "a": "endpoint_centrality_max",
+          "b": "target_degree_centrality",
+          "n_directions_total": 30,
+          "n_directions_evaluable": 12,
+          "n_directions_undefined": 18,
+          "median_abs_spearman": 0.26352313834736496,
+          "n_above_0.80": 0,
+          "n_above_0.90": 0,
+          "fraction_above_0.80": 0.0,
+          "fraction_above_0.90": 0.0,
+          "undefined_note": null
+        },
+        {
+          "a": "ablation_delta",
+          "b": "receiver_response_sensitivity",
+          "n_directions_total": 30,
+          "n_directions_evaluable": 30,
+          "n_directions_undefined": 0,
+          "median_abs_spearman": 0.2609827829831469,
+          "n_above_0.80": 2,
+          "n_above_0.90": 1,
+          "fraction_above_0.80": 0.06666666666666667,
+          "fraction_above_0.90": 0.03333333333333333,
+          "undefined_note": null
+        },
+        {
+          "a": "source_degree_centrality",
+          "b": "ablation_delta",
+          "n_directions_total": 30,
+          "n_directions_evaluable": 24,
+          "n_directions_undefined": 6,
+          "median_abs_spearman": 0.25343047831630366,
+          "n_above_0.80": 0,
+          "n_above_0.90": 0,
+          "fraction_above_0.80": 0.0,
+          "fraction_above_0.90": 0.0,
+          "undefined_note": null
+        },
+        {
+          "a": "target_degree_centrality",
+          "b": "ablation_delta",
+          "n_directions_total": 30,
+          "n_directions_evaluable": 24,
+          "n_directions_undefined": 6,
+          "median_abs_spearman": 0.24232714828804014,
+          "n_above_0.80": 3,
+          "n_above_0.90": 0,
+          "fraction_above_0.80": 0.125,
+          "fraction_above_0.90": 0.0,
+          "undefined_note": null
+        },
+        {
+          "a": "endpoint_centrality_max",
+          "b": "perturbation_delta",
+          "n_directions_total": 30,
+          "n_directions_evaluable": 12,
+          "n_directions_undefined": 18,
+          "median_abs_spearman": 0.24040661067606411,
+          "n_above_0.80": 0,
+          "n_above_0.90": 0,
+          "fraction_above_0.80": 0.0,
+          "fraction_above_0.90": 0.0,
+          "undefined_note": null
+        },
+        {
+          "a": "perturbation_delta",
+          "b": "consequence_proximity",
+          "n_directions_total": 30,
+          "n_directions_evaluable": 30,
+          "n_directions_undefined": 0,
+          "median_abs_spearman": 0.22374918841497557,
+          "n_above_0.80": 2,
+          "n_above_0.90": 0,
+          "fraction_above_0.80": 0.06666666666666667,
+          "fraction_above_0.90": 0.0,
+          "undefined_note": null
+        },
+        {
+          "a": "receiver_response_sensitivity",
+          "b": "consequence_proximity",
+          "n_directions_total": 30,
+          "n_directions_evaluable": 30,
+          "n_directions_undefined": 0,
+          "median_abs_spearman": 0.1980008309776819,
+          "n_above_0.80": 1,
+          "n_above_0.90": 1,
+          "fraction_above_0.80": 0.03333333333333333,
+          "fraction_above_0.90": 0.03333333333333333,
+          "undefined_note": null
+        },
+        {
+          "a": "ablation_delta",
+          "b": "consequence_proximity",
+          "n_directions_total": 30,
+          "n_directions_evaluable": 30,
+          "n_directions_undefined": 0,
+          "median_abs_spearman": 0.16338793091385684,
+          "n_above_0.80": 0,
+          "n_above_0.90": 0,
+          "fraction_above_0.80": 0.0,
+          "fraction_above_0.90": 0.0,
+          "undefined_note": null
+        },
+        {
+          "a": "endpoint_centrality_max",
+          "b": "receiver_response_sensitivity",
+          "n_directions_total": 30,
+          "n_directions_evaluable": 12,
+          "n_directions_undefined": 18,
+          "median_abs_spearman": 0.14213381090374028,
+          "n_above_0.80": 0,
+          "n_above_0.90": 0,
+          "fraction_above_0.80": 0.0,
+          "fraction_above_0.90": 0.0,
+          "undefined_note": null
+        },
+        {
+          "a": "endpoint_centrality_max",
+          "b": "consequence_proximity",
+          "n_directions_total": 30,
+          "n_directions_evaluable": 12,
+          "n_directions_undefined": 18,
+          "median_abs_spearman": 0.11572751247156893,
+          "n_above_0.80": 0,
+          "n_above_0.90": 0,
+          "fraction_above_0.80": 0.0,
+          "fraction_above_0.90": 0.0,
+          "undefined_note": null
+        },
+        {
+          "a": "betweenness_centrality",
+          "b": "endpoint_centrality_max",
+          "n_directions_total": 30,
+          "n_directions_evaluable": 12,
+          "n_directions_undefined": 18,
+          "median_abs_spearman": 0.0,
+          "n_above_0.80": 0,
+          "n_above_0.90": 0,
+          "fraction_above_0.80": 0.0,
+          "fraction_above_0.90": 0.0,
+          "undefined_note": null
+        },
+        {
+          "a": "betweenness_centrality",
+          "b": "information_bottleneck",
+          "n_directions_total": 30,
+          "n_directions_evaluable": 0,
+          "n_directions_undefined": 30,
+          "median_abs_spearman": null,
+          "n_above_0.80": 0,
+          "n_above_0.90": 0,
+          "fraction_above_0.80": null,
+          "fraction_above_0.90": null,
+          "undefined_note": "no evaluable direction: at least one feature is constant in every configuration"
+        },
+        {
+          "a": "betweenness_centrality",
+          "b": "is_bridge",
+          "n_directions_total": 30,
+          "n_directions_evaluable": 0,
+          "n_directions_undefined": 30,
+          "median_abs_spearman": null,
+          "n_above_0.80": 0,
+          "n_above_0.90": 0,
+          "fraction_above_0.80": null,
+          "fraction_above_0.90": null,
+          "undefined_note": "no evaluable direction: at least one feature is constant in every configuration"
+        },
+        {
+          "a": "information_bottleneck",
+          "b": "is_bridge",
+          "n_directions_total": 30,
+          "n_directions_evaluable": 0,
+          "n_directions_undefined": 30,
+          "median_abs_spearman": null,
+          "n_above_0.80": 0,
+          "n_above_0.90": 0,
+          "fraction_above_0.80": null,
+          "fraction_above_0.90": null,
+          "undefined_note": "no evaluable direction: at least one feature is constant in every configuration"
+        },
+        {
+          "a": "information_bottleneck",
+          "b": "endpoint_centrality_max",
+          "n_directions_total": 30,
+          "n_directions_evaluable": 0,
+          "n_directions_undefined": 30,
+          "median_abs_spearman": null,
+          "n_above_0.80": 0,
+          "n_above_0.90": 0,
+          "fraction_above_0.80": null,
+          "fraction_above_0.90": null,
+          "undefined_note": "no evaluable direction: at least one feature is constant in every configuration"
+        },
+        {
+          "a": "information_bottleneck",
+          "b": "source_degree_centrality",
+          "n_directions_total": 30,
+          "n_directions_evaluable": 0,
+          "n_directions_undefined": 30,
+          "median_abs_spearman": null,
+          "n_above_0.80": 0,
+          "n_above_0.90": 0,
+          "fraction_above_0.80": null,
+          "fraction_above_0.90": null,
+          "undefined_note": "no evaluable direction: at least one feature is constant in every configuration"
+        },
+        {
+          "a": "information_bottleneck",
+          "b": "target_degree_centrality",
+          "n_directions_total": 30,
+          "n_directions_evaluable": 0,
+          "n_directions_undefined": 30,
+          "median_abs_spearman": null,
+          "n_above_0.80": 0,
+          "n_above_0.90": 0,
+          "fraction_above_0.80": null,
+          "fraction_above_0.90": null,
+          "undefined_note": "no evaluable direction: at least one feature is constant in every configuration"
+        },
+        {
+          "a": "information_bottleneck",
+          "b": "ablation_delta",
+          "n_directions_total": 30,
+          "n_directions_evaluable": 0,
+          "n_directions_undefined": 30,
+          "median_abs_spearman": null,
+          "n_above_0.80": 0,
+          "n_above_0.90": 0,
+          "fraction_above_0.80": null,
+          "fraction_above_0.90": null,
+          "undefined_note": "no evaluable direction: at least one feature is constant in every configuration"
+        },
+        {
+          "a": "information_bottleneck",
+          "b": "perturbation_delta",
+          "n_directions_total": 30,
+          "n_directions_evaluable": 0,
+          "n_directions_undefined": 30,
+          "median_abs_spearman": null,
+          "n_above_0.80": 0,
+          "n_above_0.90": 0,
+          "fraction_above_0.80": null,
+          "fraction_above_0.90": null,
+          "undefined_note": "no evaluable direction: at least one feature is constant in every configuration"
+        },
+        {
+          "a": "information_bottleneck",
+          "b": "receiver_response_sensitivity",
+          "n_directions_total": 30,
+          "n_directions_evaluable": 0,
+          "n_directions_undefined": 30,
+          "median_abs_spearman": null,
+          "n_above_0.80": 0,
+          "n_above_0.90": 0,
+          "fraction_above_0.80": null,
+          "fraction_above_0.90": null,
+          "undefined_note": "no evaluable direction: at least one feature is constant in every configuration"
+        },
+        {
+          "a": "information_bottleneck",
+          "b": "consequence_proximity",
+          "n_directions_total": 30,
+          "n_directions_evaluable": 0,
+          "n_directions_undefined": 30,
+          "median_abs_spearman": null,
+          "n_above_0.80": 0,
+          "n_above_0.90": 0,
+          "fraction_above_0.80": null,
+          "fraction_above_0.90": null,
+          "undefined_note": "no evaluable direction: at least one feature is constant in every configuration"
+        },
+        {
+          "a": "is_bridge",
+          "b": "endpoint_centrality_max",
+          "n_directions_total": 30,
+          "n_directions_evaluable": 0,
+          "n_directions_undefined": 30,
+          "median_abs_spearman": null,
+          "n_above_0.80": 0,
+          "n_above_0.90": 0,
+          "fraction_above_0.80": null,
+          "fraction_above_0.90": null,
+          "undefined_note": "no evaluable direction: at least one feature is constant in every configuration"
+        },
+        {
+          "a": "is_bridge",
+          "b": "source_degree_centrality",
+          "n_directions_total": 30,
+          "n_directions_evaluable": 0,
+          "n_directions_undefined": 30,
+          "median_abs_spearman": null,
+          "n_above_0.80": 0,
+          "n_above_0.90": 0,
+          "fraction_above_0.80": null,
+          "fraction_above_0.90": null,
+          "undefined_note": "no evaluable direction: at least one feature is constant in every configuration"
+        },
+        {
+          "a": "is_bridge",
+          "b": "target_degree_centrality",
+          "n_directions_total": 30,
+          "n_directions_evaluable": 0,
+          "n_directions_undefined": 30,
+          "median_abs_spearman": null,
+          "n_above_0.80": 0,
+          "n_above_0.90": 0,
+          "fraction_above_0.80": null,
+          "fraction_above_0.90": null,
+          "undefined_note": "no evaluable direction: at least one feature is constant in every configuration"
+        },
+        {
+          "a": "is_bridge",
+          "b": "ablation_delta",
+          "n_directions_total": 30,
+          "n_directions_evaluable": 0,
+          "n_directions_undefined": 30,
+          "median_abs_spearman": null,
+          "n_above_0.80": 0,
+          "n_above_0.90": 0,
+          "fraction_above_0.80": null,
+          "fraction_above_0.90": null,
+          "undefined_note": "no evaluable direction: at least one feature is constant in every configuration"
+        },
+        {
+          "a": "is_bridge",
+          "b": "perturbation_delta",
+          "n_directions_total": 30,
+          "n_directions_evaluable": 0,
+          "n_directions_undefined": 30,
+          "median_abs_spearman": null,
+          "n_above_0.80": 0,
+          "n_above_0.90": 0,
+          "fraction_above_0.80": null,
+          "fraction_above_0.90": null,
+          "undefined_note": "no evaluable direction: at least one feature is constant in every configuration"
+        },
+        {
+          "a": "is_bridge",
+          "b": "receiver_response_sensitivity",
+          "n_directions_total": 30,
+          "n_directions_evaluable": 0,
+          "n_directions_undefined": 30,
+          "median_abs_spearman": null,
+          "n_above_0.80": 0,
+          "n_above_0.90": 0,
+          "fraction_above_0.80": null,
+          "fraction_above_0.90": null,
+          "undefined_note": "no evaluable direction: at least one feature is constant in every configuration"
+        },
+        {
+          "a": "is_bridge",
+          "b": "consequence_proximity",
+          "n_directions_total": 30,
+          "n_directions_evaluable": 0,
+          "n_directions_undefined": 30,
+          "median_abs_spearman": null,
+          "n_above_0.80": 0,
+          "n_above_0.90": 0,
+          "fraction_above_0.80": null,
+          "fraction_above_0.90": null,
+          "undefined_note": "no evaluable direction: at least one feature is constant in every configuration"
+        }
+      ]
+    },
+    "software_engineering": {
+      "n_configurations": 15,
+      "n_directions": 30,
+      "flag_threshold": 0.8,
+      "duplicate_threshold": 0.9,
+      "n_pairs": 45,
+      "n_pairs_evaluable": 28,
+      "n_pairs_never_evaluable": 17,
+      "n_pairs_median_above_flag": 0,
+      "n_pairs_median_above_duplicate": 0,
+      "note": "Fractions divide by n_directions_evaluable, NOT by n_directions_total. Undefined correlations are never replaced by zero. A pair involving a feature that is constant in every configuration is never evaluable at all, which is a statement about the feature, not evidence that the two are independent.",
+      "pairs": [
+        {
+          "a": "target_degree_centrality",
+          "b": "consequence_proximity",
+          "n_directions_total": 30,
+          "n_directions_evaluable": 24,
+          "n_directions_undefined": 6,
+          "median_abs_spearman": 0.6800683565053016,
+          "n_above_0.80": 6,
+          "n_above_0.90": 6,
+          "fraction_above_0.80": 0.25,
+          "fraction_above_0.90": 0.25,
+          "undefined_note": null
+        },
+        {
+          "a": "betweenness_centrality",
+          "b": "consequence_proximity",
+          "n_directions_total": 30,
+          "n_directions_evaluable": 18,
+          "n_directions_undefined": 12,
+          "median_abs_spearman": 0.6723160927505965,
+          "n_above_0.80": 0,
+          "n_above_0.90": 0,
+          "fraction_above_0.80": 0.0,
+          "fraction_above_0.90": 0.0,
+          "undefined_note": null
+        },
+        {
+          "a": "source_degree_centrality",
+          "b": "target_degree_centrality",
+          "n_directions_total": 30,
+          "n_directions_evaluable": 24,
+          "n_directions_undefined": 6,
+          "median_abs_spearman": 0.6666666666666666,
+          "n_above_0.80": 6,
+          "n_above_0.90": 6,
+          "fraction_above_0.80": 0.25,
+          "fraction_above_0.90": 0.25,
+          "undefined_note": null
+        },
+        {
+          "a": "betweenness_centrality",
+          "b": "receiver_response_sensitivity",
+          "n_directions_total": 30,
+          "n_directions_evaluable": 18,
+          "n_directions_undefined": 12,
+          "median_abs_spearman": 0.5091957413709418,
+          "n_above_0.80": 3,
+          "n_above_0.90": 0,
+          "fraction_above_0.80": 0.16666666666666666,
+          "fraction_above_0.90": 0.0,
+          "undefined_note": null
+        },
+        {
+          "a": "source_degree_centrality",
+          "b": "consequence_proximity",
+          "n_directions_total": 30,
+          "n_directions_evaluable": 24,
+          "n_directions_undefined": 6,
+          "median_abs_spearman": 0.49708709282745167,
+          "n_above_0.80": 6,
+          "n_above_0.90": 6,
+          "fraction_above_0.80": 0.25,
+          "fraction_above_0.90": 0.25,
+          "undefined_note": null
+        },
+        {
+          "a": "endpoint_centrality_max",
+          "b": "ablation_delta",
+          "n_directions_total": 30,
+          "n_directions_evaluable": 12,
+          "n_directions_undefined": 18,
+          "median_abs_spearman": 0.47138538714435585,
+          "n_above_0.80": 2,
+          "n_above_0.90": 0,
+          "fraction_above_0.80": 0.16666666666666666,
+          "fraction_above_0.90": 0.0,
+          "undefined_note": null
+        },
+        {
+          "a": "ablation_delta",
+          "b": "consequence_proximity",
+          "n_directions_total": 30,
+          "n_directions_evaluable": 30,
+          "n_directions_undefined": 0,
+          "median_abs_spearman": 0.4004211737274196,
+          "n_above_0.80": 3,
+          "n_above_0.90": 2,
+          "fraction_above_0.80": 0.1,
+          "fraction_above_0.90": 0.06666666666666667,
+          "undefined_note": null
+        },
+        {
+          "a": "receiver_response_sensitivity",
+          "b": "consequence_proximity",
+          "n_directions_total": 30,
+          "n_directions_evaluable": 30,
+          "n_directions_undefined": 0,
+          "median_abs_spearman": 0.39999999999999997,
+          "n_above_0.80": 1,
+          "n_above_0.90": 1,
+          "fraction_above_0.80": 0.03333333333333333,
+          "fraction_above_0.90": 0.03333333333333333,
+          "undefined_note": null
+        },
+        {
+          "a": "target_degree_centrality",
+          "b": "perturbation_delta",
+          "n_directions_total": 30,
+          "n_directions_evaluable": 24,
+          "n_directions_undefined": 6,
+          "median_abs_spearman": 0.36575893180125046,
+          "n_above_0.80": 3,
+          "n_above_0.90": 0,
+          "fraction_above_0.80": 0.125,
+          "fraction_above_0.90": 0.0,
+          "undefined_note": null
+        },
+        {
+          "a": "perturbation_delta",
+          "b": "consequence_proximity",
+          "n_directions_total": 30,
+          "n_directions_evaluable": 30,
+          "n_directions_undefined": 0,
+          "median_abs_spearman": 0.36075698351312835,
+          "n_above_0.80": 3,
+          "n_above_0.90": 2,
+          "fraction_above_0.80": 0.1,
+          "fraction_above_0.90": 0.06666666666666667,
+          "undefined_note": null
+        },
+        {
+          "a": "source_degree_centrality",
+          "b": "receiver_response_sensitivity",
+          "n_directions_total": 30,
+          "n_directions_evaluable": 24,
+          "n_directions_undefined": 6,
+          "median_abs_spearman": 0.34345004766719217,
+          "n_above_0.80": 0,
+          "n_above_0.90": 0,
+          "fraction_above_0.80": 0.0,
+          "fraction_above_0.90": 0.0,
+          "undefined_note": null
+        },
+        {
+          "a": "betweenness_centrality",
+          "b": "source_degree_centrality",
+          "n_directions_total": 30,
+          "n_directions_evaluable": 18,
+          "n_directions_undefined": 12,
+          "median_abs_spearman": 0.30618621784789724,
+          "n_above_0.80": 0,
+          "n_above_0.90": 0,
+          "fraction_above_0.80": 0.0,
+          "fraction_above_0.90": 0.0,
+          "undefined_note": null
+        },
+        {
+          "a": "betweenness_centrality",
+          "b": "target_degree_centrality",
+          "n_directions_total": 30,
+          "n_directions_evaluable": 18,
+          "n_directions_undefined": 12,
+          "median_abs_spearman": 0.30618621784789724,
+          "n_above_0.80": 0,
+          "n_above_0.90": 0,
+          "fraction_above_0.80": 0.0,
+          "fraction_above_0.90": 0.0,
+          "undefined_note": null
+        },
+        {
+          "a": "source_degree_centrality",
+          "b": "perturbation_delta",
+          "n_directions_total": 30,
+          "n_directions_evaluable": 24,
+          "n_directions_undefined": 6,
+          "median_abs_spearman": 0.2951275789769503,
+          "n_above_0.80": 1,
+          "n_above_0.90": 0,
+          "fraction_above_0.80": 0.041666666666666664,
+          "fraction_above_0.90": 0.0,
+          "undefined_note": null
+        },
+        {
+          "a": "perturbation_delta",
+          "b": "receiver_response_sensitivity",
+          "n_directions_total": 30,
+          "n_directions_evaluable": 30,
+          "n_directions_undefined": 0,
+          "median_abs_spearman": 0.2871834471516924,
+          "n_above_0.80": 3,
+          "n_above_0.90": 2,
+          "fraction_above_0.80": 0.1,
+          "fraction_above_0.90": 0.06666666666666667,
+          "undefined_note": null
+        },
+        {
+          "a": "betweenness_centrality",
+          "b": "ablation_delta",
+          "n_directions_total": 30,
+          "n_directions_evaluable": 18,
+          "n_directions_undefined": 12,
+          "median_abs_spearman": 0.28475948169688947,
+          "n_above_0.80": 1,
+          "n_above_0.90": 1,
+          "fraction_above_0.80": 0.05555555555555555,
+          "fraction_above_0.90": 0.05555555555555555,
+          "undefined_note": null
+        },
+        {
+          "a": "source_degree_centrality",
+          "b": "ablation_delta",
+          "n_directions_total": 30,
+          "n_directions_evaluable": 24,
+          "n_directions_undefined": 6,
+          "median_abs_spearman": 0.274721127897378,
+          "n_above_0.80": 4,
+          "n_above_0.90": 0,
+          "fraction_above_0.80": 0.16666666666666666,
+          "fraction_above_0.90": 0.0,
+          "undefined_note": null
+        },
+        {
+          "a": "ablation_delta",
+          "b": "perturbation_delta",
+          "n_directions_total": 30,
+          "n_directions_evaluable": 30,
+          "n_directions_undefined": 0,
+          "median_abs_spearman": 0.27079782629886706,
+          "n_above_0.80": 2,
+          "n_above_0.90": 1,
+          "fraction_above_0.80": 0.06666666666666667,
+          "fraction_above_0.90": 0.03333333333333333,
+          "undefined_note": null
+        },
+        {
+          "a": "target_degree_centrality",
+          "b": "receiver_response_sensitivity",
+          "n_directions_total": 30,
+          "n_directions_evaluable": 24,
+          "n_directions_undefined": 6,
+          "median_abs_spearman": 0.2696799449852968,
+          "n_above_0.80": 0,
+          "n_above_0.90": 0,
+          "fraction_above_0.80": 0.0,
+          "fraction_above_0.90": 0.0,
+          "undefined_note": null
+        },
+        {
+          "a": "endpoint_centrality_max",
+          "b": "perturbation_delta",
+          "n_directions_total": 30,
+          "n_directions_evaluable": 12,
+          "n_directions_undefined": 18,
+          "median_abs_spearman": 0.2665200621754421,
+          "n_above_0.80": 0,
+          "n_above_0.90": 0,
+          "fraction_above_0.80": 0.0,
+          "fraction_above_0.90": 0.0,
+          "undefined_note": null
+        },
+        {
+          "a": "endpoint_centrality_max",
+          "b": "source_degree_centrality",
+          "n_directions_total": 30,
+          "n_directions_evaluable": 12,
+          "n_directions_undefined": 18,
+          "median_abs_spearman": 0.26352313834736496,
+          "n_above_0.80": 0,
+          "n_above_0.90": 0,
+          "fraction_above_0.80": 0.0,
+          "fraction_above_0.90": 0.0,
+          "undefined_note": null
+        },
+        {
+          "a": "endpoint_centrality_max",
+          "b": "target_degree_centrality",
+          "n_directions_total": 30,
+          "n_directions_evaluable": 12,
+          "n_directions_undefined": 18,
+          "median_abs_spearman": 0.26352313834736496,
+          "n_above_0.80": 0,
+          "n_above_0.90": 0,
+          "fraction_above_0.80": 0.0,
+          "fraction_above_0.90": 0.0,
+          "undefined_note": null
+        },
+        {
+          "a": "betweenness_centrality",
+          "b": "perturbation_delta",
+          "n_directions_total": 30,
+          "n_directions_evaluable": 18,
+          "n_directions_undefined": 12,
+          "median_abs_spearman": 0.24402486486846792,
+          "n_above_0.80": 0,
+          "n_above_0.90": 0,
+          "fraction_above_0.80": 0.0,
+          "fraction_above_0.90": 0.0,
+          "undefined_note": null
+        },
+        {
+          "a": "ablation_delta",
+          "b": "receiver_response_sensitivity",
+          "n_directions_total": 30,
+          "n_directions_evaluable": 30,
+          "n_directions_undefined": 0,
+          "median_abs_spearman": 0.23982066262151625,
+          "n_above_0.80": 1,
+          "n_above_0.90": 1,
+          "fraction_above_0.80": 0.03333333333333333,
+          "fraction_above_0.90": 0.03333333333333333,
+          "undefined_note": null
+        },
+        {
+          "a": "target_degree_centrality",
+          "b": "ablation_delta",
+          "n_directions_total": 30,
+          "n_directions_evaluable": 24,
+          "n_directions_undefined": 6,
+          "median_abs_spearman": 0.22005657434804432,
+          "n_above_0.80": 2,
+          "n_above_0.90": 0,
+          "fraction_above_0.80": 0.08333333333333333,
+          "fraction_above_0.90": 0.0,
+          "undefined_note": null
+        },
+        {
+          "a": "endpoint_centrality_max",
+          "b": "receiver_response_sensitivity",
+          "n_directions_total": 30,
+          "n_directions_evaluable": 12,
+          "n_directions_undefined": 18,
+          "median_abs_spearman": 0.14213381090374028,
+          "n_above_0.80": 0,
+          "n_above_0.90": 0,
+          "fraction_above_0.80": 0.0,
+          "fraction_above_0.90": 0.0,
+          "undefined_note": null
+        },
+        {
+          "a": "endpoint_centrality_max",
+          "b": "consequence_proximity",
+          "n_directions_total": 30,
+          "n_directions_evaluable": 12,
+          "n_directions_undefined": 18,
+          "median_abs_spearman": 0.11572751247156893,
+          "n_above_0.80": 0,
+          "n_above_0.90": 0,
+          "fraction_above_0.80": 0.0,
+          "fraction_above_0.90": 0.0,
+          "undefined_note": null
+        },
+        {
+          "a": "betweenness_centrality",
+          "b": "endpoint_centrality_max",
+          "n_directions_total": 30,
+          "n_directions_evaluable": 12,
+          "n_directions_undefined": 18,
+          "median_abs_spearman": 0.0,
+          "n_above_0.80": 0,
+          "n_above_0.90": 0,
+          "fraction_above_0.80": 0.0,
+          "fraction_above_0.90": 0.0,
+          "undefined_note": null
+        },
+        {
+          "a": "betweenness_centrality",
+          "b": "information_bottleneck",
+          "n_directions_total": 30,
+          "n_directions_evaluable": 0,
+          "n_directions_undefined": 30,
+          "median_abs_spearman": null,
+          "n_above_0.80": 0,
+          "n_above_0.90": 0,
+          "fraction_above_0.80": null,
+          "fraction_above_0.90": null,
+          "undefined_note": "no evaluable direction: at least one feature is constant in every configuration"
+        },
+        {
+          "a": "betweenness_centrality",
+          "b": "is_bridge",
+          "n_directions_total": 30,
+          "n_directions_evaluable": 0,
+          "n_directions_undefined": 30,
+          "median_abs_spearman": null,
+          "n_above_0.80": 0,
+          "n_above_0.90": 0,
+          "fraction_above_0.80": null,
+          "fraction_above_0.90": null,
+          "undefined_note": "no evaluable direction: at least one feature is constant in every configuration"
+        },
+        {
+          "a": "information_bottleneck",
+          "b": "is_bridge",
+          "n_directions_total": 30,
+          "n_directions_evaluable": 0,
+          "n_directions_undefined": 30,
+          "median_abs_spearman": null,
+          "n_above_0.80": 0,
+          "n_above_0.90": 0,
+          "fraction_above_0.80": null,
+          "fraction_above_0.90": null,
+          "undefined_note": "no evaluable direction: at least one feature is constant in every configuration"
+        },
+        {
+          "a": "information_bottleneck",
+          "b": "endpoint_centrality_max",
+          "n_directions_total": 30,
+          "n_directions_evaluable": 0,
+          "n_directions_undefined": 30,
+          "median_abs_spearman": null,
+          "n_above_0.80": 0,
+          "n_above_0.90": 0,
+          "fraction_above_0.80": null,
+          "fraction_above_0.90": null,
+          "undefined_note": "no evaluable direction: at least one feature is constant in every configuration"
+        },
+        {
+          "a": "information_bottleneck",
+          "b": "source_degree_centrality",
+          "n_directions_total": 30,
+          "n_directions_evaluable": 0,
+          "n_directions_undefined": 30,
+          "median_abs_spearman": null,
+          "n_above_0.80": 0,
+          "n_above_0.90": 0,
+          "fraction_above_0.80": null,
+          "fraction_above_0.90": null,
+          "undefined_note": "no evaluable direction: at least one feature is constant in every configuration"
+        },
+        {
+          "a": "information_bottleneck",
+          "b": "target_degree_centrality",
+          "n_directions_total": 30,
+          "n_directions_evaluable": 0,
+          "n_directions_undefined": 30,
+          "median_abs_spearman": null,
+          "n_above_0.80": 0,
+          "n_above_0.90": 0,
+          "fraction_above_0.80": null,
+          "fraction_above_0.90": null,
+          "undefined_note": "no evaluable direction: at least one feature is constant in every configuration"
+        },
+        {
+          "a": "information_bottleneck",
+          "b": "ablation_delta",
+          "n_directions_total": 30,
+          "n_directions_evaluable": 0,
+          "n_directions_undefined": 30,
+          "median_abs_spearman": null,
+          "n_above_0.80": 0,
+          "n_above_0.90": 0,
+          "fraction_above_0.80": null,
+          "fraction_above_0.90": null,
+          "undefined_note": "no evaluable direction: at least one feature is constant in every configuration"
+        },
+        {
+          "a": "information_bottleneck",
+          "b": "perturbation_delta",
+          "n_directions_total": 30,
+          "n_directions_evaluable": 0,
+          "n_directions_undefined": 30,
+          "median_abs_spearman": null,
+          "n_above_0.80": 0,
+          "n_above_0.90": 0,
+          "fraction_above_0.80": null,
+          "fraction_above_0.90": null,
+          "undefined_note": "no evaluable direction: at least one feature is constant in every configuration"
+        },
+        {
+          "a": "information_bottleneck",
+          "b": "receiver_response_sensitivity",
+          "n_directions_total": 30,
+          "n_directions_evaluable": 0,
+          "n_directions_undefined": 30,
+          "median_abs_spearman": null,
+          "n_above_0.80": 0,
+          "n_above_0.90": 0,
+          "fraction_above_0.80": null,
+          "fraction_above_0.90": null,
+          "undefined_note": "no evaluable direction: at least one feature is constant in every configuration"
+        },
+        {
+          "a": "information_bottleneck",
+          "b": "consequence_proximity",
+          "n_directions_total": 30,
+          "n_directions_evaluable": 0,
+          "n_directions_undefined": 30,
+          "median_abs_spearman": null,
+          "n_above_0.80": 0,
+          "n_above_0.90": 0,
+          "fraction_above_0.80": null,
+          "fraction_above_0.90": null,
+          "undefined_note": "no evaluable direction: at least one feature is constant in every configuration"
+        },
+        {
+          "a": "is_bridge",
+          "b": "endpoint_centrality_max",
+          "n_directions_total": 30,
+          "n_directions_evaluable": 0,
+          "n_directions_undefined": 30,
+          "median_abs_spearman": null,
+          "n_above_0.80": 0,
+          "n_above_0.90": 0,
+          "fraction_above_0.80": null,
+          "fraction_above_0.90": null,
+          "undefined_note": "no evaluable direction: at least one feature is constant in every configuration"
+        },
+        {
+          "a": "is_bridge",
+          "b": "source_degree_centrality",
+          "n_directions_total": 30,
+          "n_directions_evaluable": 0,
+          "n_directions_undefined": 30,
+          "median_abs_spearman": null,
+          "n_above_0.80": 0,
+          "n_above_0.90": 0,
+          "fraction_above_0.80": null,
+          "fraction_above_0.90": null,
+          "undefined_note": "no evaluable direction: at least one feature is constant in every configuration"
+        },
+        {
+          "a": "is_bridge",
+          "b": "target_degree_centrality",
+          "n_directions_total": 30,
+          "n_directions_evaluable": 0,
+          "n_directions_undefined": 30,
+          "median_abs_spearman": null,
+          "n_above_0.80": 0,
+          "n_above_0.90": 0,
+          "fraction_above_0.80": null,
+          "fraction_above_0.90": null,
+          "undefined_note": "no evaluable direction: at least one feature is constant in every configuration"
+        },
+        {
+          "a": "is_bridge",
+          "b": "ablation_delta",
+          "n_directions_total": 30,
+          "n_directions_evaluable": 0,
+          "n_directions_undefined": 30,
+          "median_abs_spearman": null,
+          "n_above_0.80": 0,
+          "n_above_0.90": 0,
+          "fraction_above_0.80": null,
+          "fraction_above_0.90": null,
+          "undefined_note": "no evaluable direction: at least one feature is constant in every configuration"
+        },
+        {
+          "a": "is_bridge",
+          "b": "perturbation_delta",
+          "n_directions_total": 30,
+          "n_directions_evaluable": 0,
+          "n_directions_undefined": 30,
+          "median_abs_spearman": null,
+          "n_above_0.80": 0,
+          "n_above_0.90": 0,
+          "fraction_above_0.80": null,
+          "fraction_above_0.90": null,
+          "undefined_note": "no evaluable direction: at least one feature is constant in every configuration"
+        },
+        {
+          "a": "is_bridge",
+          "b": "receiver_response_sensitivity",
+          "n_directions_total": 30,
+          "n_directions_evaluable": 0,
+          "n_directions_undefined": 30,
+          "median_abs_spearman": null,
+          "n_above_0.80": 0,
+          "n_above_0.90": 0,
+          "fraction_above_0.80": null,
+          "fraction_above_0.90": null,
+          "undefined_note": "no evaluable direction: at least one feature is constant in every configuration"
+        },
+        {
+          "a": "is_bridge",
+          "b": "consequence_proximity",
+          "n_directions_total": 30,
+          "n_directions_evaluable": 0,
+          "n_directions_undefined": 30,
+          "median_abs_spearman": null,
+          "n_above_0.80": 0,
+          "n_above_0.90": 0,
+          "fraction_above_0.80": null,
+          "fraction_above_0.90": null,
+          "undefined_note": "no evaluable direction: at least one feature is constant in every configuration"
+        }
+      ]
+    }
+  },
+  "rank_equivalence": {
+    "budgets": [
+      0.1,
+      0.2,
+      0.4
+    ],
+    "n_checks": 60,
+    "n_configuration_directions": 60,
+    "comparison_tolerance_decimals": 12,
+    "all_identical": true,
+    "failures": [],
+    "max_affine_residual": 1.6653345369377348e-16,
+    "n_identical_only_after_rounding": 9,
+    "float_note": "9 of 60 configuration-directions agree only after rounding to 12 decimals. In every one of them the largest departure from the exact affine relation is 1.67e-16 -- IEEE summation order over six versus eight terms, not a difference in ordering. Tie detection compares for equality, so a last-bit difference splits a genuine tie and moves a midrank. The unrounded result is reported here rather than suppressed because it is also a caveat about the score itself: MESA-Local's tie structure is reproducible only when the features are summed in a fixed order, which the frozen block does guarantee.",
+    "n_active_min": 2,
+    "n_active_max": 6,
+    "n_active_median": 5.0,
+    "distribution_n_active": {
+      "2": 12,
+      "4": 12,
+      "5": 12,
+      "6": 24
+    },
+    "algebraic_note": "eight(e) = (active_sum(e) + c)/8 with c constant within the configuration, and active(e) = active_sum(e)/n_active, so eight = (n_active/8)*active + c/8 is a strictly increasing affine map of the active-only score. Equal ranks are therefore an identity; this check exists to catch an implementation that departs from it.",
+    "checks": [
+      {
+        "scenario": "customer_service",
+        "group": "customer_service|gemma4:e4b|centralized|A->B",
+        "n_edges": 8,
+        "n_declared": 8,
+        "n_active": 4,
+        "active": [
+          "source_degree_centrality",
+          "target_degree_centrality",
+          "ablation_delta",
+          "perturbation_delta"
+        ],
+        "inactive": [
+          "betweenness_centrality",
+          "information_bottleneck",
+          "is_bridge",
+          "endpoint_centrality_max"
+        ],
+        "identical_ranks": true,
+        "identical_ranks_unrounded": true,
+        "affine_residual": 5.551115123125783e-17,
+        "top_k": {
+          "10%": {
+            "k": 1,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "20%": {
+            "k": 2,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "40%": {
+            "k": 4,
+            "identical_set": true,
+            "identical_order": true
+          }
+        }
+      },
+      {
+        "scenario": "customer_service",
+        "group": "customer_service|gemma4:e4b|centralized|B->A",
+        "n_edges": 8,
+        "n_declared": 8,
+        "n_active": 4,
+        "active": [
+          "source_degree_centrality",
+          "target_degree_centrality",
+          "ablation_delta",
+          "perturbation_delta"
+        ],
+        "inactive": [
+          "betweenness_centrality",
+          "information_bottleneck",
+          "is_bridge",
+          "endpoint_centrality_max"
+        ],
+        "identical_ranks": true,
+        "identical_ranks_unrounded": true,
+        "affine_residual": 5.551115123125783e-17,
+        "top_k": {
+          "10%": {
+            "k": 1,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "20%": {
+            "k": 2,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "40%": {
+            "k": 4,
+            "identical_set": true,
+            "identical_order": true
+          }
+        }
+      },
+      {
+        "scenario": "customer_service",
+        "group": "customer_service|gemma4:e4b|decentralized|A->B",
+        "n_edges": 5,
+        "n_declared": 8,
+        "n_active": 2,
+        "active": [
+          "ablation_delta",
+          "perturbation_delta"
+        ],
+        "inactive": [
+          "betweenness_centrality",
+          "information_bottleneck",
+          "is_bridge",
+          "endpoint_centrality_max",
+          "source_degree_centrality",
+          "target_degree_centrality"
+        ],
+        "identical_ranks": true,
+        "identical_ranks_unrounded": true,
+        "affine_residual": 0.0,
+        "top_k": {
+          "10%": {
+            "k": 1,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "20%": {
+            "k": 1,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "40%": {
+            "k": 2,
+            "identical_set": true,
+            "identical_order": true
+          }
+        }
+      },
+      {
+        "scenario": "customer_service",
+        "group": "customer_service|gemma4:e4b|decentralized|B->A",
+        "n_edges": 5,
+        "n_declared": 8,
+        "n_active": 2,
+        "active": [
+          "ablation_delta",
+          "perturbation_delta"
+        ],
+        "inactive": [
+          "betweenness_centrality",
+          "information_bottleneck",
+          "is_bridge",
+          "endpoint_centrality_max",
+          "source_degree_centrality",
+          "target_degree_centrality"
+        ],
+        "identical_ranks": true,
+        "identical_ranks_unrounded": true,
+        "affine_residual": 0.0,
+        "top_k": {
+          "10%": {
+            "k": 1,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "20%": {
+            "k": 1,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "40%": {
+            "k": 2,
+            "identical_set": true,
+            "identical_order": true
+          }
+        }
+      },
+      {
+        "scenario": "customer_service",
+        "group": "customer_service|gemma4:e4b|hierarchical|A->B",
+        "n_edges": 10,
+        "n_declared": 8,
+        "n_active": 6,
+        "active": [
+          "betweenness_centrality",
+          "endpoint_centrality_max",
+          "source_degree_centrality",
+          "target_degree_centrality",
+          "ablation_delta",
+          "perturbation_delta"
+        ],
+        "inactive": [
+          "information_bottleneck",
+          "is_bridge"
+        ],
+        "identical_ranks": true,
+        "identical_ranks_unrounded": true,
+        "affine_residual": 1.1102230246251565e-16,
+        "top_k": {
+          "10%": {
+            "k": 1,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "20%": {
+            "k": 2,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "40%": {
+            "k": 4,
+            "identical_set": true,
+            "identical_order": true
+          }
+        }
+      },
+      {
+        "scenario": "customer_service",
+        "group": "customer_service|gemma4:e4b|hierarchical|B->A",
+        "n_edges": 10,
+        "n_declared": 8,
+        "n_active": 6,
+        "active": [
+          "betweenness_centrality",
+          "endpoint_centrality_max",
+          "source_degree_centrality",
+          "target_degree_centrality",
+          "ablation_delta",
+          "perturbation_delta"
+        ],
+        "inactive": [
+          "information_bottleneck",
+          "is_bridge"
+        ],
+        "identical_ranks": true,
+        "identical_ranks_unrounded": true,
+        "affine_residual": 5.551115123125783e-17,
+        "top_k": {
+          "10%": {
+            "k": 1,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "20%": {
+            "k": 2,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "40%": {
+            "k": 4,
+            "identical_set": true,
+            "identical_order": true
+          }
+        }
+      },
+      {
+        "scenario": "customer_service",
+        "group": "customer_service|gemma4:e4b|hybrid|A->B",
+        "n_edges": 10,
+        "n_declared": 8,
+        "n_active": 6,
+        "active": [
+          "betweenness_centrality",
+          "endpoint_centrality_max",
+          "source_degree_centrality",
+          "target_degree_centrality",
+          "ablation_delta",
+          "perturbation_delta"
+        ],
+        "inactive": [
+          "information_bottleneck",
+          "is_bridge"
+        ],
+        "identical_ranks": true,
+        "identical_ranks_unrounded": true,
+        "affine_residual": 1.1102230246251565e-16,
+        "top_k": {
+          "10%": {
+            "k": 1,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "20%": {
+            "k": 2,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "40%": {
+            "k": 4,
+            "identical_set": true,
+            "identical_order": true
+          }
+        }
+      },
+      {
+        "scenario": "customer_service",
+        "group": "customer_service|gemma4:e4b|hybrid|B->A",
+        "n_edges": 10,
+        "n_declared": 8,
+        "n_active": 6,
+        "active": [
+          "betweenness_centrality",
+          "endpoint_centrality_max",
+          "source_degree_centrality",
+          "target_degree_centrality",
+          "ablation_delta",
+          "perturbation_delta"
+        ],
+        "inactive": [
+          "information_bottleneck",
+          "is_bridge"
+        ],
+        "identical_ranks": true,
+        "identical_ranks_unrounded": false,
+        "affine_residual": 1.1102230246251565e-16,
+        "top_k": {
+          "10%": {
+            "k": 1,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "20%": {
+            "k": 2,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "40%": {
+            "k": 4,
+            "identical_set": true,
+            "identical_order": true
+          }
+        }
+      },
+      {
+        "scenario": "customer_service",
+        "group": "customer_service|gemma4:e4b|sequential|A->B",
+        "n_edges": 4,
+        "n_declared": 8,
+        "n_active": 5,
+        "active": [
+          "betweenness_centrality",
+          "source_degree_centrality",
+          "target_degree_centrality",
+          "ablation_delta",
+          "perturbation_delta"
+        ],
+        "inactive": [
+          "information_bottleneck",
+          "is_bridge",
+          "endpoint_centrality_max"
+        ],
+        "identical_ranks": true,
+        "identical_ranks_unrounded": true,
+        "affine_residual": 5.551115123125783e-17,
+        "top_k": {
+          "10%": {
+            "k": 1,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "20%": {
+            "k": 1,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "40%": {
+            "k": 2,
+            "identical_set": true,
+            "identical_order": true
+          }
+        }
+      },
+      {
+        "scenario": "customer_service",
+        "group": "customer_service|gemma4:e4b|sequential|B->A",
+        "n_edges": 4,
+        "n_declared": 8,
+        "n_active": 5,
+        "active": [
+          "betweenness_centrality",
+          "source_degree_centrality",
+          "target_degree_centrality",
+          "ablation_delta",
+          "perturbation_delta"
+        ],
+        "inactive": [
+          "information_bottleneck",
+          "is_bridge",
+          "endpoint_centrality_max"
+        ],
+        "identical_ranks": true,
+        "identical_ranks_unrounded": true,
+        "affine_residual": 5.551115123125783e-17,
+        "top_k": {
+          "10%": {
+            "k": 1,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "20%": {
+            "k": 1,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "40%": {
+            "k": 2,
+            "identical_set": true,
+            "identical_order": true
+          }
+        }
+      },
+      {
+        "scenario": "customer_service",
+        "group": "customer_service|llama3.1:8b|centralized|A->B",
+        "n_edges": 8,
+        "n_declared": 8,
+        "n_active": 4,
+        "active": [
+          "source_degree_centrality",
+          "target_degree_centrality",
+          "ablation_delta",
+          "perturbation_delta"
+        ],
+        "inactive": [
+          "betweenness_centrality",
+          "information_bottleneck",
+          "is_bridge",
+          "endpoint_centrality_max"
+        ],
+        "identical_ranks": true,
+        "identical_ranks_unrounded": true,
+        "affine_residual": 2.7755575615628914e-17,
+        "top_k": {
+          "10%": {
+            "k": 1,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "20%": {
+            "k": 2,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "40%": {
+            "k": 4,
+            "identical_set": true,
+            "identical_order": true
+          }
+        }
+      },
+      {
+        "scenario": "customer_service",
+        "group": "customer_service|llama3.1:8b|centralized|B->A",
+        "n_edges": 8,
+        "n_declared": 8,
+        "n_active": 4,
+        "active": [
+          "source_degree_centrality",
+          "target_degree_centrality",
+          "ablation_delta",
+          "perturbation_delta"
+        ],
+        "inactive": [
+          "betweenness_centrality",
+          "information_bottleneck",
+          "is_bridge",
+          "endpoint_centrality_max"
+        ],
+        "identical_ranks": true,
+        "identical_ranks_unrounded": true,
+        "affine_residual": 2.7755575615628914e-17,
+        "top_k": {
+          "10%": {
+            "k": 1,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "20%": {
+            "k": 2,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "40%": {
+            "k": 4,
+            "identical_set": true,
+            "identical_order": true
+          }
+        }
+      },
+      {
+        "scenario": "customer_service",
+        "group": "customer_service|llama3.1:8b|decentralized|A->B",
+        "n_edges": 5,
+        "n_declared": 8,
+        "n_active": 2,
+        "active": [
+          "ablation_delta",
+          "perturbation_delta"
+        ],
+        "inactive": [
+          "betweenness_centrality",
+          "information_bottleneck",
+          "is_bridge",
+          "endpoint_centrality_max",
+          "source_degree_centrality",
+          "target_degree_centrality"
+        ],
+        "identical_ranks": true,
+        "identical_ranks_unrounded": true,
+        "affine_residual": 0.0,
+        "top_k": {
+          "10%": {
+            "k": 1,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "20%": {
+            "k": 1,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "40%": {
+            "k": 2,
+            "identical_set": true,
+            "identical_order": true
+          }
+        }
+      },
+      {
+        "scenario": "customer_service",
+        "group": "customer_service|llama3.1:8b|decentralized|B->A",
+        "n_edges": 5,
+        "n_declared": 8,
+        "n_active": 2,
+        "active": [
+          "ablation_delta",
+          "perturbation_delta"
+        ],
+        "inactive": [
+          "betweenness_centrality",
+          "information_bottleneck",
+          "is_bridge",
+          "endpoint_centrality_max",
+          "source_degree_centrality",
+          "target_degree_centrality"
+        ],
+        "identical_ranks": true,
+        "identical_ranks_unrounded": true,
+        "affine_residual": 0.0,
+        "top_k": {
+          "10%": {
+            "k": 1,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "20%": {
+            "k": 1,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "40%": {
+            "k": 2,
+            "identical_set": true,
+            "identical_order": true
+          }
+        }
+      },
+      {
+        "scenario": "customer_service",
+        "group": "customer_service|llama3.1:8b|hierarchical|A->B",
+        "n_edges": 10,
+        "n_declared": 8,
+        "n_active": 6,
+        "active": [
+          "betweenness_centrality",
+          "endpoint_centrality_max",
+          "source_degree_centrality",
+          "target_degree_centrality",
+          "ablation_delta",
+          "perturbation_delta"
+        ],
+        "inactive": [
+          "information_bottleneck",
+          "is_bridge"
+        ],
+        "identical_ranks": true,
+        "identical_ranks_unrounded": false,
+        "affine_residual": 1.1102230246251565e-16,
+        "top_k": {
+          "10%": {
+            "k": 1,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "20%": {
+            "k": 2,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "40%": {
+            "k": 4,
+            "identical_set": true,
+            "identical_order": true
+          }
+        }
+      },
+      {
+        "scenario": "customer_service",
+        "group": "customer_service|llama3.1:8b|hierarchical|B->A",
+        "n_edges": 10,
+        "n_declared": 8,
+        "n_active": 6,
+        "active": [
+          "betweenness_centrality",
+          "endpoint_centrality_max",
+          "source_degree_centrality",
+          "target_degree_centrality",
+          "ablation_delta",
+          "perturbation_delta"
+        ],
+        "inactive": [
+          "information_bottleneck",
+          "is_bridge"
+        ],
+        "identical_ranks": true,
+        "identical_ranks_unrounded": true,
+        "affine_residual": 1.1102230246251565e-16,
+        "top_k": {
+          "10%": {
+            "k": 1,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "20%": {
+            "k": 2,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "40%": {
+            "k": 4,
+            "identical_set": true,
+            "identical_order": true
+          }
+        }
+      },
+      {
+        "scenario": "customer_service",
+        "group": "customer_service|llama3.1:8b|hybrid|A->B",
+        "n_edges": 10,
+        "n_declared": 8,
+        "n_active": 6,
+        "active": [
+          "betweenness_centrality",
+          "endpoint_centrality_max",
+          "source_degree_centrality",
+          "target_degree_centrality",
+          "ablation_delta",
+          "perturbation_delta"
+        ],
+        "inactive": [
+          "information_bottleneck",
+          "is_bridge"
+        ],
+        "identical_ranks": true,
+        "identical_ranks_unrounded": false,
+        "affine_residual": 1.1102230246251565e-16,
+        "top_k": {
+          "10%": {
+            "k": 1,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "20%": {
+            "k": 2,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "40%": {
+            "k": 4,
+            "identical_set": true,
+            "identical_order": true
+          }
+        }
+      },
+      {
+        "scenario": "customer_service",
+        "group": "customer_service|llama3.1:8b|hybrid|B->A",
+        "n_edges": 10,
+        "n_declared": 8,
+        "n_active": 6,
+        "active": [
+          "betweenness_centrality",
+          "endpoint_centrality_max",
+          "source_degree_centrality",
+          "target_degree_centrality",
+          "ablation_delta",
+          "perturbation_delta"
+        ],
+        "inactive": [
+          "information_bottleneck",
+          "is_bridge"
+        ],
+        "identical_ranks": true,
+        "identical_ranks_unrounded": true,
+        "affine_residual": 1.1102230246251565e-16,
+        "top_k": {
+          "10%": {
+            "k": 1,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "20%": {
+            "k": 2,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "40%": {
+            "k": 4,
+            "identical_set": true,
+            "identical_order": true
+          }
+        }
+      },
+      {
+        "scenario": "customer_service",
+        "group": "customer_service|llama3.1:8b|sequential|A->B",
+        "n_edges": 4,
+        "n_declared": 8,
+        "n_active": 5,
+        "active": [
+          "betweenness_centrality",
+          "source_degree_centrality",
+          "target_degree_centrality",
+          "ablation_delta",
+          "perturbation_delta"
+        ],
+        "inactive": [
+          "information_bottleneck",
+          "is_bridge",
+          "endpoint_centrality_max"
+        ],
+        "identical_ranks": true,
+        "identical_ranks_unrounded": true,
+        "affine_residual": 5.551115123125783e-17,
+        "top_k": {
+          "10%": {
+            "k": 1,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "20%": {
+            "k": 1,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "40%": {
+            "k": 2,
+            "identical_set": true,
+            "identical_order": true
+          }
+        }
+      },
+      {
+        "scenario": "customer_service",
+        "group": "customer_service|llama3.1:8b|sequential|B->A",
+        "n_edges": 4,
+        "n_declared": 8,
+        "n_active": 5,
+        "active": [
+          "betweenness_centrality",
+          "source_degree_centrality",
+          "target_degree_centrality",
+          "ablation_delta",
+          "perturbation_delta"
+        ],
+        "inactive": [
+          "information_bottleneck",
+          "is_bridge",
+          "endpoint_centrality_max"
+        ],
+        "identical_ranks": true,
+        "identical_ranks_unrounded": true,
+        "affine_residual": 5.551115123125783e-17,
+        "top_k": {
+          "10%": {
+            "k": 1,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "20%": {
+            "k": 1,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "40%": {
+            "k": 2,
+            "identical_set": true,
+            "identical_order": true
+          }
+        }
+      },
+      {
+        "scenario": "customer_service",
+        "group": "customer_service|qwen3.5:9b|centralized|A->B",
+        "n_edges": 8,
+        "n_declared": 8,
+        "n_active": 4,
+        "active": [
+          "source_degree_centrality",
+          "target_degree_centrality",
+          "ablation_delta",
+          "perturbation_delta"
+        ],
+        "inactive": [
+          "betweenness_centrality",
+          "information_bottleneck",
+          "is_bridge",
+          "endpoint_centrality_max"
+        ],
+        "identical_ranks": true,
+        "identical_ranks_unrounded": true,
+        "affine_residual": 0.0,
+        "top_k": {
+          "10%": {
+            "k": 1,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "20%": {
+            "k": 2,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "40%": {
+            "k": 4,
+            "identical_set": true,
+            "identical_order": true
+          }
+        }
+      },
+      {
+        "scenario": "customer_service",
+        "group": "customer_service|qwen3.5:9b|centralized|B->A",
+        "n_edges": 8,
+        "n_declared": 8,
+        "n_active": 4,
+        "active": [
+          "source_degree_centrality",
+          "target_degree_centrality",
+          "ablation_delta",
+          "perturbation_delta"
+        ],
+        "inactive": [
+          "betweenness_centrality",
+          "information_bottleneck",
+          "is_bridge",
+          "endpoint_centrality_max"
+        ],
+        "identical_ranks": true,
+        "identical_ranks_unrounded": true,
+        "affine_residual": 5.551115123125783e-17,
+        "top_k": {
+          "10%": {
+            "k": 1,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "20%": {
+            "k": 2,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "40%": {
+            "k": 4,
+            "identical_set": true,
+            "identical_order": true
+          }
+        }
+      },
+      {
+        "scenario": "customer_service",
+        "group": "customer_service|qwen3.5:9b|decentralized|A->B",
+        "n_edges": 5,
+        "n_declared": 8,
+        "n_active": 2,
+        "active": [
+          "ablation_delta",
+          "perturbation_delta"
+        ],
+        "inactive": [
+          "betweenness_centrality",
+          "information_bottleneck",
+          "is_bridge",
+          "endpoint_centrality_max",
+          "source_degree_centrality",
+          "target_degree_centrality"
+        ],
+        "identical_ranks": true,
+        "identical_ranks_unrounded": true,
+        "affine_residual": 0.0,
+        "top_k": {
+          "10%": {
+            "k": 1,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "20%": {
+            "k": 1,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "40%": {
+            "k": 2,
+            "identical_set": true,
+            "identical_order": true
+          }
+        }
+      },
+      {
+        "scenario": "customer_service",
+        "group": "customer_service|qwen3.5:9b|decentralized|B->A",
+        "n_edges": 5,
+        "n_declared": 8,
+        "n_active": 2,
+        "active": [
+          "ablation_delta",
+          "perturbation_delta"
+        ],
+        "inactive": [
+          "betweenness_centrality",
+          "information_bottleneck",
+          "is_bridge",
+          "endpoint_centrality_max",
+          "source_degree_centrality",
+          "target_degree_centrality"
+        ],
+        "identical_ranks": true,
+        "identical_ranks_unrounded": true,
+        "affine_residual": 0.0,
+        "top_k": {
+          "10%": {
+            "k": 1,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "20%": {
+            "k": 1,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "40%": {
+            "k": 2,
+            "identical_set": true,
+            "identical_order": true
+          }
+        }
+      },
+      {
+        "scenario": "customer_service",
+        "group": "customer_service|qwen3.5:9b|hierarchical|A->B",
+        "n_edges": 10,
+        "n_declared": 8,
+        "n_active": 6,
+        "active": [
+          "betweenness_centrality",
+          "endpoint_centrality_max",
+          "source_degree_centrality",
+          "target_degree_centrality",
+          "ablation_delta",
+          "perturbation_delta"
+        ],
+        "inactive": [
+          "information_bottleneck",
+          "is_bridge"
+        ],
+        "identical_ranks": true,
+        "identical_ranks_unrounded": true,
+        "affine_residual": 1.1102230246251565e-16,
+        "top_k": {
+          "10%": {
+            "k": 1,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "20%": {
+            "k": 2,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "40%": {
+            "k": 4,
+            "identical_set": true,
+            "identical_order": true
+          }
+        }
+      },
+      {
+        "scenario": "customer_service",
+        "group": "customer_service|qwen3.5:9b|hierarchical|B->A",
+        "n_edges": 10,
+        "n_declared": 8,
+        "n_active": 6,
+        "active": [
+          "betweenness_centrality",
+          "endpoint_centrality_max",
+          "source_degree_centrality",
+          "target_degree_centrality",
+          "ablation_delta",
+          "perturbation_delta"
+        ],
+        "inactive": [
+          "information_bottleneck",
+          "is_bridge"
+        ],
+        "identical_ranks": true,
+        "identical_ranks_unrounded": false,
+        "affine_residual": 8.326672684688674e-17,
+        "top_k": {
+          "10%": {
+            "k": 1,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "20%": {
+            "k": 2,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "40%": {
+            "k": 4,
+            "identical_set": true,
+            "identical_order": true
+          }
+        }
+      },
+      {
+        "scenario": "customer_service",
+        "group": "customer_service|qwen3.5:9b|hybrid|A->B",
+        "n_edges": 10,
+        "n_declared": 8,
+        "n_active": 6,
+        "active": [
+          "betweenness_centrality",
+          "endpoint_centrality_max",
+          "source_degree_centrality",
+          "target_degree_centrality",
+          "ablation_delta",
+          "perturbation_delta"
+        ],
+        "inactive": [
+          "information_bottleneck",
+          "is_bridge"
+        ],
+        "identical_ranks": true,
+        "identical_ranks_unrounded": false,
+        "affine_residual": 1.1102230246251565e-16,
+        "top_k": {
+          "10%": {
+            "k": 1,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "20%": {
+            "k": 2,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "40%": {
+            "k": 4,
+            "identical_set": true,
+            "identical_order": true
+          }
+        }
+      },
+      {
+        "scenario": "customer_service",
+        "group": "customer_service|qwen3.5:9b|hybrid|B->A",
+        "n_edges": 10,
+        "n_declared": 8,
+        "n_active": 6,
+        "active": [
+          "betweenness_centrality",
+          "endpoint_centrality_max",
+          "source_degree_centrality",
+          "target_degree_centrality",
+          "ablation_delta",
+          "perturbation_delta"
+        ],
+        "inactive": [
+          "information_bottleneck",
+          "is_bridge"
+        ],
+        "identical_ranks": true,
+        "identical_ranks_unrounded": true,
+        "affine_residual": 1.1102230246251565e-16,
+        "top_k": {
+          "10%": {
+            "k": 1,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "20%": {
+            "k": 2,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "40%": {
+            "k": 4,
+            "identical_set": true,
+            "identical_order": true
+          }
+        }
+      },
+      {
+        "scenario": "customer_service",
+        "group": "customer_service|qwen3.5:9b|sequential|A->B",
+        "n_edges": 4,
+        "n_declared": 8,
+        "n_active": 5,
+        "active": [
+          "betweenness_centrality",
+          "source_degree_centrality",
+          "target_degree_centrality",
+          "ablation_delta",
+          "perturbation_delta"
+        ],
+        "inactive": [
+          "information_bottleneck",
+          "is_bridge",
+          "endpoint_centrality_max"
+        ],
+        "identical_ranks": true,
+        "identical_ranks_unrounded": false,
+        "affine_residual": 5.551115123125783e-17,
+        "top_k": {
+          "10%": {
+            "k": 1,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "20%": {
+            "k": 1,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "40%": {
+            "k": 2,
+            "identical_set": true,
+            "identical_order": true
+          }
+        }
+      },
+      {
+        "scenario": "customer_service",
+        "group": "customer_service|qwen3.5:9b|sequential|B->A",
+        "n_edges": 4,
+        "n_declared": 8,
+        "n_active": 5,
+        "active": [
+          "betweenness_centrality",
+          "source_degree_centrality",
+          "target_degree_centrality",
+          "ablation_delta",
+          "perturbation_delta"
+        ],
+        "inactive": [
+          "information_bottleneck",
+          "is_bridge",
+          "endpoint_centrality_max"
+        ],
+        "identical_ranks": true,
+        "identical_ranks_unrounded": true,
+        "affine_residual": 0.0,
+        "top_k": {
+          "10%": {
+            "k": 1,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "20%": {
+            "k": 1,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "40%": {
+            "k": 2,
+            "identical_set": true,
+            "identical_order": true
+          }
+        }
+      },
+      {
+        "scenario": "software_engineering",
+        "group": "software_engineering|gemma4:e4b|centralized|A->B",
+        "n_edges": 8,
+        "n_declared": 8,
+        "n_active": 4,
+        "active": [
+          "source_degree_centrality",
+          "target_degree_centrality",
+          "ablation_delta",
+          "perturbation_delta"
+        ],
+        "inactive": [
+          "betweenness_centrality",
+          "information_bottleneck",
+          "is_bridge",
+          "endpoint_centrality_max"
+        ],
+        "identical_ranks": true,
+        "identical_ranks_unrounded": true,
+        "affine_residual": 2.7755575615628914e-17,
+        "top_k": {
+          "10%": {
+            "k": 1,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "20%": {
+            "k": 2,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "40%": {
+            "k": 4,
+            "identical_set": true,
+            "identical_order": true
+          }
+        }
+      },
+      {
+        "scenario": "software_engineering",
+        "group": "software_engineering|gemma4:e4b|centralized|B->A",
+        "n_edges": 8,
+        "n_declared": 8,
+        "n_active": 4,
+        "active": [
+          "source_degree_centrality",
+          "target_degree_centrality",
+          "ablation_delta",
+          "perturbation_delta"
+        ],
+        "inactive": [
+          "betweenness_centrality",
+          "information_bottleneck",
+          "is_bridge",
+          "endpoint_centrality_max"
+        ],
+        "identical_ranks": true,
+        "identical_ranks_unrounded": true,
+        "affine_residual": 2.7755575615628914e-17,
+        "top_k": {
+          "10%": {
+            "k": 1,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "20%": {
+            "k": 2,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "40%": {
+            "k": 4,
+            "identical_set": true,
+            "identical_order": true
+          }
+        }
+      },
+      {
+        "scenario": "software_engineering",
+        "group": "software_engineering|gemma4:e4b|decentralized|A->B",
+        "n_edges": 5,
+        "n_declared": 8,
+        "n_active": 2,
+        "active": [
+          "ablation_delta",
+          "perturbation_delta"
+        ],
+        "inactive": [
+          "betweenness_centrality",
+          "information_bottleneck",
+          "is_bridge",
+          "endpoint_centrality_max",
+          "source_degree_centrality",
+          "target_degree_centrality"
+        ],
+        "identical_ranks": true,
+        "identical_ranks_unrounded": true,
+        "affine_residual": 0.0,
+        "top_k": {
+          "10%": {
+            "k": 1,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "20%": {
+            "k": 1,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "40%": {
+            "k": 2,
+            "identical_set": true,
+            "identical_order": true
+          }
+        }
+      },
+      {
+        "scenario": "software_engineering",
+        "group": "software_engineering|gemma4:e4b|decentralized|B->A",
+        "n_edges": 5,
+        "n_declared": 8,
+        "n_active": 2,
+        "active": [
+          "ablation_delta",
+          "perturbation_delta"
+        ],
+        "inactive": [
+          "betweenness_centrality",
+          "information_bottleneck",
+          "is_bridge",
+          "endpoint_centrality_max",
+          "source_degree_centrality",
+          "target_degree_centrality"
+        ],
+        "identical_ranks": true,
+        "identical_ranks_unrounded": true,
+        "affine_residual": 0.0,
+        "top_k": {
+          "10%": {
+            "k": 1,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "20%": {
+            "k": 1,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "40%": {
+            "k": 2,
+            "identical_set": true,
+            "identical_order": true
+          }
+        }
+      },
+      {
+        "scenario": "software_engineering",
+        "group": "software_engineering|gemma4:e4b|hierarchical|A->B",
+        "n_edges": 10,
+        "n_declared": 8,
+        "n_active": 6,
+        "active": [
+          "betweenness_centrality",
+          "endpoint_centrality_max",
+          "source_degree_centrality",
+          "target_degree_centrality",
+          "ablation_delta",
+          "perturbation_delta"
+        ],
+        "inactive": [
+          "information_bottleneck",
+          "is_bridge"
+        ],
+        "identical_ranks": true,
+        "identical_ranks_unrounded": true,
+        "affine_residual": 5.551115123125783e-17,
+        "top_k": {
+          "10%": {
+            "k": 1,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "20%": {
+            "k": 2,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "40%": {
+            "k": 4,
+            "identical_set": true,
+            "identical_order": true
+          }
+        }
+      },
+      {
+        "scenario": "software_engineering",
+        "group": "software_engineering|gemma4:e4b|hierarchical|B->A",
+        "n_edges": 10,
+        "n_declared": 8,
+        "n_active": 6,
+        "active": [
+          "betweenness_centrality",
+          "endpoint_centrality_max",
+          "source_degree_centrality",
+          "target_degree_centrality",
+          "ablation_delta",
+          "perturbation_delta"
+        ],
+        "inactive": [
+          "information_bottleneck",
+          "is_bridge"
+        ],
+        "identical_ranks": true,
+        "identical_ranks_unrounded": true,
+        "affine_residual": 5.551115123125783e-17,
+        "top_k": {
+          "10%": {
+            "k": 1,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "20%": {
+            "k": 2,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "40%": {
+            "k": 4,
+            "identical_set": true,
+            "identical_order": true
+          }
+        }
+      },
+      {
+        "scenario": "software_engineering",
+        "group": "software_engineering|gemma4:e4b|hybrid|A->B",
+        "n_edges": 10,
+        "n_declared": 8,
+        "n_active": 6,
+        "active": [
+          "betweenness_centrality",
+          "endpoint_centrality_max",
+          "source_degree_centrality",
+          "target_degree_centrality",
+          "ablation_delta",
+          "perturbation_delta"
+        ],
+        "inactive": [
+          "information_bottleneck",
+          "is_bridge"
+        ],
+        "identical_ranks": true,
+        "identical_ranks_unrounded": true,
+        "affine_residual": 0.0,
+        "top_k": {
+          "10%": {
+            "k": 1,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "20%": {
+            "k": 2,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "40%": {
+            "k": 4,
+            "identical_set": true,
+            "identical_order": true
+          }
+        }
+      },
+      {
+        "scenario": "software_engineering",
+        "group": "software_engineering|gemma4:e4b|hybrid|B->A",
+        "n_edges": 10,
+        "n_declared": 8,
+        "n_active": 6,
+        "active": [
+          "betweenness_centrality",
+          "endpoint_centrality_max",
+          "source_degree_centrality",
+          "target_degree_centrality",
+          "ablation_delta",
+          "perturbation_delta"
+        ],
+        "inactive": [
+          "information_bottleneck",
+          "is_bridge"
+        ],
+        "identical_ranks": true,
+        "identical_ranks_unrounded": false,
+        "affine_residual": 5.551115123125783e-17,
+        "top_k": {
+          "10%": {
+            "k": 1,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "20%": {
+            "k": 2,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "40%": {
+            "k": 4,
+            "identical_set": true,
+            "identical_order": true
+          }
+        }
+      },
+      {
+        "scenario": "software_engineering",
+        "group": "software_engineering|gemma4:e4b|sequential|A->B",
+        "n_edges": 4,
+        "n_declared": 8,
+        "n_active": 5,
+        "active": [
+          "betweenness_centrality",
+          "source_degree_centrality",
+          "target_degree_centrality",
+          "ablation_delta",
+          "perturbation_delta"
+        ],
+        "inactive": [
+          "information_bottleneck",
+          "is_bridge",
+          "endpoint_centrality_max"
+        ],
+        "identical_ranks": true,
+        "identical_ranks_unrounded": true,
+        "affine_residual": 5.551115123125783e-17,
+        "top_k": {
+          "10%": {
+            "k": 1,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "20%": {
+            "k": 1,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "40%": {
+            "k": 2,
+            "identical_set": true,
+            "identical_order": true
+          }
+        }
+      },
+      {
+        "scenario": "software_engineering",
+        "group": "software_engineering|gemma4:e4b|sequential|B->A",
+        "n_edges": 4,
+        "n_declared": 8,
+        "n_active": 5,
+        "active": [
+          "betweenness_centrality",
+          "source_degree_centrality",
+          "target_degree_centrality",
+          "ablation_delta",
+          "perturbation_delta"
+        ],
+        "inactive": [
+          "information_bottleneck",
+          "is_bridge",
+          "endpoint_centrality_max"
+        ],
+        "identical_ranks": true,
+        "identical_ranks_unrounded": false,
+        "affine_residual": 5.551115123125783e-17,
+        "top_k": {
+          "10%": {
+            "k": 1,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "20%": {
+            "k": 1,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "40%": {
+            "k": 2,
+            "identical_set": true,
+            "identical_order": true
+          }
+        }
+      },
+      {
+        "scenario": "software_engineering",
+        "group": "software_engineering|llama3.1:8b|centralized|A->B",
+        "n_edges": 8,
+        "n_declared": 8,
+        "n_active": 4,
+        "active": [
+          "source_degree_centrality",
+          "target_degree_centrality",
+          "ablation_delta",
+          "perturbation_delta"
+        ],
+        "inactive": [
+          "betweenness_centrality",
+          "information_bottleneck",
+          "is_bridge",
+          "endpoint_centrality_max"
+        ],
+        "identical_ranks": true,
+        "identical_ranks_unrounded": true,
+        "affine_residual": 2.7755575615628914e-17,
+        "top_k": {
+          "10%": {
+            "k": 1,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "20%": {
+            "k": 2,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "40%": {
+            "k": 4,
+            "identical_set": true,
+            "identical_order": true
+          }
+        }
+      },
+      {
+        "scenario": "software_engineering",
+        "group": "software_engineering|llama3.1:8b|centralized|B->A",
+        "n_edges": 8,
+        "n_declared": 8,
+        "n_active": 4,
+        "active": [
+          "source_degree_centrality",
+          "target_degree_centrality",
+          "ablation_delta",
+          "perturbation_delta"
+        ],
+        "inactive": [
+          "betweenness_centrality",
+          "information_bottleneck",
+          "is_bridge",
+          "endpoint_centrality_max"
+        ],
+        "identical_ranks": true,
+        "identical_ranks_unrounded": true,
+        "affine_residual": 2.7755575615628914e-17,
+        "top_k": {
+          "10%": {
+            "k": 1,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "20%": {
+            "k": 2,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "40%": {
+            "k": 4,
+            "identical_set": true,
+            "identical_order": true
+          }
+        }
+      },
+      {
+        "scenario": "software_engineering",
+        "group": "software_engineering|llama3.1:8b|decentralized|A->B",
+        "n_edges": 5,
+        "n_declared": 8,
+        "n_active": 2,
+        "active": [
+          "ablation_delta",
+          "perturbation_delta"
+        ],
+        "inactive": [
+          "betweenness_centrality",
+          "information_bottleneck",
+          "is_bridge",
+          "endpoint_centrality_max",
+          "source_degree_centrality",
+          "target_degree_centrality"
+        ],
+        "identical_ranks": true,
+        "identical_ranks_unrounded": true,
+        "affine_residual": 0.0,
+        "top_k": {
+          "10%": {
+            "k": 1,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "20%": {
+            "k": 1,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "40%": {
+            "k": 2,
+            "identical_set": true,
+            "identical_order": true
+          }
+        }
+      },
+      {
+        "scenario": "software_engineering",
+        "group": "software_engineering|llama3.1:8b|decentralized|B->A",
+        "n_edges": 5,
+        "n_declared": 8,
+        "n_active": 2,
+        "active": [
+          "ablation_delta",
+          "perturbation_delta"
+        ],
+        "inactive": [
+          "betweenness_centrality",
+          "information_bottleneck",
+          "is_bridge",
+          "endpoint_centrality_max",
+          "source_degree_centrality",
+          "target_degree_centrality"
+        ],
+        "identical_ranks": true,
+        "identical_ranks_unrounded": true,
+        "affine_residual": 0.0,
+        "top_k": {
+          "10%": {
+            "k": 1,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "20%": {
+            "k": 1,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "40%": {
+            "k": 2,
+            "identical_set": true,
+            "identical_order": true
+          }
+        }
+      },
+      {
+        "scenario": "software_engineering",
+        "group": "software_engineering|llama3.1:8b|hierarchical|A->B",
+        "n_edges": 10,
+        "n_declared": 8,
+        "n_active": 6,
+        "active": [
+          "betweenness_centrality",
+          "endpoint_centrality_max",
+          "source_degree_centrality",
+          "target_degree_centrality",
+          "ablation_delta",
+          "perturbation_delta"
+        ],
+        "inactive": [
+          "information_bottleneck",
+          "is_bridge"
+        ],
+        "identical_ranks": true,
+        "identical_ranks_unrounded": true,
+        "affine_residual": 1.1102230246251565e-16,
+        "top_k": {
+          "10%": {
+            "k": 1,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "20%": {
+            "k": 2,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "40%": {
+            "k": 4,
+            "identical_set": true,
+            "identical_order": true
+          }
+        }
+      },
+      {
+        "scenario": "software_engineering",
+        "group": "software_engineering|llama3.1:8b|hierarchical|B->A",
+        "n_edges": 10,
+        "n_declared": 8,
+        "n_active": 6,
+        "active": [
+          "betweenness_centrality",
+          "endpoint_centrality_max",
+          "source_degree_centrality",
+          "target_degree_centrality",
+          "ablation_delta",
+          "perturbation_delta"
+        ],
+        "inactive": [
+          "information_bottleneck",
+          "is_bridge"
+        ],
+        "identical_ranks": true,
+        "identical_ranks_unrounded": true,
+        "affine_residual": 1.1102230246251565e-16,
+        "top_k": {
+          "10%": {
+            "k": 1,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "20%": {
+            "k": 2,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "40%": {
+            "k": 4,
+            "identical_set": true,
+            "identical_order": true
+          }
+        }
+      },
+      {
+        "scenario": "software_engineering",
+        "group": "software_engineering|llama3.1:8b|hybrid|A->B",
+        "n_edges": 10,
+        "n_declared": 8,
+        "n_active": 6,
+        "active": [
+          "betweenness_centrality",
+          "endpoint_centrality_max",
+          "source_degree_centrality",
+          "target_degree_centrality",
+          "ablation_delta",
+          "perturbation_delta"
+        ],
+        "inactive": [
+          "information_bottleneck",
+          "is_bridge"
+        ],
+        "identical_ranks": true,
+        "identical_ranks_unrounded": true,
+        "affine_residual": 5.551115123125783e-17,
+        "top_k": {
+          "10%": {
+            "k": 1,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "20%": {
+            "k": 2,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "40%": {
+            "k": 4,
+            "identical_set": true,
+            "identical_order": true
+          }
+        }
+      },
+      {
+        "scenario": "software_engineering",
+        "group": "software_engineering|llama3.1:8b|hybrid|B->A",
+        "n_edges": 10,
+        "n_declared": 8,
+        "n_active": 6,
+        "active": [
+          "betweenness_centrality",
+          "endpoint_centrality_max",
+          "source_degree_centrality",
+          "target_degree_centrality",
+          "ablation_delta",
+          "perturbation_delta"
+        ],
+        "inactive": [
+          "information_bottleneck",
+          "is_bridge"
+        ],
+        "identical_ranks": true,
+        "identical_ranks_unrounded": true,
+        "affine_residual": 5.551115123125783e-17,
+        "top_k": {
+          "10%": {
+            "k": 1,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "20%": {
+            "k": 2,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "40%": {
+            "k": 4,
+            "identical_set": true,
+            "identical_order": true
+          }
+        }
+      },
+      {
+        "scenario": "software_engineering",
+        "group": "software_engineering|llama3.1:8b|sequential|A->B",
+        "n_edges": 4,
+        "n_declared": 8,
+        "n_active": 5,
+        "active": [
+          "betweenness_centrality",
+          "source_degree_centrality",
+          "target_degree_centrality",
+          "ablation_delta",
+          "perturbation_delta"
+        ],
+        "inactive": [
+          "information_bottleneck",
+          "is_bridge",
+          "endpoint_centrality_max"
+        ],
+        "identical_ranks": true,
+        "identical_ranks_unrounded": true,
+        "affine_residual": 1.6653345369377348e-16,
+        "top_k": {
+          "10%": {
+            "k": 1,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "20%": {
+            "k": 1,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "40%": {
+            "k": 2,
+            "identical_set": true,
+            "identical_order": true
+          }
+        }
+      },
+      {
+        "scenario": "software_engineering",
+        "group": "software_engineering|llama3.1:8b|sequential|B->A",
+        "n_edges": 4,
+        "n_declared": 8,
+        "n_active": 5,
+        "active": [
+          "betweenness_centrality",
+          "source_degree_centrality",
+          "target_degree_centrality",
+          "ablation_delta",
+          "perturbation_delta"
+        ],
+        "inactive": [
+          "information_bottleneck",
+          "is_bridge",
+          "endpoint_centrality_max"
+        ],
+        "identical_ranks": true,
+        "identical_ranks_unrounded": true,
+        "affine_residual": 5.551115123125783e-17,
+        "top_k": {
+          "10%": {
+            "k": 1,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "20%": {
+            "k": 1,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "40%": {
+            "k": 2,
+            "identical_set": true,
+            "identical_order": true
+          }
+        }
+      },
+      {
+        "scenario": "software_engineering",
+        "group": "software_engineering|qwen3.5:9b|centralized|A->B",
+        "n_edges": 8,
+        "n_declared": 8,
+        "n_active": 4,
+        "active": [
+          "source_degree_centrality",
+          "target_degree_centrality",
+          "ablation_delta",
+          "perturbation_delta"
+        ],
+        "inactive": [
+          "betweenness_centrality",
+          "information_bottleneck",
+          "is_bridge",
+          "endpoint_centrality_max"
+        ],
+        "identical_ranks": true,
+        "identical_ranks_unrounded": true,
+        "affine_residual": 0.0,
+        "top_k": {
+          "10%": {
+            "k": 1,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "20%": {
+            "k": 2,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "40%": {
+            "k": 4,
+            "identical_set": true,
+            "identical_order": true
+          }
+        }
+      },
+      {
+        "scenario": "software_engineering",
+        "group": "software_engineering|qwen3.5:9b|centralized|B->A",
+        "n_edges": 8,
+        "n_declared": 8,
+        "n_active": 4,
+        "active": [
+          "source_degree_centrality",
+          "target_degree_centrality",
+          "ablation_delta",
+          "perturbation_delta"
+        ],
+        "inactive": [
+          "betweenness_centrality",
+          "information_bottleneck",
+          "is_bridge",
+          "endpoint_centrality_max"
+        ],
+        "identical_ranks": true,
+        "identical_ranks_unrounded": true,
+        "affine_residual": 0.0,
+        "top_k": {
+          "10%": {
+            "k": 1,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "20%": {
+            "k": 2,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "40%": {
+            "k": 4,
+            "identical_set": true,
+            "identical_order": true
+          }
+        }
+      },
+      {
+        "scenario": "software_engineering",
+        "group": "software_engineering|qwen3.5:9b|decentralized|A->B",
+        "n_edges": 5,
+        "n_declared": 8,
+        "n_active": 2,
+        "active": [
+          "ablation_delta",
+          "perturbation_delta"
+        ],
+        "inactive": [
+          "betweenness_centrality",
+          "information_bottleneck",
+          "is_bridge",
+          "endpoint_centrality_max",
+          "source_degree_centrality",
+          "target_degree_centrality"
+        ],
+        "identical_ranks": true,
+        "identical_ranks_unrounded": true,
+        "affine_residual": 0.0,
+        "top_k": {
+          "10%": {
+            "k": 1,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "20%": {
+            "k": 1,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "40%": {
+            "k": 2,
+            "identical_set": true,
+            "identical_order": true
+          }
+        }
+      },
+      {
+        "scenario": "software_engineering",
+        "group": "software_engineering|qwen3.5:9b|decentralized|B->A",
+        "n_edges": 5,
+        "n_declared": 8,
+        "n_active": 2,
+        "active": [
+          "ablation_delta",
+          "perturbation_delta"
+        ],
+        "inactive": [
+          "betweenness_centrality",
+          "information_bottleneck",
+          "is_bridge",
+          "endpoint_centrality_max",
+          "source_degree_centrality",
+          "target_degree_centrality"
+        ],
+        "identical_ranks": true,
+        "identical_ranks_unrounded": true,
+        "affine_residual": 0.0,
+        "top_k": {
+          "10%": {
+            "k": 1,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "20%": {
+            "k": 1,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "40%": {
+            "k": 2,
+            "identical_set": true,
+            "identical_order": true
+          }
+        }
+      },
+      {
+        "scenario": "software_engineering",
+        "group": "software_engineering|qwen3.5:9b|hierarchical|A->B",
+        "n_edges": 10,
+        "n_declared": 8,
+        "n_active": 6,
+        "active": [
+          "betweenness_centrality",
+          "endpoint_centrality_max",
+          "source_degree_centrality",
+          "target_degree_centrality",
+          "ablation_delta",
+          "perturbation_delta"
+        ],
+        "inactive": [
+          "information_bottleneck",
+          "is_bridge"
+        ],
+        "identical_ranks": true,
+        "identical_ranks_unrounded": true,
+        "affine_residual": 5.551115123125783e-17,
+        "top_k": {
+          "10%": {
+            "k": 1,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "20%": {
+            "k": 2,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "40%": {
+            "k": 4,
+            "identical_set": true,
+            "identical_order": true
+          }
+        }
+      },
+      {
+        "scenario": "software_engineering",
+        "group": "software_engineering|qwen3.5:9b|hierarchical|B->A",
+        "n_edges": 10,
+        "n_declared": 8,
+        "n_active": 6,
+        "active": [
+          "betweenness_centrality",
+          "endpoint_centrality_max",
+          "source_degree_centrality",
+          "target_degree_centrality",
+          "ablation_delta",
+          "perturbation_delta"
+        ],
+        "inactive": [
+          "information_bottleneck",
+          "is_bridge"
+        ],
+        "identical_ranks": true,
+        "identical_ranks_unrounded": true,
+        "affine_residual": 1.3877787807814457e-16,
+        "top_k": {
+          "10%": {
+            "k": 1,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "20%": {
+            "k": 2,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "40%": {
+            "k": 4,
+            "identical_set": true,
+            "identical_order": true
+          }
+        }
+      },
+      {
+        "scenario": "software_engineering",
+        "group": "software_engineering|qwen3.5:9b|hybrid|A->B",
+        "n_edges": 10,
+        "n_declared": 8,
+        "n_active": 6,
+        "active": [
+          "betweenness_centrality",
+          "endpoint_centrality_max",
+          "source_degree_centrality",
+          "target_degree_centrality",
+          "ablation_delta",
+          "perturbation_delta"
+        ],
+        "inactive": [
+          "information_bottleneck",
+          "is_bridge"
+        ],
+        "identical_ranks": true,
+        "identical_ranks_unrounded": true,
+        "affine_residual": 1.3877787807814457e-16,
+        "top_k": {
+          "10%": {
+            "k": 1,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "20%": {
+            "k": 2,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "40%": {
+            "k": 4,
+            "identical_set": true,
+            "identical_order": true
+          }
+        }
+      },
+      {
+        "scenario": "software_engineering",
+        "group": "software_engineering|qwen3.5:9b|hybrid|B->A",
+        "n_edges": 10,
+        "n_declared": 8,
+        "n_active": 6,
+        "active": [
+          "betweenness_centrality",
+          "endpoint_centrality_max",
+          "source_degree_centrality",
+          "target_degree_centrality",
+          "ablation_delta",
+          "perturbation_delta"
+        ],
+        "inactive": [
+          "information_bottleneck",
+          "is_bridge"
+        ],
+        "identical_ranks": true,
+        "identical_ranks_unrounded": true,
+        "affine_residual": 2.7755575615628914e-17,
+        "top_k": {
+          "10%": {
+            "k": 1,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "20%": {
+            "k": 2,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "40%": {
+            "k": 4,
+            "identical_set": true,
+            "identical_order": true
+          }
+        }
+      },
+      {
+        "scenario": "software_engineering",
+        "group": "software_engineering|qwen3.5:9b|sequential|A->B",
+        "n_edges": 4,
+        "n_declared": 8,
+        "n_active": 5,
+        "active": [
+          "betweenness_centrality",
+          "source_degree_centrality",
+          "target_degree_centrality",
+          "ablation_delta",
+          "perturbation_delta"
+        ],
+        "inactive": [
+          "information_bottleneck",
+          "is_bridge",
+          "endpoint_centrality_max"
+        ],
+        "identical_ranks": true,
+        "identical_ranks_unrounded": false,
+        "affine_residual": 1.1102230246251565e-16,
+        "top_k": {
+          "10%": {
+            "k": 1,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "20%": {
+            "k": 1,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "40%": {
+            "k": 2,
+            "identical_set": true,
+            "identical_order": true
+          }
+        }
+      },
+      {
+        "scenario": "software_engineering",
+        "group": "software_engineering|qwen3.5:9b|sequential|B->A",
+        "n_edges": 4,
+        "n_declared": 8,
+        "n_active": 5,
+        "active": [
+          "betweenness_centrality",
+          "source_degree_centrality",
+          "target_degree_centrality",
+          "ablation_delta",
+          "perturbation_delta"
+        ],
+        "inactive": [
+          "information_bottleneck",
+          "is_bridge",
+          "endpoint_centrality_max"
+        ],
+        "identical_ranks": true,
+        "identical_ranks_unrounded": true,
+        "affine_residual": 5.551115123125783e-17,
+        "top_k": {
+          "10%": {
+            "k": 1,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "20%": {
+            "k": 1,
+            "identical_set": true,
+            "identical_order": true
+          },
+          "40%": {
+            "k": 2,
+            "identical_set": true,
+            "identical_order": true
+          }
+        }
+      }
+    ]
+  },
+  "enforcement_monitored_sets": {
+    "source": "results/enforcement/customer_service/6041555_eight",
+    "policy": "mesa_local_crossfitted_k",
+    "n_configurations": 10,
+    "n_allocation_cells": 40,
+    "configurations": [
+      "gemma4:e4b/centralized",
+      "gemma4:e4b/decentralized",
+      "gemma4:e4b/hierarchical",
+      "gemma4:e4b/hybrid",
+      "gemma4:e4b/sequential",
+      "qwen3.5:9b/centralized",
+      "qwen3.5:9b/decentralized",
+      "qwen3.5:9b/hierarchical",
+      "qwen3.5:9b/hybrid",
+      "qwen3.5:9b/sequential"
+    ],
+    "n_cells_matching": {
+      "declared": 40,
+      "active": 38,
+      "declared_rounded": 37,
+      "active_rounded": 37
+    },
+    "n_cells_with_boundary_tie": 6,
+    "all_identical": false,
+    "n_changed": 2,
+    "changes": [
+      {
+        "model": "qwen3.5:9b",
+        "topology": "hybrid",
+        "direction": "A->B",
+        "budget": 0.4,
+        "k": 4,
+        "boundary_is_a_tie": true,
+        "executed": [
+          [
+            "specialist_2",
+            "team1_lead"
+          ],
+          [
+            "supervisor",
+            "team1_lead"
+          ],
+          [
+            "team1_lead",
+            "specialist_1"
+          ],
+          [
+            "team1_lead",
+            "supervisor"
+          ]
+        ],
+        "active_only": [
+          [
+            "specialist_2",
+            "team1_lead"
+          ],
+          [
+            "specialist_3",
+            "team2_lead"
+          ],
+          [
+            "supervisor",
+            "team1_lead"
+          ],
+          [
+            "team1_lead",
+            "supervisor"
+          ]
+        ],
+        "dropped": [
+          [
+            "team1_lead",
+            "specialist_1"
+          ]
+        ],
+        "added": [
+          [
+            "specialist_3",
+            "team2_lead"
+          ]
+        ],
+        "explanation": "The two edges score identically under the declared eight, so the ordering never distinguished them; the executed run separated them on IEEE summation order alone."
+      },
+      {
+        "model": "qwen3.5:9b",
+        "topology": "sequential",
+        "direction": "A->B",
+        "budget": 0.4,
+        "k": 2,
+        "boundary_is_a_tie": true,
+        "executed": [
+          [
+            "agent_3",
+            "agent_4"
+          ],
+          [
+            "agent_4",
+            "agent_5"
+          ]
+        ],
+        "active_only": [
+          [
+            "agent_1",
+            "agent_2"
+          ],
+          [
+            "agent_4",
+            "agent_5"
+          ]
+        ],
+        "dropped": [
+          [
+            "agent_3",
+            "agent_4"
+          ]
+        ],
+        "added": [
+          [
+            "agent_1",
+            "agent_2"
+          ]
+        ],
+        "explanation": "The two edges score identically under the declared eight, so the ordering never distinguished them; the executed run separated them on IEEE summation order alone."
+      }
+    ],
+    "n_changed_that_are_boundary_ties": 2,
+    "declared_eight_reproduces_executed": true,
+    "declared_eight_mismatches": [],
+    "note": "Executed monitored sets are read from the enforcement result files, which record what actually ran. Comparison uses the UNROUNDED score, because that is what the executed run used; the rounded counts are reported beside it to show how much of the allocation rides on last-bit arithmetic. The declared-eight row is the control: it must reproduce the executed sets exactly, or nothing can be concluded about any other schema."
+  },
+  "leave_one_out": {
+    "customer_service": {
+      "analysis_type": "post-hoc sensitivity analysis",
+      "is_feature_selection": false,
+      "n_configurations": 15,
+      "budget": 0.2,
+      "full_block_auc": 0.6258209312643844,
+      "full_block_coverage_at_20": 0.4290426951356535,
+      "holm_family": "the 8 features removed, within this domain and metric",
+      "note": "POST-HOC SENSITIVITY ANALYSIS, NOT FEATURE SELECTION. Sign is 'reduced minus full': a NEGATIVE delta means removing the feature HURT. These per-feature results describe how the FROZEN block behaves when perturbed; they were computed after the freeze, on the same data the freeze used, and they are not a criterion. No feature is added, removed or reweighted on the strength of any number in this table, and a reader must not read the ranking of these deltas as a recommended subset.",
+      "rows": [
+        {
+          "removed": "betweenness_centrality",
+          "n_kept": 7,
+          "delta_auc": {
+            "mean": -0.007850274302697817,
+            "lo": -0.016092140764685084,
+            "hi": -3.6643389407484016e-05,
+            "n": 15
+          },
+          "signflip_auc": {
+            "n": 15,
+            "observed_mean": -0.007850274302697817,
+            "exact": true,
+            "p_two_sided": 0.09375,
+            "min_attainable_two_sided": 6.103515625e-05
+          },
+          "delta_coverage_at_20": {
+            "mean": 0.0044733044733044755,
+            "lo": -0.0047619047619047615,
+            "hi": 0.018181818181818188,
+            "n": 15
+          },
+          "signflip_coverage_at_20": {
+            "n": 15,
+            "observed_mean": 0.0044733044733044755,
+            "exact": true,
+            "p_two_sided": 1.0,
+            "min_attainable_two_sided": 6.103515625e-05
+          },
+          "inert": false,
+          "holm_p_auc": 0.7109375,
+          "holm_p_coverage_at_20": 1.0
+        },
+        {
+          "removed": "information_bottleneck",
+          "n_kept": 7,
+          "delta_auc": {
+            "mean": 0.0,
+            "lo": 0.0,
+            "hi": 0.0,
+            "n": 15
+          },
+          "signflip_auc": {
+            "n": 15,
+            "p_two_sided": 1.0,
+            "min_attainable_two_sided": 6.103515625e-05,
+            "exact": true
+          },
+          "delta_coverage_at_20": {
+            "mean": 0.0,
+            "lo": 0.0,
+            "hi": 0.0,
+            "n": 15
+          },
+          "signflip_coverage_at_20": {
+            "n": 15,
+            "p_two_sided": 1.0,
+            "min_attainable_two_sided": 6.103515625e-05,
+            "exact": true
+          },
+          "inert": true,
+          "holm_p_auc": 1.0,
+          "holm_p_coverage_at_20": 1.0
+        },
+        {
+          "removed": "is_bridge",
+          "n_kept": 7,
+          "delta_auc": {
+            "mean": 0.0,
+            "lo": 0.0,
+            "hi": 0.0,
+            "n": 15
+          },
+          "signflip_auc": {
+            "n": 15,
+            "p_two_sided": 1.0,
+            "min_attainable_two_sided": 6.103515625e-05,
+            "exact": true
+          },
+          "delta_coverage_at_20": {
+            "mean": 0.0,
+            "lo": 0.0,
+            "hi": 0.0,
+            "n": 15
+          },
+          "signflip_coverage_at_20": {
+            "n": 15,
+            "p_two_sided": 1.0,
+            "min_attainable_two_sided": 6.103515625e-05,
+            "exact": true
+          },
+          "inert": true,
+          "holm_p_auc": 1.0,
+          "holm_p_coverage_at_20": 1.0
+        },
+        {
+          "removed": "endpoint_centrality_max",
+          "n_kept": 7,
+          "delta_auc": {
+            "mean": -0.0041817192323700585,
+            "lo": -0.011871097883597885,
+            "hi": 0.0007594254453337538,
+            "n": 15
+          },
+          "signflip_auc": {
+            "n": 15,
+            "observed_mean": -0.0041817192323700585,
+            "exact": true,
+            "p_two_sided": 0.3125,
+            "min_attainable_two_sided": 6.103515625e-05
+          },
+          "delta_coverage_at_20": {
+            "mean": -0.0035714285714285735,
+            "lo": -0.010714285714285721,
+            "hi": 0.0,
+            "n": 15
+          },
+          "signflip_coverage_at_20": {
+            "n": 15,
+            "observed_mean": -0.0035714285714285735,
+            "exact": true,
+            "p_two_sided": 1.0,
+            "min_attainable_two_sided": 6.103515625e-05
+          },
+          "inert": false,
+          "holm_p_auc": 1.0,
+          "holm_p_coverage_at_20": 1.0
+        },
+        {
+          "removed": "source_degree_centrality",
+          "n_kept": 7,
+          "delta_auc": {
+            "mean": -0.010920203310061605,
+            "lo": -0.021991246548688673,
+            "hi": 0.0005906516014085307,
+            "n": 15
+          },
+          "signflip_auc": {
+            "n": 15,
+            "observed_mean": -0.010920203310061605,
+            "exact": true,
+            "p_two_sided": 0.0888671875,
+            "min_attainable_two_sided": 6.103515625e-05
+          },
+          "delta_coverage_at_20": {
+            "mean": -0.011201953003423594,
+            "lo": -0.026793884220354818,
+            "hi": -0.0010416666666666667,
+            "n": 15
+          },
+          "signflip_coverage_at_20": {
+            "n": 15,
+            "observed_mean": -0.011201953003423594,
+            "exact": true,
+            "p_two_sided": 0.125,
+            "min_attainable_two_sided": 6.103515625e-05
+          },
+          "inert": false,
+          "holm_p_auc": 0.7109375,
+          "holm_p_coverage_at_20": 0.875
+        },
+        {
+          "removed": "target_degree_centrality",
+          "n_kept": 7,
+          "delta_auc": {
+            "mean": 0.00259189208004863,
+            "lo": -0.01091057620065955,
+            "hi": 0.014913256994302479,
+            "n": 15
+          },
+          "signflip_auc": {
+            "n": 15,
+            "observed_mean": 0.00259189208004863,
+            "exact": true,
+            "p_two_sided": 0.7099609375,
+            "min_attainable_two_sided": 6.103515625e-05
+          },
+          "delta_coverage_at_20": {
+            "mean": -0.01641690598798442,
+            "lo": -0.044154676285497366,
+            "hi": 0.009251543209876544,
+            "n": 15
+          },
+          "signflip_coverage_at_20": {
+            "n": 15,
+            "observed_mean": -0.01641690598798442,
+            "exact": true,
+            "p_two_sided": 0.296875,
+            "min_attainable_two_sided": 6.103515625e-05
+          },
+          "inert": false,
+          "holm_p_auc": 1.0,
+          "holm_p_coverage_at_20": 1.0
+        },
+        {
+          "removed": "ablation_delta",
+          "n_kept": 7,
+          "delta_auc": {
+            "mean": 0.0007835850262343828,
+            "lo": -0.010336502640790462,
+            "hi": 0.011195416698068781,
+            "n": 15
+          },
+          "signflip_auc": {
+            "n": 15,
+            "observed_mean": 0.0007835850262343828,
+            "exact": true,
+            "p_two_sided": 0.89129638671875,
+            "min_attainable_two_sided": 6.103515625e-05
+          },
+          "delta_coverage_at_20": {
+            "mean": 0.013505041259814221,
+            "lo": -0.009904851316745027,
+            "hi": 0.04067019400352734,
+            "n": 15
+          },
+          "signflip_coverage_at_20": {
+            "n": 15,
+            "observed_mean": 0.013505041259814221,
+            "exact": true,
+            "p_two_sided": 0.359375,
+            "min_attainable_two_sided": 6.103515625e-05
+          },
+          "inert": false,
+          "holm_p_auc": 1.0,
+          "holm_p_coverage_at_20": 1.0
+        },
+        {
+          "removed": "perturbation_delta",
+          "n_kept": 7,
+          "delta_auc": {
+            "mean": -0.008399398203071118,
+            "lo": -0.01795128894222274,
+            "hi": 0.0003002766141319865,
+            "n": 15
+          },
+          "signflip_auc": {
+            "n": 15,
+            "observed_mean": -0.008399398203071118,
+            "exact": true,
+            "p_two_sided": 0.10162353515625,
+            "min_attainable_two_sided": 6.103515625e-05
+          },
+          "delta_coverage_at_20": {
+            "mean": -0.03726266516707692,
+            "lo": -0.06496123878844465,
+            "hi": -0.013309937169312171,
+            "n": 15
+          },
+          "signflip_coverage_at_20": {
+            "n": 15,
+            "observed_mean": -0.03726266516707692,
+            "exact": true,
+            "p_two_sided": 0.015625,
+            "min_attainable_two_sided": 6.103515625e-05
+          },
+          "inert": false,
+          "holm_p_auc": 0.7109375,
+          "holm_p_coverage_at_20": 0.125
+        }
+      ]
+    },
+    "software_engineering": {
+      "analysis_type": "post-hoc sensitivity analysis",
+      "is_feature_selection": false,
+      "n_configurations": 15,
+      "budget": 0.2,
+      "full_block_auc": 0.5126597751765819,
+      "full_block_coverage_at_20": 0.22837997375370225,
+      "holm_family": "the 8 features removed, within this domain and metric",
+      "note": "POST-HOC SENSITIVITY ANALYSIS, NOT FEATURE SELECTION. Sign is 'reduced minus full': a NEGATIVE delta means removing the feature HURT. These per-feature results describe how the FROZEN block behaves when perturbed; they were computed after the freeze, on the same data the freeze used, and they are not a criterion. No feature is added, removed or reweighted on the strength of any number in this table, and a reader must not read the ranking of these deltas as a recommended subset.",
+      "rows": [
+        {
+          "removed": "betweenness_centrality",
+          "n_kept": 7,
+          "delta_auc": {
+            "mean": 0.009435728137408816,
+            "lo": -0.007903801520608243,
+            "hi": 0.02798343356573399,
+            "n": 15
+          },
+          "signflip_auc": {
+            "n": 15,
+            "observed_mean": 0.009435728137408816,
+            "exact": true,
+            "p_two_sided": 0.390625,
+            "min_attainable_two_sided": 6.103515625e-05
+          },
+          "delta_coverage_at_20": {
+            "mean": 0.00025076697345604025,
+            "lo": -0.02586034413765508,
+            "hi": 0.024570494864612505,
+            "n": 15
+          },
+          "signflip_coverage_at_20": {
+            "n": 15,
+            "observed_mean": 0.00025076697345604025,
+            "exact": true,
+            "p_two_sided": 1.0,
+            "min_attainable_two_sided": 6.103515625e-05
+          },
+          "inert": false,
+          "holm_p_auc": 1.0,
+          "holm_p_coverage_at_20": 1.0
+        },
+        {
+          "removed": "information_bottleneck",
+          "n_kept": 7,
+          "delta_auc": {
+            "mean": 0.0,
+            "lo": 0.0,
+            "hi": 0.0,
+            "n": 15
+          },
+          "signflip_auc": {
+            "n": 15,
+            "p_two_sided": 1.0,
+            "min_attainable_two_sided": 6.103515625e-05,
+            "exact": true
+          },
+          "delta_coverage_at_20": {
+            "mean": 0.0,
+            "lo": 0.0,
+            "hi": 0.0,
+            "n": 15
+          },
+          "signflip_coverage_at_20": {
+            "n": 15,
+            "p_two_sided": 1.0,
+            "min_attainable_two_sided": 6.103515625e-05,
+            "exact": true
+          },
+          "inert": true,
+          "holm_p_auc": 1.0,
+          "holm_p_coverage_at_20": 1.0
+        },
+        {
+          "removed": "is_bridge",
+          "n_kept": 7,
+          "delta_auc": {
+            "mean": 0.0,
+            "lo": 0.0,
+            "hi": 0.0,
+            "n": 15
+          },
+          "signflip_auc": {
+            "n": 15,
+            "p_two_sided": 1.0,
+            "min_attainable_two_sided": 6.103515625e-05,
+            "exact": true
+          },
+          "delta_coverage_at_20": {
+            "mean": 0.0,
+            "lo": 0.0,
+            "hi": 0.0,
+            "n": 15
+          },
+          "signflip_coverage_at_20": {
+            "n": 15,
+            "p_two_sided": 1.0,
+            "min_attainable_two_sided": 6.103515625e-05,
+            "exact": true
+          },
+          "inert": true,
+          "holm_p_auc": 1.0,
+          "holm_p_coverage_at_20": 1.0
+        },
+        {
+          "removed": "endpoint_centrality_max",
+          "n_kept": 7,
+          "delta_auc": {
+            "mean": 0.01220068027210884,
+            "lo": -0.003942602040816338,
+            "hi": 0.03395238095238094,
+            "n": 15
+          },
+          "signflip_auc": {
+            "n": 15,
+            "observed_mean": 0.01220068027210884,
+            "exact": true,
+            "p_two_sided": 0.375,
+            "min_attainable_two_sided": 6.103515625e-05
+          },
+          "delta_coverage_at_20": {
+            "mean": -0.018627450980392157,
+            "lo": -0.05196078431372549,
+            "hi": 0.0,
+            "n": 15
+          },
+          "signflip_coverage_at_20": {
+            "n": 15,
+            "observed_mean": -0.018627450980392157,
+            "exact": true,
+            "p_two_sided": 0.5,
+            "min_attainable_two_sided": 6.103515625e-05
+          },
+          "inert": false,
+          "holm_p_auc": 1.0,
+          "holm_p_coverage_at_20": 1.0
+        },
+        {
+          "removed": "source_degree_centrality",
+          "n_kept": 7,
+          "delta_auc": {
+            "mean": -0.005268581926697806,
+            "lo": -0.03708358654696695,
+            "hi": 0.02526656312828773,
+            "n": 15
+          },
+          "signflip_auc": {
+            "n": 15,
+            "observed_mean": -0.005268581926697806,
+            "exact": true,
+            "p_two_sided": 0.736328125,
+            "min_attainable_two_sided": 6.103515625e-05
+          },
+          "delta_coverage_at_20": {
+            "mean": 0.009369514787471438,
+            "lo": -0.057692307692307696,
+            "hi": 0.09531722720577208,
+            "n": 15
+          },
+          "signflip_coverage_at_20": {
+            "n": 15,
+            "observed_mean": 0.009369514787471438,
+            "exact": true,
+            "p_two_sided": 0.875,
+            "min_attainable_two_sided": 6.103515625e-05
+          },
+          "inert": false,
+          "holm_p_auc": 1.0,
+          "holm_p_coverage_at_20": 1.0
+        },
+        {
+          "removed": "target_degree_centrality",
+          "n_kept": 7,
+          "delta_auc": {
+            "mean": -0.018304111388144997,
+            "lo": -0.06697432181205815,
+            "hi": 0.025611331712172065,
+            "n": 15
+          },
+          "signflip_auc": {
+            "n": 15,
+            "observed_mean": -0.018304111388144997,
+            "exact": true,
+            "p_two_sided": 0.48193359375,
+            "min_attainable_two_sided": 6.103515625e-05
+          },
+          "delta_coverage_at_20": {
+            "mean": -0.06013071895424837,
+            "lo": -0.1379330065359477,
+            "hi": 0.0,
+            "n": 15
+          },
+          "signflip_coverage_at_20": {
+            "n": 15,
+            "observed_mean": -0.06013071895424837,
+            "exact": true,
+            "p_two_sided": 0.25,
+            "min_attainable_two_sided": 6.103515625e-05
+          },
+          "inert": false,
+          "holm_p_auc": 1.0,
+          "holm_p_coverage_at_20": 1.0
+        },
+        {
+          "removed": "ablation_delta",
+          "n_kept": 7,
+          "delta_auc": {
+            "mean": 0.01919137859208623,
+            "lo": -0.0040611522346844205,
+            "hi": 0.044774846995907856,
+            "n": 15
+          },
+          "signflip_auc": {
+            "n": 15,
+            "observed_mean": 0.01919137859208623,
+            "exact": true,
+            "p_two_sided": 0.1715087890625,
+            "min_attainable_two_sided": 6.103515625e-05
+          },
+          "delta_coverage_at_20": {
+            "mean": 0.04249791144527986,
+            "lo": -0.03568065998329156,
+            "hi": 0.13071720969089387,
+            "n": 15
+          },
+          "signflip_coverage_at_20": {
+            "n": 15,
+            "observed_mean": 0.04249791144527986,
+            "exact": true,
+            "p_two_sided": 0.390625,
+            "min_attainable_two_sided": 6.103515625e-05
+          },
+          "inert": false,
+          "holm_p_auc": 1.0,
+          "holm_p_coverage_at_20": 1.0
+        },
+        {
+          "removed": "perturbation_delta",
+          "n_kept": 7,
+          "delta_auc": {
+            "mean": -0.034379016542412176,
+            "lo": -0.06655669069093717,
+            "hi": -0.006518730310694633,
+            "n": 15
+          },
+          "signflip_auc": {
+            "n": 15,
+            "observed_mean": -0.034379016542412176,
+            "exact": true,
+            "p_two_sided": 0.04132080078125,
+            "min_attainable_two_sided": 6.103515625e-05
+          },
+          "delta_coverage_at_20": {
+            "mean": -0.03485509860509861,
+            "lo": -0.11184914622414623,
+            "hi": 0.016615545334295313,
+            "n": 15
+          },
+          "signflip_coverage_at_20": {
+            "n": 15,
+            "observed_mean": -0.03485509860509861,
+            "exact": true,
+            "p_two_sided": 0.44921875,
+            "min_attainable_two_sided": 6.103515625e-05
+          },
+          "inert": false,
+          "holm_p_auc": 0.33056640625,
+          "holm_p_coverage_at_20": 1.0
+        }
+      ]
+    }
+  },
+  "block_comparison": {
+    "customer_service": {
+      "analysis_type": "post-hoc sensitivity analysis",
+      "is_feature_selection": false,
+      "n_configurations": 15,
+      "budget": 0.2,
+      "reference": "canonical_graph_both_probes",
+      "equal_coverage": true,
+      "note": "POST-HOC SENSITIVITY ANALYSIS, NOT ALTERNATIVE FEATURE SELECTION. Deltas are block minus canonical, paired on the configuration. Every block here is scored on the SAME 15 configurations with the same coverage, which is what makes the contrast about the feature set alone -- and is why F1 is not in this table (see inventory['semantic_non_recoverability'].archival). `graph_only`, `graph_ablation` and `graph_perturbation` in particular are single-probe sensitivity arms: `graph_perturbation` scoring at or above the canonical block in a domain is a statement about how little the second probe adds THERE, not a candidate replacement for the frozen eight.",
+      "rows": [
+        {
+          "block": "graph_only",
+          "n_features": 6,
+          "features": [
+            "betweenness_centrality",
+            "information_bottleneck",
+            "is_bridge",
+            "endpoint_centrality_max",
+            "source_degree_centrality",
+            "target_degree_centrality"
+          ],
+          "median_active_features": 3.0,
+          "auc": 0.5349460553573124,
+          "coverage_at_20": 0.24863565891677683,
+          "delta_auc_vs_canonical": {
+            "mean": -0.09087487590707198,
+            "lo": -0.14507621757915906,
+            "hi": -0.041802912855090864,
+            "n": 15
+          },
+          "delta_coverage_at_20_vs_canonical": {
+            "mean": -0.1804070362188766,
+            "lo": -0.24876765366984802,
+            "hi": -0.11786640579102826,
+            "n": 15
+          },
+          "signflip_auc_vs_canonical": {
+            "n": 15,
+            "observed_mean": -0.09087487590707198,
+            "exact": true,
+            "p_two_sided": 0.00347900390625,
+            "min_attainable_two_sided": 6.103515625e-05
+          }
+        },
+        {
+          "block": "graph_ablation",
+          "n_features": 7,
+          "features": [
+            "betweenness_centrality",
+            "information_bottleneck",
+            "is_bridge",
+            "endpoint_centrality_max",
+            "source_degree_centrality",
+            "target_degree_centrality",
+            "ablation_delta"
+          ],
+          "median_active_features": 4.0,
+          "auc": 0.6174215330613132,
+          "coverage_at_20": 0.3917800299685766,
+          "delta_auc_vs_canonical": {
+            "mean": -0.008399398203071118,
+            "lo": -0.01795128894222274,
+            "hi": 0.0003002766141319865,
+            "n": 15
+          },
+          "delta_coverage_at_20_vs_canonical": {
+            "mean": -0.03726266516707692,
+            "lo": -0.06496123878844465,
+            "hi": -0.013309937169312171,
+            "n": 15
+          },
+          "signflip_auc_vs_canonical": {
+            "n": 15,
+            "observed_mean": -0.008399398203071118,
+            "exact": true,
+            "p_two_sided": 0.10162353515625,
+            "min_attainable_two_sided": 6.103515625e-05
+          }
+        },
+        {
+          "block": "graph_perturbation",
+          "n_features": 7,
+          "features": [
+            "betweenness_centrality",
+            "information_bottleneck",
+            "is_bridge",
+            "endpoint_centrality_max",
+            "source_degree_centrality",
+            "target_degree_centrality",
+            "perturbation_delta"
+          ],
+          "median_active_features": 4.0,
+          "auc": 0.6266045162906188,
+          "coverage_at_20": 0.4425477363954677,
+          "delta_auc_vs_canonical": {
+            "mean": 0.0007835850262343828,
+            "lo": -0.010336502640790462,
+            "hi": 0.011195416698068781,
+            "n": 15
+          },
+          "delta_coverage_at_20_vs_canonical": {
+            "mean": 0.013505041259814221,
+            "lo": -0.009904851316745027,
+            "hi": 0.04067019400352734,
+            "n": 15
+          },
+          "signflip_auc_vs_canonical": {
+            "n": 15,
+            "observed_mean": 0.0007835850262343828,
+            "exact": true,
+            "p_two_sided": 0.89129638671875,
+            "min_attainable_two_sided": 6.103515625e-05
+          }
+        },
+        {
+          "block": "canonical_graph_both_probes",
+          "n_features": 8,
+          "features": [
+            "betweenness_centrality",
+            "information_bottleneck",
+            "is_bridge",
+            "endpoint_centrality_max",
+            "source_degree_centrality",
+            "target_degree_centrality",
+            "ablation_delta",
+            "perturbation_delta"
+          ],
+          "median_active_features": 5.0,
+          "auc": 0.6258209312643844,
+          "coverage_at_20": 0.4290426951356535,
+          "delta_auc_vs_canonical": {
+            "mean": 0.0,
+            "lo": 0.0,
+            "hi": 0.0,
+            "n": 15
+          },
+          "delta_coverage_at_20_vs_canonical": {
+            "mean": 0.0,
+            "lo": 0.0,
+            "hi": 0.0,
+            "n": 15
+          },
+          "signflip_auc_vs_canonical": {
+            "n": 15,
+            "p_two_sided": 1.0,
+            "min_attainable_two_sided": 6.103515625e-05,
+            "exact": true
+          }
+        },
+        {
+          "block": "canonical_f2",
+          "n_features": 9,
+          "features": [
+            "betweenness_centrality",
+            "information_bottleneck",
+            "is_bridge",
+            "endpoint_centrality_max",
+            "source_degree_centrality",
+            "target_degree_centrality",
+            "ablation_delta",
+            "perturbation_delta",
+            "receiver_response_sensitivity"
+          ],
+          "median_active_features": 6.0,
+          "auc": 0.627142394785168,
+          "coverage_at_20": 0.4321155278040745,
+          "delta_auc_vs_canonical": {
+            "mean": 0.0013214635207835835,
+            "lo": -0.01577539441237064,
+            "hi": 0.01944147688144606,
+            "n": 15
+          },
+          "delta_coverage_at_20_vs_canonical": {
+            "mean": 0.0030728326684209013,
+            "lo": -0.03845103698044875,
+            "hi": 0.05113742687731657,
+            "n": 15
+          },
+          "signflip_auc_vs_canonical": {
+            "n": 15,
+            "observed_mean": 0.0013214635207835835,
+            "exact": true,
+            "p_two_sided": 0.8865966796875,
+            "min_attainable_two_sided": 6.103515625e-05
+          }
+        },
+        {
+          "block": "canonical_f3",
+          "n_features": 9,
+          "features": [
+            "betweenness_centrality",
+            "information_bottleneck",
+            "is_bridge",
+            "endpoint_centrality_max",
+            "source_degree_centrality",
+            "target_degree_centrality",
+            "ablation_delta",
+            "perturbation_delta",
+            "consequence_proximity"
+          ],
+          "median_active_features": 6.0,
+          "auc": 0.6190013264709341,
+          "coverage_at_20": 0.3850476265695066,
+          "delta_auc_vs_canonical": {
+            "mean": -0.006819604793450262,
+            "lo": -0.029959643598545672,
+            "hi": 0.01594299867292076,
+            "n": 15
+          },
+          "delta_coverage_at_20_vs_canonical": {
+            "mean": -0.04399506856614699,
+            "lo": -0.10174697414740304,
+            "hi": 0.005737043344273693,
+            "n": 15
+          },
+          "signflip_auc_vs_canonical": {
+            "n": 15,
+            "observed_mean": -0.006819604793450262,
+            "exact": true,
+            "p_two_sided": 0.5838623046875,
+            "min_attainable_two_sided": 6.103515625e-05
+          }
+        },
+        {
+          "block": "canonical_f2_f3",
+          "n_features": 10,
+          "features": [
+            "betweenness_centrality",
+            "information_bottleneck",
+            "is_bridge",
+            "endpoint_centrality_max",
+            "source_degree_centrality",
+            "target_degree_centrality",
+            "ablation_delta",
+            "perturbation_delta",
+            "receiver_response_sensitivity",
+            "consequence_proximity"
+          ],
+          "median_active_features": 7.0,
+          "auc": 0.627593381912096,
+          "coverage_at_20": 0.40875133027321026,
+          "delta_auc_vs_canonical": {
+            "mean": 0.00177245064771178,
+            "lo": -0.022711558478179596,
+            "hi": 0.027989089286641015,
+            "n": 15
+          },
+          "delta_coverage_at_20_vs_canonical": {
+            "mean": -0.020291364862443293,
+            "lo": -0.0665703161104509,
+            "hi": 0.018330600148308483,
+            "n": 15
+          },
+          "signflip_auc_vs_canonical": {
+            "n": 15,
+            "observed_mean": 0.00177245064771178,
+            "exact": true,
+            "p_two_sided": 0.90020751953125,
+            "min_attainable_two_sided": 6.103515625e-05
+          }
+        }
+      ]
+    },
+    "software_engineering": {
+      "analysis_type": "post-hoc sensitivity analysis",
+      "is_feature_selection": false,
+      "n_configurations": 15,
+      "budget": 0.2,
+      "reference": "canonical_graph_both_probes",
+      "equal_coverage": true,
+      "note": "POST-HOC SENSITIVITY ANALYSIS, NOT ALTERNATIVE FEATURE SELECTION. Deltas are block minus canonical, paired on the configuration. Every block here is scored on the SAME 15 configurations with the same coverage, which is what makes the contrast about the feature set alone -- and is why F1 is not in this table (see inventory['semantic_non_recoverability'].archival). `graph_only`, `graph_ablation` and `graph_perturbation` in particular are single-probe sensitivity arms: `graph_perturbation` scoring at or above the canonical block in a domain is a statement about how little the second probe adds THERE, not a candidate replacement for the frozen eight.",
+      "rows": [
+        {
+          "block": "graph_only",
+          "n_features": 6,
+          "features": [
+            "betweenness_centrality",
+            "information_bottleneck",
+            "is_bridge",
+            "endpoint_centrality_max",
+            "source_degree_centrality",
+            "target_degree_centrality"
+          ],
+          "median_active_features": 3.0,
+          "auc": 0.481217236894758,
+          "coverage_at_20": 0.20099723222622384,
+          "delta_auc_vs_canonical": {
+            "mean": -0.031442538281823994,
+            "lo": -0.06332636957949456,
+            "hi": 0.001975688646670775,
+            "n": 15
+          },
+          "delta_coverage_at_20_vs_canonical": {
+            "mean": -0.027382741527478365,
+            "lo": -0.08682564243748454,
+            "hi": 0.028138518888518843,
+            "n": 15
+          },
+          "signflip_auc_vs_canonical": {
+            "n": 15,
+            "observed_mean": -0.031442538281823994,
+            "exact": true,
+            "p_two_sided": 0.09307861328125,
+            "min_attainable_two_sided": 6.103515625e-05
+          }
+        },
+        {
+          "block": "graph_ablation",
+          "n_features": 7,
+          "features": [
+            "betweenness_centrality",
+            "information_bottleneck",
+            "is_bridge",
+            "endpoint_centrality_max",
+            "source_degree_centrality",
+            "target_degree_centrality",
+            "ablation_delta"
+          ],
+          "median_active_features": 4.0,
+          "auc": 0.47828075863416974,
+          "coverage_at_20": 0.19352487514860356,
+          "delta_auc_vs_canonical": {
+            "mean": -0.034379016542412176,
+            "lo": -0.06655669069093717,
+            "hi": -0.006518730310694633,
+            "n": 15
+          },
+          "delta_coverage_at_20_vs_canonical": {
+            "mean": -0.03485509860509861,
+            "lo": -0.11184914622414623,
+            "hi": 0.016615545334295313,
+            "n": 15
+          },
+          "signflip_auc_vs_canonical": {
+            "n": 15,
+            "observed_mean": -0.034379016542412176,
+            "exact": true,
+            "p_two_sided": 0.04132080078125,
+            "min_attainable_two_sided": 6.103515625e-05
+          }
+        },
+        {
+          "block": "graph_perturbation",
+          "n_features": 7,
+          "features": [
+            "betweenness_centrality",
+            "information_bottleneck",
+            "is_bridge",
+            "endpoint_centrality_max",
+            "source_degree_centrality",
+            "target_degree_centrality",
+            "perturbation_delta"
+          ],
+          "median_active_features": 4.0,
+          "auc": 0.5318511537686681,
+          "coverage_at_20": 0.2708778851989821,
+          "delta_auc_vs_canonical": {
+            "mean": 0.01919137859208623,
+            "lo": -0.0040611522346844205,
+            "hi": 0.044774846995907856,
+            "n": 15
+          },
+          "delta_coverage_at_20_vs_canonical": {
+            "mean": 0.04249791144527986,
+            "lo": -0.03568065998329156,
+            "hi": 0.13071720969089387,
+            "n": 15
+          },
+          "signflip_auc_vs_canonical": {
+            "n": 15,
+            "observed_mean": 0.01919137859208623,
+            "exact": true,
+            "p_two_sided": 0.1715087890625,
+            "min_attainable_two_sided": 6.103515625e-05
+          }
+        },
+        {
+          "block": "canonical_graph_both_probes",
+          "n_features": 8,
+          "features": [
+            "betweenness_centrality",
+            "information_bottleneck",
+            "is_bridge",
+            "endpoint_centrality_max",
+            "source_degree_centrality",
+            "target_degree_centrality",
+            "ablation_delta",
+            "perturbation_delta"
+          ],
+          "median_active_features": 5.0,
+          "auc": 0.5126597751765819,
+          "coverage_at_20": 0.22837997375370225,
+          "delta_auc_vs_canonical": {
+            "mean": 0.0,
+            "lo": 0.0,
+            "hi": 0.0,
+            "n": 15
+          },
+          "delta_coverage_at_20_vs_canonical": {
+            "mean": 0.0,
+            "lo": 0.0,
+            "hi": 0.0,
+            "n": 15
+          },
+          "signflip_auc_vs_canonical": {
+            "n": 15,
+            "p_two_sided": 1.0,
+            "min_attainable_two_sided": 6.103515625e-05,
+            "exact": true
+          }
+        },
+        {
+          "block": "canonical_f2",
+          "n_features": 9,
+          "features": [
+            "betweenness_centrality",
+            "information_bottleneck",
+            "is_bridge",
+            "endpoint_centrality_max",
+            "source_degree_centrality",
+            "target_degree_centrality",
+            "ablation_delta",
+            "perturbation_delta",
+            "receiver_response_sensitivity"
+          ],
+          "median_active_features": 6.0,
+          "auc": 0.4772457007922786,
+          "coverage_at_20": 0.1818626411837381,
+          "delta_auc_vs_canonical": {
+            "mean": -0.03541407438430327,
+            "lo": -0.0862153192363622,
+            "hi": 0.010462084499024724,
+            "n": 15
+          },
+          "delta_coverage_at_20_vs_canonical": {
+            "mean": -0.04651733256996415,
+            "lo": -0.12765369620632777,
+            "hi": 0.01684239834239834,
+            "n": 15
+          },
+          "signflip_auc_vs_canonical": {
+            "n": 15,
+            "observed_mean": -0.03541407438430327,
+            "exact": true,
+            "p_two_sided": 0.194580078125,
+            "min_attainable_two_sided": 6.103515625e-05
+          }
+        },
+        {
+          "block": "canonical_f3",
+          "n_features": 9,
+          "features": [
+            "betweenness_centrality",
+            "information_bottleneck",
+            "is_bridge",
+            "endpoint_centrality_max",
+            "source_degree_centrality",
+            "target_degree_centrality",
+            "ablation_delta",
+            "perturbation_delta",
+            "consequence_proximity"
+          ],
+          "median_active_features": 6.0,
+          "auc": 0.4856661534282057,
+          "coverage_at_20": 0.17568647530168982,
+          "delta_auc_vs_canonical": {
+            "mean": -0.026993621748376277,
+            "lo": -0.05426657470675468,
+            "hi": 0.0006589580976647072,
+            "n": 15
+          },
+          "delta_coverage_at_20_vs_canonical": {
+            "mean": -0.052693498452012384,
+            "lo": -0.10591279669762643,
+            "hi": -0.008888888888888887,
+            "n": 15
+          },
+          "signflip_auc_vs_canonical": {
+            "n": 15,
+            "observed_mean": -0.026993621748376277,
+            "exact": true,
+            "p_two_sided": 0.0838623046875,
+            "min_attainable_two_sided": 6.103515625e-05
+          }
+        },
+        {
+          "block": "canonical_f2_f3",
+          "n_features": 10,
+          "features": [
+            "betweenness_centrality",
+            "information_bottleneck",
+            "is_bridge",
+            "endpoint_centrality_max",
+            "source_degree_centrality",
+            "target_degree_centrality",
+            "ablation_delta",
+            "perturbation_delta",
+            "receiver_response_sensitivity",
+            "consequence_proximity"
+          ],
+          "median_active_features": 7.0,
+          "auc": 0.4790285746081854,
+          "coverage_at_20": 0.19685864907448283,
+          "delta_auc_vs_canonical": {
+            "mean": -0.03363120056839651,
+            "lo": -0.07670380013791395,
+            "hi": 0.005225743481153124,
+            "n": 15
+          },
+          "delta_coverage_at_20_vs_canonical": {
+            "mean": -0.03152132467921941,
+            "lo": -0.08396739177002335,
+            "hi": 0.01128205128205129,
+            "n": 15
+          },
+          "signflip_auc_vs_canonical": {
+            "n": 15,
+            "observed_mean": -0.03363120056839651,
+            "exact": true,
+            "p_two_sided": 0.1600341796875,
+            "min_attainable_two_sided": 6.103515625e-05
+          }
+        }
+      ]
+    }
+  },
+  "cost": {
+    "note": "Counted from the artifacts that recorded the work, not estimated. A 'paired run' is one intervened workflow execution matched to its clean counterpart.",
+    "graph_features": {
+      "features": [
+        "betweenness_centrality",
+        "information_bottleneck",
+        "is_bridge",
+        "endpoint_centrality_max",
+        "source_degree_centrality",
+        "target_degree_centrality",
+        "consequence_proximity"
+      ],
+      "cost_class": "graph-only",
+      "workflow_executions": 0,
+      "llm_calls": 0,
+      "embedding_calls": 0,
+      "detail": "Computed from the topology YAML with NetworkX. No model is loaded and no workflow runs; cost is milliseconds per configuration and independent of the number of tasks."
+    },
+    "ablation_delta": {
+      "cost_class": "workflow re-execution",
+      "paired_workflow_executions": 8610,
+      "by_domain": {
+        "customer_service": 2460,
+        "software_engineering": 6150
+      },
+      "edge_configuration_cells": 246,
+      "detail": "One clean workflow re-run per (edge, task) with the edge removed, paired against the unmodified run."
+    },
+    "perturbation_delta": {
+      "cost_class": "workflow re-execution",
+      "paired_workflow_executions": 8610,
+      "by_domain": {
+        "customer_service": 2460,
+        "software_engineering": 6150
+      },
+      "edge_configuration_cells": 246,
+      "detail": "One clean workflow re-run per (edge, task) with noise injected on the edge, paired against the unmodified run."
+    },
+    "receiver_response_sensitivity_f2": {
+      "cost_class": "receiver probe generation + embedding",
+      "receiver_probe_generations": 8326,
+      "embedding_calls": 16652,
+      "n_tasks_covered": 7970,
+      "skipped_occurrences": 160,
+      "detail": "One extra receiver generation per message occurrence with the message replaced by a neutral placeholder, then two sentence-transformer embeddings per occurrence (clean output and probe output). The most expensive candidate in the inventory, and excluded by the freeze."
+    },
+    "consequence_proximity_f3": {
+      "cost_class": "graph-only",
+      "workflow_executions": 0,
+      "llm_calls": 0,
+      "embedding_calls": 0,
+      "detail": "Shortest-path distance from the receiver to the nearest predeclared sink. Same cost class as the six graph features; excluded by the freeze on performance, not on cost."
+    },
+    "semantic_non_recoverability_f1": {
+      "cost_class": "clean transcripts + embedding",
+      "receiver_probe_generations": 0,
+      "n_tasks_covered_current_matrix": 0,
+      "n_tasks_covered_archival": 5380,
+      "archival_records": 168,
+      "archival_configurations": 21,
+      "detail": "COMPUTED, then rejected. The archival two-model study evaluated F1 over 5380 tasks across 21 configurations at full coverage; no receiver probe is needed, because F1 is read off clean transcripts, but every message and every alternative context must be embedded. It was rejected for confounding with n_context rather than for cost, and was not rebuilt for the current matrix -- which is why f1_n_tasks sums to 0 there. The zero is the cost of NOT rebuilding it, not evidence that it was never run."
+    }
+  },
+  "tie_behaviour": {
+    "scope": "Documents the selection rule as implemented. Completed enforcement runs are NOT reinterpreted: the executed monitored sets remain what ran, and every reported prevention number stands.",
+    "rule_as_implemented": [
+      "1. MESA-Local scores every edge of a configuration-direction as a float64 equal average over the direction-aligned, within-configuration midranks of the declared features.",
+      "2. Edges are ordered by `sorted(zip(-score, edges), key=first)`. Python's sort is STABLE and the key is the negated score alone, so edges comparing equal keep their relative order from the feature matrix.",
+      "3. The monitored set is the first k, with k = max(1, min(|E|, ceil(b|E|)))."
+    ],
+    "consequences": [
+      "Deterministic and reproducible: for a fixed matrix and a fixed feature order the same set comes out every time.",
+      "NOT a property of the score: when the k-th and (k+1)-th edges hold the same score, which one is monitored is decided by matrix row order, which encodes nothing about vulnerability.",
+      "Sensitive to summation order: two edges that are mathematically tied can differ by ~1e-16 depending on how many features were averaged, in which case the float difference decides before row order is ever consulted. This is why the same ordering rounded to 1e-12 does not always reproduce itself."
+    ],
+    "observed_in_the_executed_sweep": {
+      "n_allocation_cells": 40,
+      "n_cells_with_boundary_tie": 6,
+      "declared_eight_unrounded_reproduces": 40,
+      "declared_eight_rounded_reproduces": 37,
+      "reading": "6 of 40 cells have a mathematical tie at the budget boundary. The declared eight-feature score as executed (unrounded) reproduces all 40 monitored sets exactly, so the executed sweep is fully accounted for. Rounding the same score reproduces 37, which measures how much of the allocation rests on last-bit arithmetic rather than on the feature values."
+    },
+    "recommended_for_future_runs": "Declare an explicit, score-independent tie-break -- a documented edge key rather than matrix position -- so a top-k set is a function of the graph and the score alone. This is a change to future allocation, not a correction to past results."
+  },
+  "verdict": {
+    "inert_features": [
+      "information_bottleneck",
+      "is_bridge"
+    ],
+    "always_active_features": [
+      "ablation_delta",
+      "perturbation_delta"
+    ],
+    "effective_schema_size_median": 5.0,
+    "effective_schema_size_range": [
+      2,
+      6
+    ],
+    "monitored_sets_unchanged": false,
+    "recommended_description": "an eight-feature declared schema with outcome-blind local activation",
+    "why": "A single smaller schema does not exist. Which features are active is a property of the configuration, not of the study: it ranges from 2 to 6 features across the 60 configuration-directions, so fixing one subset globally would either drop a feature that carries the ordering in some topology or keep one that is inert in most. `information_bottleneck` and `is_bridge` are constant in every configuration and can be reported as declared-but-inert without moving a single number, which is exactly what rank equivalence establishes.",
+    "blocking_finding": {
+      "what": "2 of the 40 executed allocation cells select a different monitored set under the active-only score.",
+      "why_it_is_not_a_ranking_difference": "All 2 are cells where the k-th and (k+1)-th edges score IDENTICALLY under the declared eight. The ranking is the same -- rank equivalence holds at every one of the 60 configuration-directions -- but a top-k SET is not determined by a ranking when the budget boundary falls inside a tie. The executed run resolved those ties on IEEE summation order, which is reproducible but arbitrary.",
+      "scope": "6 of 40 cells have a tie at the budget boundary, so this is not a rare edge case at these budgets. Re-deriving the allocation from the declared eight reproduces all 40 executed sets exactly; rounding the same score to 12 decimals already changes 3 of them.",
+      "consequence": "Do not adopt a smaller effective schema in the paper on the strength of rank equivalence alone: it would change which edges the reported defence monitored in 2 cells, even though no edge changed rank. The blocker is a missing tie-breaking rule, not the feature set.",
+      "recommended_next_step": "Declare an explicit, score-independent tie-break for top-k selection and state it in the paper. Nothing here requires re-running an experiment; the enforcement artifacts are untouched and remain valid under the declared eight."
+    },
+    "caveat": "This is a REPORTING recommendation. It does not change the freeze, the score, or any published number -- rank equivalence is exactly the statement that the ORDERING cannot change. Top-k set selection under ties is a separate question, and it is the one that blocks the smaller schema."
+  }
+}
