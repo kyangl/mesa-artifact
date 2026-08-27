@@ -1,29 +1,7 @@
-"""
-Sandboxed Python code execution for HumanEval evaluation.
+"""Run HumanEval code in a timed subprocess.
 
-Replaces LLM-as-judge for the software engineering scenario.
-Ground truth is binary: the final code either passes all unit tests or not.
-
-Safety:
-  - Runs in a subprocess with a wall-clock timeout (default 10s)
-  - Does NOT use exec() or eval() in the main process
-  - Captures stdout/stderr from subprocess
-  - Refuses to run code that imports os, sys, subprocess, socket, etc.
-
-Usage:
-    from src.evaluation.code_runner import evaluate_code
-
-    result = evaluate_code(
-        code="def has_close_elements(numbers, threshold):\n    ...",
-        test_suite=[
-            "assert has_close_elements([1.0, 2.0], 0.5) == False",
-            "assert has_close_elements([1.0, 1.1], 0.2) == True",
-        ],
-        imports="from typing import List",
-        timeout=10,
-    )
-    # result: {"passed": True/False, "n_passed": int, "n_total": int,
-    #          "error": str or None, "elapsed": float}
+The evaluator captures output and rejects imports or builtins that expose the
+host. Correctness is binary: all supplied assertions must pass.
 """
 
 import subprocess

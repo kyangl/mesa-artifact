@@ -18,11 +18,7 @@ SUPPORTED_TOPOLOGIES = {"centralized", "sequential", "hierarchical",
                         "decentralized", "mesh", "hybrid"}
 
 
-# ─────────────────────────────────────────────────────────────────────────
-# State reducers — required so LangGraph allows concurrent updates from
-# multiple worker nodes that all write into the same dict (e.g. fan-out
-# from hub to workers in centralized).
-# ─────────────────────────────────────────────────────────────────────────
+# State reducers permit concurrent worker updates.
 def _merge_dict(a, b):
     """Reducer for parallel dict updates; later wins on key conflict."""
     if a is None: return b
@@ -193,19 +189,7 @@ class LangGraphMASRunner:
 
     # ── Centralized: hub plan → fan-out → followup → synthesis ──────────
     def _run_centralized(self, task: dict) -> dict:
-        """Faithful reproduction of MASRunner.run_centralized() for parity.
-
-        Mirrors MASRunner's 4-step protocol:
-          1. Hub generates a delegation plan referencing each worker's role
-          2. Each worker receives the plan + role-filtered context, replies
-          3. Hub reviews responses, optionally sends ONE follow-up question
-          4. Hub synthesizes final resolution
-
-        Differences from MASRunner: parallel fan-out via LangGraph reducers
-        (vs MASRunner's sequential per-worker loop). Step 3's conditional
-        follow-up is implemented as a separate graph node that triggers iff
-        the hub's review prompt mentions a worker's role.
-        """
+        """Reproduce centralized routing with parallel LangGraph fan-out."""
         hub_id = next(a["id"] for a in self.topology["agents"]
                        if a["role"] == "supervisor")
         worker_ids = [a["id"] for a in self.topology["agents"]
@@ -417,22 +401,7 @@ class LangGraphMASRunner:
 
     # ── Hierarchical: tree (CEO → managers → workers → back) ────────────
     def _run_hierarchical(self, task: dict) -> dict:
-        """Faithful reproduction of MASRunner.run_hierarchical() for parity.
-
-        Mirrors MASRunner's 5-step protocol exactly:
-          1. CEO generates a delegation plan for all managers
-          2. For each manager (parallel in LangGraph, sequential in MASRunner):
-             a. CEO→Manager (delegation)
-             b. Manager→Workers (each) with specific assignments
-             c. Workers→Manager (each) with findings
-             d. Manager synthesizes workers, reports Manager→CEO
-          3. CEO reviews manager reports, may send one follow-up
-          4. CEO synthesizes final resolution
-
-        Each manager_MGRID node handles its FULL subtree (steps 2a-d) inside
-        a single Python function so the within-subtree round order is
-        preserved and attack injection fires on the correct edges.
-        """
+        """Reproduce hierarchical routing while preserving subtree order."""
         # Build tree structure from YAML edges (downward = parent→child only)
         children: Dict[str, List[str]] = {}
         for e in self.topology["edges"]:
@@ -802,18 +771,7 @@ class LangGraphMASRunner:
 
     # ── Hybrid: supervisor + sub-teams ───────────────────────────────────
     def _run_hybrid(self, task: dict) -> dict:
-        """Faithful reproduction of MASRunner.run_hybrid() for parity.
-
-        Protocol:
-          1. Supervisor generates specific assignments for team leads (no send).
-          2. Supervisor→Lead delegation (send). Lead generates worker tasks.
-             Lead→Specialist (send), Specialist→Lead (send) for each specialist.
-             Lateral send between specialists if edge exists.
-             Lead synthesizes, Lead→Supervisor (send).
-          3. Cross-team lead exchange: two sends if edge exists.
-          4. Supervisor reviews, optional follow-up (max 1): sup→lead, lead→sup.
-          5. Supervisor synthesizes final (no send).
-        """
+        """Reproduce the supervisor, sub-team, and cross-team hybrid protocol."""
         task_desc = task["description"]
         mock_data = task.get("mock_data", {})
         task_label = self._task_label()

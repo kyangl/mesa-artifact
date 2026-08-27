@@ -1,11 +1,11 @@
-"""
-Base agent that wraps an LLM call via Ollama.
-Handles message passing according to topology constraints.
-"""
+"""Ollama-backed MAS agent."""
 
+import copy
 import requests
 import json
 from typing import Optional
+
+from src.logging.transcripts import ReceiverCall
 
 
 OLLAMA_URL = "http://localhost:11434/api/chat"
@@ -23,6 +23,9 @@ class Agent:
         self.model = model
         self.description = description
         self.message_history = []
+        self.last_call = None
+        # Preserve every call for F2 replay.
+        self.call_log = []
 
     def respond(self, message: str, context: Optional[dict] = None) -> str:
         """Generate a response given an incoming message.
@@ -44,6 +47,16 @@ class Agent:
         messages.append({"role": "user", "content": message})
 
         response = self._call_ollama(messages)
+
+        # Snapshot the call before message_history changes.
+        self.last_call = ReceiverCall(
+            agent_id=self.agent_id,
+            role=self.role,
+            system=system,
+            messages=copy.deepcopy(messages),
+            response=response,
+        )
+        self.call_log.append(self.last_call)
 
         self.message_history.append({"role": "user", "content": message})
         self.message_history.append({"role": "assistant", "content": response})
@@ -75,6 +88,8 @@ class Agent:
     def reset(self):
         """Clear message history for a new trial."""
         self.message_history = []
+        self.last_call = None
+        self.call_log = []
 
     def __repr__(self):
         return f"Agent(id={self.agent_id}, role={self.role})"

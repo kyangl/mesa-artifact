@@ -1,24 +1,14 @@
-"""
-Edge perturbation: inject non-adversarial noise on a specific edge.
+"""Replace an edge message with non-adversarial, uninformative text.
 
-Unlike misinformation (adversarial, pushes toward wrong answer), perturbation
-is deliberately vague and uninformative — it degrades the signal without
-specifically pushing a wrong conclusion. This tests whether edges carry
-irreplaceable information or whether the system is robust to noise.
-
-Used in dynamic saliency computation:
-  ES_dynamic = f(ablation_delta, perturbation_delta)
-
-Two perturbation modes:
-  1. static: fixed vague templates per sender role (deterministic, fast)
-  2. dynamic: LLM-generates a vague, off-topic response each call (default)
+Static mode uses role templates; dynamic mode generates context-aware noise.
+The resulting performance delta measures reliance on the channel's content.
 """
 
 import requests
 
 OLLAMA_URL = "http://localhost:11434/api/chat"
 
-# Static vague templates per role — sound plausible but contain no useful info
+# Plausible role-specific text without task information.
 NOISE_TEMPLATES = {
     "customer_facing": (
         "I've reviewed the customer's situation and gathered some initial information. "

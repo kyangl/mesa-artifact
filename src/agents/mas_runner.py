@@ -1,14 +1,9 @@
-"""
-MAS Runner: Orchestrates multi-agent execution according to a topology.
-Handles message routing, edge logging, and optional edge attacks.
-
-Uses dynamic routing where coordinators generate role-specific delegation
-based on their plan, and agents contribute based on context.
-"""
+"""Run topology-specific MAS workflows with edge logging and interventions."""
 
 import yaml
 import json
 import time
+from collections import defaultdict
 from pathlib import Path
 from typing import Optional, Callable
 
@@ -16,8 +11,15 @@ from src.agents.base_agent import Agent
 from src.topology.builder import load_topology, build_graph
 
 
+QUARANTINE_NOTICE = "[QUARANTINED: message withheld by monitor]"
+
+
 class EdgeMessage:
-    """A message passed along an edge."""
+    """Edge message with separate original, attacked, and enforced content.
+
+    ``content`` is the delivered value. Only the oracle restores clean text;
+    quarantine substitutes a fixed notice.
+    """
     def __init__(self, source: str, target: str, content: str,
                  edge_label: str, timestamp: float = None):
         self.source = source
@@ -25,8 +27,33 @@ class EdgeMessage:
         self.content = content
         self.edge_label = edge_label
         self.timestamp = timestamp or time.time()
-        self.was_attacked = False
         self.original_content = content
+        self.attacked_content = None
+        self.enforced_content = None
+        self.was_attacked = False
+        self.was_quarantined = False
+        self.oracle_reverted = False
+
+    def apply_attack(self, attacked_content: str) -> None:
+        self.attacked_content = attacked_content
+        self.was_attacked = True
+        self.content = attacked_content
+
+    def quarantine(self, notice: str) -> None:
+        self.enforced_content = notice
+        self.was_quarantined = True
+        self.content = notice
+
+    def oracle_revert(self) -> None:
+        """Oracle upper bound: undo the attack entirely.
+
+        ``was_attacked`` is cleared to preserve the semantics existing
+        analysis scripts rely on, but ``attacked_content`` is retained so the
+        attack is still reconstructible offline.
+        """
+        self.content = self.original_content
+        self.was_attacked = False
+        self.oracle_reverted = True
 
     def to_dict(self) -> dict:
         return {
@@ -35,8 +62,12 @@ class EdgeMessage:
             "content": self.content,
             "edge_label": self.edge_label,
             "timestamp": self.timestamp,
+            "original_content": self.original_content,
+            "attacked_content": self.attacked_content,
+            "enforced_content": self.enforced_content,
             "was_attacked": self.was_attacked,
-            "original_content": self.original_content if self.was_attacked else None,
+            "was_quarantined": self.was_quarantined,
+            "oracle_reverted": self.oracle_reverted,
         }
 
 
@@ -59,24 +90,52 @@ class MASRunner:
         # Edges whose attacks are neutralized by defense.
         self.defense_edges: set = set()
 
+        # Real-detector monitoring. Deliberately separate from defense_edges:
+        # that set neutralizes attacks by fiat and is the oracle upper bound.
+        self.monitor_detector = None
+        self.monitor_edges: set = set()
+        self.quarantine_notice = QUARANTINE_NOTICE
+        self.monitor_log: list = []
+
+        # Optional online enforcement hook; unset leaves delivery unchanged.
+        self.monitor_hook: Optional[Callable] = None
+
+        # Prompts use per-recipient delivered content.
+        self.inbox = defaultdict(list)
         self._build_agents()
 
-    def _build_agents(self):
-        """Instantiate Agent objects for each node in the topology.
+    def deliver(self, source_id: str, target_id: str, content: str,
+                sender_role: str = None) -> str:
+        """Deliver along an edge, update the inbox, and return received text."""
+        msg = self.send_message(source_id, target_id, content)
+        if sender_role is None:
+            agent = self.agents.get(source_id)
+            sender_role = agent.role if agent is not None else source_id
+        self.inbox[target_id].append({
+            "agent_id": source_id,
+            "role": sender_role,
+            "content": msg.content,
+        })
+        return msg.content
 
-        If the scenario defines a ``role_mapping`` dict, topology roles are
-        translated to scenario roles before looking up system prompts.  This
-        lets a single set of topology YAMLs (which use customer-service role
-        names) be reused for software-engineering or homogeneous-debate
-        scenarios without duplicating topology files.
+    def set_monitor(self, detector, edges, quarantine_notice=QUARANTINE_NOTICE):
+        """Install a real detector on a set of monitored edges."""
+        self.monitor_detector = detector
+        self.monitor_edges = set(tuple(e) for e in edges)
+        self.quarantine_notice = quarantine_notice
 
-        Example role_mapping in scenario YAML::
+    def set_monitor_hook(self, hook, quarantine_notice=None):
+        """Install a delivery-time monitor hook.
 
-            role_mapping:
-              customer_facing: requirements_analyst
-              database: architect
-              supervisor: debater   # homogeneous: all roles → debater
+        The hook returns ``None`` for unmonitored messages or a record with a
+        ``flag`` field. Flagged content is quarantined and the record is logged.
         """
+        self.monitor_hook = hook
+        if quarantine_notice is not None:
+            self.quarantine_notice = quarantine_notice
+
+    def _build_agents(self):
+        """Instantiate agents, applying any scenario ``role_mapping``."""
         roles = self.scenario.get("roles", {})
         role_mapping = self.scenario.get("role_mapping", {})
 
@@ -154,14 +213,43 @@ class MASRunner:
             attack_fn = self.attack_fn
 
         if attack_fn is not None:
-            msg.original_content = content
-            msg.content = attack_fn(content)
-            msg.was_attacked = True
+            msg.apply_attack(attack_fn(content))
 
-        # Defense intercept: if this edge is monitored, revert any attack.
+        # Oracle intercept (mechanism upper bound, not a deployable defense):
+        # if this edge is in defense_edges, revert the attack entirely.
         if msg.was_attacked and (source_id, target_id) in self.defense_edges:
-            msg.content = content
-            msg.was_attacked = False
+            msg.oracle_revert()
+
+        # Real-detector monitoring: score the delivered content and quarantine
+        # on a flag. Never restores the clean message.
+        if (self.monitor_detector is not None
+                and (source_id, target_id) in self.monitor_edges):
+            verdict = self.monitor_detector.score(
+                msg.content, (source_id, target_id),
+                local_context=edge_data, evidence=None,
+            )
+            self.monitor_log.append({
+                "edge": (source_id, target_id),
+                "detector_id": self.monitor_detector.detector_id,
+                "score": verdict.confidence,
+                "threshold": self.monitor_detector.threshold,
+                "flag": verdict.flag,
+                "latency_s": verdict.latency_s,
+                "token_cost": verdict.token_cost,
+            })
+            if verdict.flag:
+                msg.quarantine(self.quarantine_notice)
+
+        # Online monitor hook. Unset by default, so this block is inert for
+        # every existing caller and the delivery path is unchanged.
+        if self.monitor_hook is not None:
+            entry = self.monitor_hook(msg, (source_id, target_id), edge_data)
+            if entry is not None:
+                entry = dict(entry)
+                entry.setdefault("edge", (source_id, target_id))
+                self.monitor_log.append(entry)
+                if entry.get("flag"):
+                    msg.quarantine(self.quarantine_notice)
 
         self.edge_log.append(msg)
         return msg
@@ -554,8 +642,8 @@ class MASRunner:
                 w_context = self._get_role_context(worker.role, mock_data)
                 w_response = worker.respond(w_msg.content, context=w_context)
                 # Worker -> Manager
-                self.send_message(w_id, mgr_id, w_response)
-                worker_results[w_id] = w_response
+                # Manager reads what the edge delivered, not the raw response.
+                worker_results[w_id] = self.deliver(w_id, mgr_id, w_response)
 
             # Manager synthesizes worker outputs
             synth_prompt = (
@@ -571,8 +659,7 @@ class MASRunner:
             )
             mgr_summary = mgr.respond(synth_prompt, context=mgr_context)
             # Manager -> CEO
-            self.send_message(mgr_id, ceo_id, mgr_summary)
-            manager_results[mgr_id] = mgr_summary
+            manager_results[mgr_id] = self.deliver(mgr_id, ceo_id, mgr_summary)
 
         outputs["manager_results"] = manager_results
 
@@ -653,7 +740,11 @@ class MASRunner:
             agent = self.agents[agent_id]
             context = self._get_role_context(agent.role, mock_data)
 
-            if not discussion:
+            # Build the prompt from THIS agent's inbox -- what was actually
+            # delivered to it over its incoming edges -- not from a shared
+            # variable holding senders' raw responses.
+            received = self.inbox[agent_id]
+            if not received:
                 prompt = (
                     f"{self._task_label()}: {task_desc}\n\n"
                     f"As the {agent.role}, provide your role-specific "
@@ -663,7 +754,7 @@ class MASRunner:
                 )
             else:
                 prior = "\n\n".join(
-                    f"**{d['role']}**: {d['content']}" for d in discussion
+                    f"**{d['role']}**: {d['content']}" for d in received
                 )
                 prompt = (
                     f"Team discussion about: {task_desc}\n\n"
@@ -682,21 +773,23 @@ class MASRunner:
                 "round": 1,
             })
 
-            # Log edges to all other agents (mesh: everyone hears)
+            # Deliver to every other agent's inbox through the edge, so an
+            # attack on (agent_id, other_id) reaches only that recipient.
             for other_id in agent_ids:
                 if other_id != agent_id:
-                    self.send_message(agent_id, other_id, response)
+                    self.deliver(agent_id, other_id, response, agent.role)
 
         # Round 2: Each agent responds to specific points, addresses
         # disagreements, and adds information others missed
         round2_contributions = []
+        round1_inboxes = {aid: list(self.inbox[aid]) for aid in agent_ids}
         for agent_id in agent_ids:
             agent = self.agents[agent_id]
             context = self._get_role_context(agent.role, mock_data)
 
             round1_summary = "\n\n".join(
                 f"**{d['role']}**: {d['content']}"
-                for d in discussion if d["round"] == 1
+                for d in round1_inboxes[agent_id]
             )
             prompt = (
                 f"Original request: {task_desc}\n\n"
@@ -719,21 +812,22 @@ class MASRunner:
                 "round": 2,
             })
 
-            # Log edges for round 2
+            # Deliver round 2 through the edges as well
             for other_id in agent_ids:
                 if other_id != agent_id:
-                    self.send_message(agent_id, other_id, response)
+                    self.deliver(agent_id, other_id, response, agent.role)
 
         discussion.extend(round2_contributions)
 
-        # Supervisor synthesizes with all context
+        # Supervisor synthesizes from what was delivered to IT, so an attack
+        # on any edge into the supervisor reaches the synthesis.
         supervisor_id = next(
             (a["id"] for a in self.topology["agents"] if a["role"] == "supervisor"),
             agent_ids[0]
         )
         all_discussion = "\n\n".join(
-            f"[Round {d['round']}] **{d['role']}**: {d['content']}"
-            for d in discussion
+            f"**{d['role']}**: {d['content']}"
+            for d in self.inbox[supervisor_id]
         )
         synth_prompt = (
             f"Full team discussion on: {task_desc}\n\n"
@@ -866,17 +960,14 @@ class MASRunner:
                 )
                 s_context = self._get_role_context(spec.role, mock_data)
                 s_resp = spec.respond(s_msg.content, context=s_context)
-                self.send_message(spec_id, lead_id, s_resp)
-                spec_results[spec_id] = s_resp
+                spec_results[spec_id] = self.deliver(spec_id, lead_id, s_resp)
 
             # Lateral communication between specialists on same team
             if len(lead_specialists) > 1:
                 for i, s1 in enumerate(lead_specialists):
                     for s2 in lead_specialists[i+1:]:
                         if self.graph.has_edge(s1, s2):
-                            self.send_message(
-                                s1, s2, spec_results.get(s1, "")
-                            )
+                            self.deliver(s1, s2, spec_results.get(s1, ""))
 
             # Step 4: Lead synthesizes specialist outputs
             synth = lead.respond(
@@ -891,17 +982,12 @@ class MASRunner:
                 f"any concerns, and your recommendation.",
                 context=lead_context
             )
-            self.send_message(lead_id, sup_id, synth)
-            lead_results[lead_id] = synth
+            lead_results[lead_id] = self.deliver(lead_id, sup_id, synth)
 
         # Step 5: Cross-team lead exchange
         if len(lead_ids) > 1 and self.graph.has_edge(lead_ids[0], lead_ids[1]):
-            self.send_message(
-                lead_ids[0], lead_ids[1], lead_results[lead_ids[0]]
-            )
-            self.send_message(
-                lead_ids[1], lead_ids[0], lead_results[lead_ids[1]]
-            )
+            self.deliver(lead_ids[0], lead_ids[1], lead_results[lead_ids[0]])
+            self.deliver(lead_ids[1], lead_ids[0], lead_results[lead_ids[1]])
 
         outputs["lead_results"] = lead_results
 
@@ -966,16 +1052,7 @@ class MASRunner:
         return outputs
 
     def run_debate(self, task: dict, n_rounds: int = None) -> dict:
-        """Execute multi-round homogeneous debate protocol.
-
-        Round 0 (Genesis): each agent independently answers — no neighbor context.
-        Rounds 1-N (Debate): each agent reads its predecessors' latest answers
-            in the directed graph and regenerates its own answer.
-        Final: majority vote across all agents' final answers.
-
-        Topology determines the information flow (which agents can observe whom).
-        Attacks are applied on send_message() as usual.
-        """
+        """Run independent initial answers, topology-aware debate, and voting."""
         import re
         from collections import Counter
 
@@ -1085,27 +1162,10 @@ class MASRunner:
         return self.run_general(task)
 
     def run_general(self, task: dict) -> dict:
-        """Generic orchestration for arbitrary directed graphs.
+        """Run arbitrary directed graphs by supervisor fan-out and synthesis.
 
-        Used when the topology name is not one of the six designed patterns.
-        Protocol: 1-hop BFS from the supervisor, then synthesis.
-
-          1. Supervisor reads the task and writes a delegation plan.
-          2. Supervisor sends the plan along every outgoing edge it has.
-          3. Each direct neighbour reads the (possibly attacked) plan, runs
-             its own analysis using role-specific mock data, and forwards the
-             result to its OWN outgoing neighbours that it can reach.
-          4. Each agent that receives at least one message responds back along
-             every incoming edge that has a reverse direction (returning info
-             to upstream); responses pile up on the supervisor.
-          5. Supervisor synthesises a final answer from everything it heard.
-
-        This respects the actual graph structure: messages only traverse
-        edges that exist in self.graph, and attacks set on (u, v) only fire
-        when those edges are actually used.
-
-        Designed to work for arbitrary connected graphs (random_er, random_ba,
-        random_ws) where there is at least one agent with role 'supervisor'.
+        Messages follow existing edges; attacks fire only when their edge is
+        traversed. A missing supervisor falls back to the mesh protocol.
         """
         # Find supervisor (we always assign one in our YAMLs)
         supervisor_id = None
@@ -1195,6 +1255,8 @@ class MASRunner:
         for agent in self.agents.values():
             agent.reset()
         self.edge_log = []
+        self.monitor_log = []
+        self.inbox = defaultdict(list)
 
     def get_edge_log(self) -> list:
         """Return all edge messages as dicts."""

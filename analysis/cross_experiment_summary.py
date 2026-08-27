@@ -1,7 +1,7 @@
 """
 Build the per-edge master table and correlation summaries from raw result JSONs.
 
-Writes to results/tables/: per_edge_master_table.csv, cross_experiment_summary.csv,
+Writes to data/: per_edge_master_table.csv, cross_experiment_summary.csv,
 pooled_rho_per_scenario.csv, saliency_variants_random_topo.csv.
 """
 
@@ -16,17 +16,18 @@ from scipy import stats
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
+from src.topology.scope import PRIMARY_TOPOLOGIES, assert_primary_scope
 from src.topology.builder import load_topology, build_graph
 from src.saliency.structural import compute_all_structural_features
 
 RESULTS = ROOT / "results"
-OUT_DIR = RESULTS / "tables"
+OUT_DIR = ROOT / "data"
 OUT_DIR.mkdir(parents=True, exist_ok=True)
 
 ALL_TOPOS = ["centralized", "sequential", "hierarchical", "decentralized",
-             "mesh", "hybrid", "random_er", "random_ba"]
+             "hybrid", "random_er", "random_ba"]
 ORIGINAL_TOPOS = {"centralized", "sequential", "hierarchical",
-                  "decentralized", "mesh", "hybrid"}
+                  "decentralized", "hybrid"}
 SCENARIOS = {
     "customer_service": ("pilot_clean", "pilot_attack",
                          "dynamic_ablation_customer_service",

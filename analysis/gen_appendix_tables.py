@@ -1,24 +1,29 @@
 """
-Two appendix LaTeX tables, both derived from results/tables/per_edge_master_table.csv:
+Two appendix LaTeX tables, both derived from data/per_edge_master_table.csv:
 
   concentration_table.tex   vulnerability concentration (top-k% ASR-success share)
                             by topology and scenario.
   clean_accuracy_table.tex  clean baseline accuracy by topology, model, scenario.
 
-Output: results/tables/
+Output: data/
 """
 
 import csv
+import sys
 from pathlib import Path
 from collections import defaultdict
 import numpy as np
 
 ROOT = Path(__file__).resolve().parents[1]
-TABLES = ROOT / "results" / "tables"
+sys.path.insert(0, str(ROOT))
+from src.topology.scope import assert_primary_scope
+
+TABLES = ROOT / "data"
 MASTER = TABLES / "per_edge_master_table.csv"
 
 TOPO_ORDER = ["sequential", "decentralized", "centralized",
-              "hierarchical", "hybrid", "mesh"]
+              "hierarchical", "hybrid"]
+assert_primary_scope(TOPO_ORDER, "appendix tables")
 TOPO_FULL = {
     "sequential": "Sequential", "decentralized": "Decentralized",
     "centralized": "Centralized", "hierarchical": "Hierarchical",
